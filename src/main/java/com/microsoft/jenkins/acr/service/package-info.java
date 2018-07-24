@@ -4,7 +4,7 @@
  */
 
 /**
- * Classes interact with Azure Service.
+ * Classes interact with Azure Service. This should be the only package import Azure service packages.
  *
  * @since 1.0
  * @author yuwzho

@@ -15,4 +15,5 @@ public final class Constants {
     public static final String AI = "ACRBuildRequest";
     public static final String AI_QUEUE = "Queue";
 
+    public static final String INVALID_OPTION = "*";
 }

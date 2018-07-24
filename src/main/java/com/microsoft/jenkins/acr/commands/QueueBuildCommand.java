@@ -6,7 +6,7 @@
 package com.microsoft.jenkins.acr.commands;
 
 import com.microsoft.azure.management.containerregistry.Build;
-import com.microsoft.azure.management.containerregistry.QueueBuildRequest;
+import com.microsoft.jenkins.acr.QuickBuildRequest;
 import com.microsoft.jenkins.acr.ACRQuickBuildPlugin;
 import com.microsoft.jenkins.acr.service.AzureContainerRegistry;
 import com.microsoft.jenkins.acr.util.Constants;
@@ -24,7 +24,7 @@ public class QueueBuildCommand implements ICommand<QueueBuildCommand.IQueueBuild
         try {
             final String resourceGroupName = context.getResourceGroupName();
             final String acrName = context.getACRName();
-            final QueueBuildRequest request = context.getBuildRequest();
+            final QuickBuildRequest request = context.getBuildRequest();
 
             context.logStatus("Queue a quick build request to ACR "
                     + context.getResourceGroupName()
@@ -59,7 +59,7 @@ public class QueueBuildCommand implements ICommand<QueueBuildCommand.IQueueBuild
 
         String getACRName();
 
-        QueueBuildRequest getBuildRequest();
+        QuickBuildRequest getBuildRequest();
 
         IQueueBuildData withBuildId(String id);
     }

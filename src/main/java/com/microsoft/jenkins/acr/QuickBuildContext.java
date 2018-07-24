@@ -5,11 +5,9 @@
 
 package com.microsoft.jenkins.acr;
 
-import com.microsoft.azure.management.containerregistry.QueueBuildRequest;
-import com.microsoft.azure.management.containerregistry.QuickBuildRequest;
 import com.microsoft.jenkins.acr.commands.GetBuildLogCommand;
 import com.microsoft.jenkins.acr.commands.QueueBuildCommand;
-import com.microsoft.jenkins.acr.commands.ResolveSCM;
+import com.microsoft.jenkins.acr.commands.ResolveSCMCommand;
 import com.microsoft.jenkins.azurecommons.command.BaseCommandContext;
 import com.microsoft.jenkins.azurecommons.command.CommandService;
 import com.microsoft.jenkins.azurecommons.command.IBaseCommandData;
@@ -21,15 +19,19 @@ import hudson.model.TaskListener;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.StepExecution;
 
-public class ACRQuickBuildContext extends BaseCommandContext
+/**
+ * Context to queue a quick build to ACR.
+ * It configure all needed steps{@link ICommand} to perform the goal.
+ */
+public class QuickBuildContext extends BaseCommandContext
         implements QueueBuildCommand.IQueueBuildData,
         GetBuildLogCommand.IBuildLogData,
-        ResolveSCM.ISCMData {
+        ResolveSCMCommand.ISCMData {
 
     /**
      * DATA TRANSITION DECLARATION.
      */
-    private String scmUrl;
+    private QuickBuildRequest buildRequest;
     private String buildId;
 
     /**
@@ -41,17 +43,17 @@ public class ACRQuickBuildContext extends BaseCommandContext
      * @param aTaskListener a place to send output
      * @return this
      */
-    protected ACRQuickBuildContext configure(Run<?, ?> aRun,
-                                             FilePath aWorkspace,
-                                             Launcher aLauncher,
-                                             TaskListener aTaskListener) {
+    protected QuickBuildContext configure(Run<?, ?> aRun,
+                                          FilePath aWorkspace,
+                                          Launcher aLauncher,
+                                          TaskListener aTaskListener) {
         super.configure(aRun,
                 aWorkspace,
                 aLauncher,
                 aTaskListener,
                 CommandService.builder()
-                        .withStartCommand(ResolveSCM.class)
-                        .withTransition(ResolveSCM.class, QueueBuildCommand.class)
+                        .withStartCommand(ResolveSCMCommand.class)
+                        .withTransition(ResolveSCMCommand.class, QueueBuildCommand.class)
                         .withTransition(QueueBuildCommand.class, GetBuildLogCommand.class)
                         .build());
         return this;
@@ -87,9 +89,8 @@ public class ACRQuickBuildContext extends BaseCommandContext
     }
 
     @Override
-    public QueueBuildRequest getBuildRequest() {
-        return new QuickBuildRequest()
-                .withSourceLocation(this.scmUrl);
+    public QuickBuildRequest getBuildRequest() {
+        return this.buildRequest;
     }
 
     @Override
@@ -99,17 +100,12 @@ public class ACRQuickBuildContext extends BaseCommandContext
     }
 
     /**
-     * {@link ResolveSCM.ISCMData}.
+     * {@link ResolveSCMCommand.ISCMData}.
      */
 
     @Override
-    public String getSourceLocation() {
-        return null;
-    }
-
-    @Override
-    public ACRQuickBuildContext withSCMUrl(String url) {
-        this.scmUrl = url;
+    public QuickBuildContext withSCMUrl(String url) {
+        this.buildRequest.withSourceUrl(url);
         return this;
     }
 

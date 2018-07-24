@@ -17,6 +17,9 @@ import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 
+/**
+ * Entry of the plugin with BI entries.
+ */
 public class ACRQuickBuildPlugin extends Plugin {
     public static void sendEvent(final String item, final String action, final String... properties) {
         final Map<String, String> props = new HashMap<>();
