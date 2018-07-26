@@ -24,20 +24,6 @@ public final class AzureContainerRegistry extends AzureService {
     public Build queueBuildRequest(String resourceGroupName,
                                    String acrName,
                                    QuickBuildRequest request) {
-        this.getClient().resourceGroups().define("yuwzhojava1").withRegion("eastus").create();
-        this.getClient().containerRegistries().define("yuwzhoacr1")
-                .withRegion("eastus")
-                .withNewResourceGroup("yuwzhojava1")
-                .withBasicSku()
-                .withRegistryNameAsAdminUser()
-                .create()
-                .queuedBuilds()
-                .queueQuickBuild()
-                .withOSType(OsType.LINUX)
-                .withSourceLocation("https://github.com/yuwzho/hello-docker")
-                .withDockerFilePath("Dockerfile")
-                .create();
-
         return this.getClient()
                 .containerRegistries()
                 .getByResourceGroup(resourceGroupName, acrName)
@@ -61,9 +47,6 @@ public final class AzureContainerRegistry extends AzureService {
     }
 
     public String getLog(String resourceGroupName, String acrName, String buildId) {
-
-
-
         return this.getClient()
                 .containerRegistries()
                 .getByResourceGroup(resourceGroupName, acrName)

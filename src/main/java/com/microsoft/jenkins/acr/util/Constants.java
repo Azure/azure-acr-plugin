@@ -18,4 +18,10 @@ public final class Constants {
 
     public static final String LINUX = "Linux";
     public static final String WINDOWS = "Windows";
+
+    public static final String BLOB_COMPLETE = "Complete";
+    public static final String BUILD_FAILED = "failed";
+
+    public static final int SLEEP_IN_MS = 1000;
+
 }
