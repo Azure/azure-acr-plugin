@@ -6,6 +6,7 @@
 package com.microsoft.jenkins.acr.commands;
 
 import com.microsoft.jenkins.acr.QuickBuildRequest;
+import com.microsoft.jenkins.azurecommons.command.CommandState;
 import com.microsoft.jenkins.azurecommons.command.IBaseCommandData;
 import com.microsoft.jenkins.azurecommons.command.ICommand;
 
@@ -20,6 +21,7 @@ public class ResolveSCMCommand implements ICommand<ResolveSCMCommand.ISCMData> {
 //            data.setCommandState(CommandState.HasError);
 //            data.logError(e.getMessage());
 //        }
+        data.withSCMUrl(data.getBuildRequest().sourceLocation()).setCommandState(CommandState.Success);
     }
 
     public interface ISCMData extends IBaseCommandData {

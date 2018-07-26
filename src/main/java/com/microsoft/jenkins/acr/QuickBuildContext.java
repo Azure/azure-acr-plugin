@@ -32,6 +32,8 @@ public class QuickBuildContext extends BaseCommandContext
      * DATA TRANSITION DECLARATION.
      */
     private QuickBuildRequest buildRequest;
+    private String resourceGroupName;
+    private String registryName;
     private String buildId;
 
     /**
@@ -80,12 +82,12 @@ public class QuickBuildContext extends BaseCommandContext
 
     @Override
     public String getResourceGroupName() {
-        return null;
+        return this.resourceGroupName;
     }
 
     @Override
     public String getACRName() {
-        return null;
+        return this.registryName;
     }
 
     @Override
@@ -116,5 +118,20 @@ public class QuickBuildContext extends BaseCommandContext
     @Override
     public String getBuildId() {
         return this.buildId;
+    }
+
+    public QuickBuildContext withResourceGroupName(String pResourceGroupName) {
+        this.resourceGroupName = pResourceGroupName;
+        return this;
+    }
+
+    public QuickBuildContext withBuildRequest(QuickBuildRequest pBuildRequest) {
+        this.buildRequest = pBuildRequest;
+        return this;
+    }
+
+    public QuickBuildContext withRegistryName(String pRegistryName) {
+        this.registryName = pRegistryName;
+        return this;
     }
 }

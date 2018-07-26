@@ -6,9 +6,9 @@
 package com.microsoft.jenkins.acr.service;
 
 import com.microsoft.azure.management.containerregistry.Build;
+import com.microsoft.azure.management.containerregistry.OsType;
 import com.microsoft.jenkins.acr.QuickBuildRequest;
 import com.microsoft.azure.management.containerregistry.Registry;
-import com.microsoft.azure.management.containerregistry.implementation.ContainerRegistryManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,7 +17,6 @@ import java.util.List;
 public final class AzureContainerRegistry extends AzureService {
 
     private static AzureContainerRegistry instance;
-    private ContainerRegistryManager acrManager;
 
     private AzureContainerRegistry() {
     }
@@ -25,18 +24,31 @@ public final class AzureContainerRegistry extends AzureService {
     public Build queueBuildRequest(String resourceGroupName,
                                    String acrName,
                                    QuickBuildRequest request) {
-          return null;
-//        return this.getClient()
-//                .containerRegistries()
-//                .getByResourceGroup(resourceGroupName, acrName)
-//                .queuedBuilds()
-//                .queueQuickBuild()
-//                .withOSType(request.platform().osType())
-//                .withSourceLocation(request.sourceLocation())
-//                .withDockerFilePath(request.dockerFilePath())
+        this.getClient().resourceGroups().define("yuwzhojava1").withRegion("eastus").create();
+        this.getClient().containerRegistries().define("yuwzhoacr1")
+                .withRegion("eastus")
+                .withNewResourceGroup("yuwzhojava1")
+                .withBasicSku()
+                .withRegistryNameAsAdminUser()
+                .create()
+                .queuedBuilds()
+                .queueQuickBuild()
+                .withOSType(OsType.LINUX)
+                .withSourceLocation("https://github.com/yuwzho/hello-docker")
+                .withDockerFilePath("Dockerfile")
+                .create();
+
+        return this.getClient()
+                .containerRegistries()
+                .getByResourceGroup(resourceGroupName, acrName)
+                .queuedBuilds()
+                .queueQuickBuild()
+                .withOSType(OsType.fromString(request.platform()))
+                .withSourceLocation(request.sourceLocation())
+                .withDockerFilePath(".")
 //                .withImageNames(request.imageNames().toArray(new String[request.imageNames().size()]))
 //                .withBuildTimeoutInSeconds(request.timeout())
-//                .create();
+                .create();
     }
 
     public Collection<String> listResourcesName(String resourceGroupName) {
@@ -48,8 +60,11 @@ public final class AzureContainerRegistry extends AzureService {
         return registryNameList;
     }
 
-    public void getLog(String resourceGroupName, String acrName, String buildId) {
-        this.getClient()
+    public String getLog(String resourceGroupName, String acrName, String buildId) {
+
+
+
+        return this.getClient()
                 .containerRegistries()
                 .getByResourceGroup(resourceGroupName, acrName)
                 .queuedBuilds()

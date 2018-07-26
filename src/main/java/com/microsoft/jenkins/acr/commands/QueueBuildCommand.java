@@ -6,11 +6,12 @@
 package com.microsoft.jenkins.acr.commands;
 
 import com.microsoft.azure.management.containerregistry.Build;
+import com.microsoft.jenkins.acr.Messages;
 import com.microsoft.jenkins.acr.QuickBuildRequest;
 import com.microsoft.jenkins.acr.ACRQuickBuildPlugin;
 import com.microsoft.jenkins.acr.service.AzureContainerRegistry;
 import com.microsoft.jenkins.acr.util.Constants;
-import com.microsoft.jenkins.azurecommons.JobContext;
+import com.microsoft.jenkins.acr.util.Util;
 import com.microsoft.jenkins.azurecommons.command.CommandState;
 import com.microsoft.jenkins.azurecommons.command.IBaseCommandData;
 import com.microsoft.jenkins.azurecommons.command.ICommand;
@@ -20,22 +21,19 @@ public class QueueBuildCommand implements ICommand<QueueBuildCommand.IQueueBuild
 
     @Override
     public void execute(final IQueueBuildData context) {
-        final JobContext jobContext = context.getJobContext();
         try {
-            final String resourceGroupName = context.getResourceGroupName();
-            final String acrName = context.getACRName();
-            final QuickBuildRequest request = context.getBuildRequest();
+            context.logStatus(Messages.build_queueABuild(
+                    context.getResourceGroupName(),
+                    context.getACRName(),
+                    Util.toJson(context.getBuildRequest())));
 
-            context.logStatus("Queue a quick build request to ACR "
-                    + context.getResourceGroupName()
-                    + "/"
-                    + context.getACRName()
-                    + ": "
-                    + request.toString());
             Build build = AzureContainerRegistry.
                     getInstance().
-                    queueBuildRequest(resourceGroupName, acrName, request);
-            context.logStatus("Queued a build: " + build.toString());
+                    queueBuildRequest(context.getResourceGroupName(),
+                            context.getACRName(),
+                            context.getBuildRequest());
+
+            context.logStatus(Messages.build_finishQueueABuild(build.buildId()));
             context.withBuildId(build.buildId())
                     .setCommandState(CommandState.Success);
 
@@ -44,7 +42,8 @@ public class QueueBuildCommand implements ICommand<QueueBuildCommand.IQueueBuild
                     "ResourceGroup", AppInsightsUtils.hash(context.getResourceGroupName()),
                     "Registry", AppInsightsUtils.hash(context.getACRName()));
         } catch (Exception e) {
-            context.logError("Fails in queueing ACR quick build request");
+            e.printStackTrace();
+            context.logError(Messages.build_failQueueBuild(e.getMessage()));
             context.setCommandState(CommandState.HasError);
             ACRQuickBuildPlugin.sendEvent(Constants.AI, Constants.AI_QUEUE,
                     "Message", e.getMessage(),

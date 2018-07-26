@@ -9,6 +9,7 @@ import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.util.AzureBaseCredentials;
 import com.microsoft.azure.util.AzureCredentialUtil;
 import com.microsoft.jenkins.acr.ACRQuickBuildPlugin;
+import com.microsoft.jenkins.acr.Messages;
 import com.microsoft.jenkins.acr.util.Constants;
 import com.microsoft.jenkins.azurecommons.core.AzureClientFactory;
 import com.microsoft.jenkins.azurecommons.core.credentials.TokenCredentialData;
@@ -49,7 +50,7 @@ public final class AzureHelper {
 
     protected Azure getClient() throws AuthenticationException {
         if (this.client == null) {
-            throw new AuthenticationException("The client is not Authorized");
+            throw new AuthenticationException(Messages.error_clientUnAuthed());
         }
         return this.client;
     }
@@ -58,7 +59,7 @@ public final class AzureHelper {
         AzureBaseCredentials credential = AzureCredentialUtil.getCredential(owner, credentialId);
         if (credential == null) {
             throw new IllegalStateException(
-                    String.format("Can't find credential in scope %s with id: %s", owner, credentialId));
+                    String.format(Messages.error_cannotFindCred(), owner, credentialId));
         }
         return TokenCredentialData.deserialize(credential.serializeToTokenData());
     }

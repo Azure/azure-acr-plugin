@@ -16,10 +16,12 @@ import com.microsoft.azure.util.AzureBaseCredentials;
 import com.microsoft.jenkins.acr.service.AzureContainerRegistry;
 import com.microsoft.jenkins.acr.service.AzureHelper;
 import com.microsoft.jenkins.acr.service.AzureResourceGroup;
+import hudson.AbortException;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.Item;
+import hudson.model.Result;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.security.ACL;
@@ -77,15 +79,36 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
                               final Launcher launcher,
                               final TaskListener listener)
             throws InterruptedException, IOException {
-//        QuickBuildRequest buildRequest = new QuickBuildRequest()
-//                .withSourceLocation(this.getSource())
-//                .withImageNames(this.getImageNames());
-//        QuickBuildContext context = new QuickBuildContext();
-//        context.configure(run, workspace, launcher, listener);
-//        context.executeCommands();
-        listener.getLogger().println("azure credentials: " + azureCredentialsId);
-        listener.getLogger().println("resource group: " + resourceGroupName);
-        listener.getLogger().println("acr: " + registryName);
+        getDescriptor().checkPrerequisites(null,
+                getAzureCredentialsId(),
+                getResourceGroupName(),
+                getRegistryName(),
+                getSource());
+        QuickBuildRequest buildRequest = new QuickBuildRequest()
+                .withSourceLocation(getSource())
+                .withImageNames(getImageNames());
+        QuickBuildContext context = new QuickBuildContext();
+        context.configure(run, workspace, launcher, listener)
+                .withResourceGroupName(getResourceGroupName())
+                .withRegistryName(getRegistryName())
+                .withBuildRequest(buildRequest)
+                .executeCommands();
+
+        if (context.getLastCommandState().isError()) {
+            run.setResult(Result.FAILURE);
+            // NB: The perform(AbstractBuild<?,?>, Launcher, BuildListener) method inherited from
+            //     BuildStepCompatibilityLayer will delegate the call to SimpleBuildStep#perform when possible,
+            //     and always return true (continue the followed build steps) regardless of the Run#getResult.
+            //     We need to terminate the execution explicitly with an exception.
+            //
+            // see BuildStep#perform
+            //     Using the return value to indicate success/failure should
+            //     be considered deprecated, and implementations are encouraged
+            //     to throw {@link AbortException} to indicate a failure.
+            throw new AbortException(Messages.context_endWithErrorState(context.getCommandState()));
+        } else {
+            listener.getLogger().println(Messages.context_finished());
+        }
     }
 
     public String getAzureCredentialsId() {
@@ -171,13 +194,10 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
         public ListBoxModel doFillResourceGroupNameItems(@AncestorInPath final Item owner,
                                                          @QueryParameter final String azureCredentialsId) {
             return constructListBox(Messages.plugin_selectAzureResourceGroup(),
+                    checkPrerequisites(owner, azureCredentialsId),
                     new Callable<Collection<String>>() {
                         @Override
                         public Collection<String> call() throws Exception {
-                            if (StringUtils.trimToNull(azureCredentialsId) == null) {
-                                return new ArrayList<>();
-                            }
-                            AzureHelper.getInstance().auth(owner, azureCredentialsId);
                             return AzureResourceGroup.getInstance().listResourceGroupNames();
                         }
                     });
@@ -189,20 +209,16 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
          * @param owner              Item
          * @param azureCredentialsId Trigger this method if this field changed.
          * @param resourceGroupName  List resources under this resource group. Trigger this method if changed.
-         * @return
+         * @return ListBoxModel contains registry names
          */
         public ListBoxModel doFillRegistryNameItems(@AncestorInPath final Item owner,
                                                     @QueryParameter final String azureCredentialsId,
                                                     @QueryParameter final String resourceGroupName) {
             return constructListBox(Messages.plugin_selectAzureContainerRegistry(),
+                    checkPrerequisites(owner, azureCredentialsId, resourceGroupName),
                     new Callable<Collection<String>>() {
                         @Override
                         public Collection<String> call() throws Exception {
-                            if (StringUtils.trimToNull(azureCredentialsId) == null
-                                    || StringUtils.trimToNull(resourceGroupName) == null) {
-                                return new ArrayList<>();
-                            }
-                            AzureHelper.getInstance().auth(owner, azureCredentialsId);
                             return AzureContainerRegistry.getInstance().listResourcesName(resourceGroupName);
                         }
                     });
@@ -215,24 +231,41 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
             return model;
         }
 
-        private ListBoxModel constructListBox(String defaultValue, Callable<Collection<String>> action) {
+        private ListBoxModel constructListBox(String defaultValue,
+                                              boolean validate,
+                                              Callable<Collection<String>> action) {
             ListBoxModel list = new ListBoxModel();
-            if (defaultValue != null) {
-                list.add(defaultValue);
-            }
+            list.add(defaultValue);
 
             try {
-                for (String name : action.call()) {
+                Collection<String> resources = validate ? action.call() : new ArrayList<String>();
+                for (String name : resources) {
                     list.add(name);
                 }
             } catch (Exception e) {
                 list.add(e.getMessage(), Constants.INVALID_OPTION);
             }
 
-            if (list.size() == 0) {
-                list.add(Messages.plugin_noResources(), Constants.INVALID_OPTION);
-            }
             return list;
+        }
+
+        private boolean checkPrerequisites(final Item owner, String azureCredentialsId, String... params) {
+            if (StringUtils.trimToNull(azureCredentialsId) == null) {
+                return false;
+            }
+
+            AzureHelper.getInstance().auth(owner, azureCredentialsId);
+
+            if (params != null || params.length == 0) {
+                return true;
+            }
+
+            for (String param : params) {
+                if (StringUtils.trimToNull(param) == null) {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

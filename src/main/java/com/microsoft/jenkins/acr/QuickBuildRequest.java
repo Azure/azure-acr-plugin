@@ -5,6 +5,9 @@
 
 package com.microsoft.jenkins.acr;
 
+import com.microsoft.jenkins.acr.util.Constants;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,7 +23,7 @@ public class QuickBuildRequest {
     /**
      * The fully qualified image names including the repository and tag.
      */
-    private List<String> imageNames;
+    private List<String> imageNames  = new ArrayList<>();
 
     /**
      * The location of the source that needs to be built.
@@ -47,7 +50,7 @@ public class QuickBuildRequest {
      * The value of this property indicates whether the image built should be
      * pushed to the registry or not.
      */
-    private boolean isPushEnabled;
+    private boolean isPushEnabled = true;
 
     /**
      * The value of this property indicates whether the image cache is enabled
@@ -63,7 +66,7 @@ public class QuickBuildRequest {
     /**
      * The platform properties against which the build will happen.
      */
-    private String platform;
+    private String platform = Constants.LINUX;
 
     /**
      * The Docker file path relative to the source location.
@@ -120,7 +123,7 @@ public class QuickBuildRequest {
      * @return the sourceUrl value
      */
     public String sourceUrl() {
-        return this.sourceLocation;
+        return this.sourceUrl;
     }
 
     /**
