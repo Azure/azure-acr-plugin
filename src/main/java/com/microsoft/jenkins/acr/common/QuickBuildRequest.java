@@ -3,7 +3,7 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  */
 
-package com.microsoft.jenkins.acr;
+package com.microsoft.jenkins.acr.common;
 
 import com.microsoft.jenkins.acr.util.Constants;
 
@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Azure Container Request object.
  * It should contains all arguments to queue a quick build to ACR.
- * Each argument should have an entry in the {@link QuickBuildBuilder}
+ * Each argument should have an entry in the {@link com.microsoft.jenkins.acr.QuickBuildBuilder}
  */
 public class QuickBuildRequest {
     /**

@@ -13,6 +13,8 @@ import java.util.concurrent.Callable;
 
 import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
 import com.microsoft.azure.util.AzureBaseCredentials;
+import com.microsoft.jenkins.acr.common.QuickBuildRequest;
+import com.microsoft.jenkins.acr.common.scm.AbstractSCM;
 import com.microsoft.jenkins.acr.service.AzureContainerRegistry;
 import com.microsoft.jenkins.acr.service.AzureHelper;
 import com.microsoft.jenkins.acr.service.AzureResourceGroup;
@@ -28,6 +30,7 @@ import hudson.security.ACL;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import com.microsoft.jenkins.acr.util.Constants;
+import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 import jenkins.tasks.SimpleBuildStep;
 import org.apache.commons.lang.StringUtils;
@@ -229,6 +232,15 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
             model.add(Messages.plugin_selectAzureCredential(), Constants.INVALID_OPTION);
             model.includeAs(ACL.SYSTEM, owner, AzureBaseCredentials.class);
             return model;
+        }
+
+        public FormValidation doCheckSource(@QueryParameter String source) {
+            try {
+                AbstractSCM.getType(StringUtils.trimToEmpty(source));
+                return FormValidation.ok();
+            } catch (Exception e) {
+                return FormValidation.error(e.getMessage());
+            }
         }
 
         private ListBoxModel constructListBox(String defaultValue,

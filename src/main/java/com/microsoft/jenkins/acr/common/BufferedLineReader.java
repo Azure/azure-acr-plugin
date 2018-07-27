@@ -3,7 +3,7 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  */
 
-package com.microsoft.jenkins.acr.util;
+package com.microsoft.jenkins.acr.common;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,12 +21,10 @@ public class BufferedLineReader extends BufferedReader {
     /**
      * Skips lines.
      *
-     * @param  n  The number of lines to skip
-     *
-     * @return    The number of lines actually skipped
-     *
-     * @exception  IllegalArgumentException  If <code>n</code> is negative.
-     * @exception IOException  If an I/O error occurs
+     * @param n The number of lines to skip
+     * @return The number of lines actually skipped
+     * @throws IllegalArgumentException If <code>n</code> is negative.
+     * @throws IOException              If an I/O error occurs
      */
     public long skipLines(long n) throws IOException {
         if (n < 0L) {

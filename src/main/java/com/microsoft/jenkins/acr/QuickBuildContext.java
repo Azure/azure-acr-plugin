@@ -8,6 +8,7 @@ package com.microsoft.jenkins.acr;
 import com.microsoft.jenkins.acr.commands.GetBuildLogCommand;
 import com.microsoft.jenkins.acr.commands.QueueBuildCommand;
 import com.microsoft.jenkins.acr.commands.ResolveSCMCommand;
+import com.microsoft.jenkins.acr.common.QuickBuildRequest;
 import com.microsoft.jenkins.azurecommons.command.BaseCommandContext;
 import com.microsoft.jenkins.azurecommons.command.CommandService;
 import com.microsoft.jenkins.azurecommons.command.IBaseCommandData;

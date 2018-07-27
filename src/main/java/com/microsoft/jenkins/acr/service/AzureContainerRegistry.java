@@ -7,7 +7,7 @@ package com.microsoft.jenkins.acr.service;
 
 import com.microsoft.azure.management.containerregistry.Build;
 import com.microsoft.azure.management.containerregistry.OsType;
-import com.microsoft.jenkins.acr.QuickBuildRequest;
+import com.microsoft.jenkins.acr.common.QuickBuildRequest;
 import com.microsoft.azure.management.containerregistry.Registry;
 
 import java.util.ArrayList;

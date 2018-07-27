@@ -11,7 +11,7 @@ import com.microsoft.azure.storage.StorageUri;
 import com.microsoft.azure.storage.blob.CloudAppendBlob;
 import com.microsoft.jenkins.acr.Messages;
 import com.microsoft.jenkins.acr.exception.ServiceException;
-import com.microsoft.jenkins.acr.util.BufferedLineReader;
+import com.microsoft.jenkins.acr.common.BufferedLineReader;
 import com.microsoft.jenkins.acr.util.Constants;
 import com.microsoft.jenkins.acr.util.Util;
 
@@ -119,7 +119,7 @@ public class AzureStorageBlob extends AzureService {
     }
 
     /**
-     * Retry to get {@link BufferedLineReader}
+     * Retry logic of {@link #createReader()} to get {@link BufferedLineReader}.
      *
      * @return BufferedLineReader with blob stream.
      * @throws Exception {@link ServiceException} means failed to get blob stream,

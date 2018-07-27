@@ -7,7 +7,7 @@ package com.microsoft.jenkins.acr.commands;
 
 import com.microsoft.azure.management.containerregistry.Build;
 import com.microsoft.jenkins.acr.Messages;
-import com.microsoft.jenkins.acr.QuickBuildRequest;
+import com.microsoft.jenkins.acr.common.QuickBuildRequest;
 import com.microsoft.jenkins.acr.ACRQuickBuildPlugin;
 import com.microsoft.jenkins.acr.service.AzureContainerRegistry;
 import com.microsoft.jenkins.acr.util.Constants;
