@@ -12,12 +12,13 @@ import com.microsoft.jenkins.azurecommons.command.CommandState;
 import com.microsoft.jenkins.azurecommons.command.IBaseCommandData;
 import com.microsoft.jenkins.azurecommons.command.ICommand;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
 public class GetBuildLogCommand implements ICommand<GetBuildLogCommand.IBuildLogData> {
 
+    /**
+     * Get Azure Storage blob which saves build log from ACR.
+     * Stream out the blob content.
+     * @param data context
+     */
     @Override
     public void execute(IBuildLogData data) {
         try {
@@ -28,15 +29,10 @@ public class GetBuildLogCommand implements ICommand<GetBuildLogCommand.IBuildLog
             data.logStatus(Messages.log_getLogLink(blobLink));
             AzureStorageBlob blob = new AzureStorageBlob(blobLink);
 
-            while (!blob.isFinished()) {
-                // TODO: @yuwzho skip previously read data.
-                InputStream stream = blob.getStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-                String line = reader.readLine();
-                while (line != null) {
-                    data.logStatus(line);
-                    line = reader.readLine();
-                }
+            String line = blob.readLine();
+            while (line != null) {
+                data.logStatus(line);
+                line = blob.readLine();
             }
             data.setCommandState(blob.isSuccess() ? CommandState.Success : CommandState.HasError);
         } catch (Exception e) {

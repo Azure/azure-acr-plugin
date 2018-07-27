@@ -31,7 +31,8 @@ public final class AzureContainerRegistry extends AzureService {
                 .queueQuickBuild()
                 .withOSType(OsType.fromString(request.platform()))
                 .withSourceLocation(request.sourceLocation())
-                .withDockerFilePath(".")
+                .withDockerFilePath("Dockerfile")
+                .withImageNames("hello-docker:latest")
 //                .withImageNames(request.imageNames().toArray(new String[request.imageNames().size()]))
 //                .withBuildTimeoutInSeconds(request.timeout())
                 .create();
