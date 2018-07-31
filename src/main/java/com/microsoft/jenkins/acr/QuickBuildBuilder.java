@@ -13,6 +13,7 @@ import java.util.concurrent.Callable;
 
 import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
 import com.microsoft.azure.util.AzureBaseCredentials;
+import com.microsoft.jenkins.acr.descriptor.Image;
 import com.microsoft.jenkins.acr.common.QuickBuildRequest;
 import com.microsoft.jenkins.acr.common.scm.AbstractSCM;
 import com.microsoft.jenkins.acr.service.AzureContainerRegistry;
@@ -50,7 +51,7 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
     private final String resourceGroupName;
     private final String registryName;
     private final String source;
-    private final List<String> imageNames;
+    private final List<Image> imageNames;
 
 
     /**
@@ -68,7 +69,7 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
                              final String resourceGroupName,
                              final String registryName,
                              final String source,
-                             final List<String> imageNames) {
+                             final List<Image> imageNames) {
         this.azureCredentialsId = azureCredentialsId;
         this.resourceGroupName = resourceGroupName;
         this.registryName = registryName;
@@ -130,7 +131,7 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
         return source;
     }
 
-    public List<String> getImageNames() {
+    public List<Image> getImageNames() {
         return imageNames;
     }
 

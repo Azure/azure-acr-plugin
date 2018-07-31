@@ -24,18 +24,20 @@ public final class AzureContainerRegistry extends AzureService {
     public Build queueBuildRequest(String resourceGroupName,
                                    String acrName,
                                    QuickBuildRequest request) {
-        return this.getClient()
+        Build.QueuedQuickBuildDefinitionStages.WithCreate withCreate = this.getClient()
                 .containerRegistries()
                 .getByResourceGroup(resourceGroupName, acrName)
                 .queuedBuilds()
                 .queueQuickBuild()
                 .withOSType(OsType.fromString(request.platform()))
                 .withSourceLocation(request.sourceLocation())
-                .withDockerFilePath("Dockerfile")
-                .withImageNames("hello-docker:latest")
-//                .withImageNames(request.imageNames().toArray(new String[request.imageNames().size()]))
-//                .withBuildTimeoutInSeconds(request.timeout())
-                .create();
+                .withDockerFilePath(request.dockerFilePath());
+        if (!request.isPushEnabled() || request.imageNames().size() == 0) {
+            withCreate.withImagePushDisabled();
+        } else {
+            withCreate.withImagePushEnabled();
+        }
+        return withCreate.create();
     }
 
     public Collection<String> listResourcesName(String resourceGroupName) {

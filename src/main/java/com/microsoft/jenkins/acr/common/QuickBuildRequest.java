@@ -5,6 +5,7 @@
 
 package com.microsoft.jenkins.acr.common;
 
+import com.microsoft.jenkins.acr.descriptor.Image;
 import com.microsoft.jenkins.acr.util.Constants;
 
 import java.util.ArrayList;
@@ -92,8 +93,11 @@ public class QuickBuildRequest {
      * @param pImageNames the imageNames value to set
      * @return the QuickBuildRequest object itself.
      */
-    public QuickBuildRequest withImageNames(List<String> pImageNames) {
-        this.imageNames = pImageNames;
+    public QuickBuildRequest withImageNames(List<Image> pImageNames) {
+        this.imageNames = new ArrayList<>();
+        for (Image image : pImageNames) {
+            imageNames.add(image.toString());
+        }
         return this;
     }
 
