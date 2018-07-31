@@ -7,6 +7,7 @@ package com.microsoft.jenkins.acr.util;
 
 import com.google.gson.Gson;
 
+import java.util.List;
 import java.util.concurrent.Callable;
 
 public final class Util {
@@ -36,6 +37,18 @@ public final class Util {
             Thread.sleep(Constants.SLEEP_IN_MS);
             return retry(action, --time);
         }
+    }
+
+    public static String[] toStringArray(List list) {
+        if (list == null || list.size() == 0) {
+            return new String[0];
+        }
+
+        String[] result = new String[list.size()];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = list.get(i).toString();
+        }
+        return result;
     }
 }
 

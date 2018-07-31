@@ -5,11 +5,6 @@
 
 package com.microsoft.jenkins.acr.common;
 
-import com.microsoft.jenkins.acr.descriptor.Image;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Azure Container Request object.
  * It should contains all arguments to queue a quick build to ACR.
@@ -23,7 +18,7 @@ public class QuickBuildRequest {
     /**
      * The fully qualified image names including the repository and tag.
      */
-    private List<String> imageNames;
+    private String[] imageNames;
 
     /**
      * The location of the source that needs to be built.
@@ -44,7 +39,7 @@ public class QuickBuildRequest {
     /**
      * The collection of build arguments to be used.
      */
-    private List<String> buildArguments;
+    private String buildArguments;
 
     /**
      * The value of this property indicates whether the image cache is enabled
@@ -76,7 +71,7 @@ public class QuickBuildRequest {
      *
      * @return the imageNames value
      */
-    public List<String> imageNames() {
+    public String[] imageNames() {
         return this.imageNames;
     }
 
@@ -86,11 +81,8 @@ public class QuickBuildRequest {
      * @param pImageNames the imageNames value to set
      * @return the QuickBuildRequest object itself.
      */
-    public QuickBuildRequest withImageNames(List<Image> pImageNames) {
-        this.imageNames = new ArrayList<>();
-        for (Image image : pImageNames) {
-            imageNames.add(image.toString());
-        }
+    public QuickBuildRequest withImageNames(String[] pImageNames) {
+        this.imageNames = pImageNames;
         return this;
     }
 
@@ -139,7 +131,7 @@ public class QuickBuildRequest {
      *
      * @return the buildArguments value
      */
-    public List<String> buildArguments() {
+    public String buildArguments() {
         return this.buildArguments;
     }
 
@@ -149,7 +141,7 @@ public class QuickBuildRequest {
      * @param pBuildArguments the buildArguments value to set
      * @return the QuickBuildRequest object itself.
      */
-    public QuickBuildRequest withBuildArguments(List<String> pBuildArguments) {
+    public QuickBuildRequest withBuildArguments(String pBuildArguments) {
         this.buildArguments = pBuildArguments;
         return this;
     }

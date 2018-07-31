@@ -33,11 +33,11 @@ public final class AzureContainerRegistry extends AzureService {
                 .withOSType(OsType.fromString(request.platform()))
                 .withSourceLocation(request.sourceLocation())
                 .withDockerFilePath(request.dockerFilePath());
-        if (request.imageNames() == null || request.imageNames().size() == 0) {
+        if (request.imageNames() == null || request.imageNames().length == 0) {
             withCreate.withImagePushDisabled();
         } else {
             withCreate.withImagePushEnabled()
-                    .withImageNames(request.imageNames().toArray(new String[request.imageNames().size()]));
+                    .withImageNames(request.imageNames());
         }
         return withCreate.create();
     }

@@ -20,6 +20,7 @@ import com.microsoft.jenkins.acr.common.scm.AbstractSCM;
 import com.microsoft.jenkins.acr.service.AzureContainerRegistry;
 import com.microsoft.jenkins.acr.service.AzureHelper;
 import com.microsoft.jenkins.acr.service.AzureResourceGroup;
+import com.microsoft.jenkins.acr.util.Util;
 import hudson.AbortException;
 import hudson.Extension;
 import hudson.FilePath;
@@ -54,6 +55,7 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
     private final String source;
     private final List<Image> imageNames;
     private final String platform;
+    private final String buildArgs;
     private String dockerfile = Constants.DOCKERFILE;
 
     /**
@@ -73,7 +75,8 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
                              final String source,
                              final List<Image> imageNames,
                              final String dockerfile,
-                             final String platform) {
+                             final String platform,
+                             final String buildArgs) {
         this.azureCredentialsId = azureCredentialsId;
         this.resourceGroupName = resourceGroupName;
         this.registryName = registryName;
@@ -81,6 +84,7 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
         this.imageNames = imageNames;
         this.dockerfile = dockerfile;
         this.platform = platform;
+        this.buildArgs = buildArgs;
     }
 
     @Override
@@ -96,8 +100,9 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
                 getSource());
         QuickBuildRequest buildRequest = new QuickBuildRequest()
                 .withSourceLocation(getSource())
-                .withImageNames(getImageNames())
+                .withImageNames(Util.toStringArray(getImageNames()))
                 .withPlatform(getPlatform())
+                .withBuildArguments(getBuildArgs())
                 .withDockerFilePath(getDockerfile());
         QuickBuildContext context = new QuickBuildContext();
         context.configure(run, workspace, launcher, listener)
@@ -149,6 +154,10 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
 
     public String getPlatform() {
         return platform;
+    }
+
+    public String getBuildArgs() {
+        return buildArgs;
     }
 
     /**

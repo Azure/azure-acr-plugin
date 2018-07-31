@@ -35,6 +35,9 @@
         <f:entry title="${%dockerPath_title}">
             <f:textbox field="dockerfile"/>
         </f:entry>
+                <f:entry title="${%buildArgs_title}" field="buildArgs">
+                    <f:textbox />
+                </f:entry>
         <f:entry title="${%platform_title}" field="platform">
                 <f:select />
             </f:entry>
