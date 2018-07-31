@@ -23,7 +23,7 @@ public class QuickBuildRequest {
     /**
      * The fully qualified image names including the repository and tag.
      */
-    private List<String> imageNames  = new ArrayList<>();
+    private List<String> imageNames;
 
     /**
      * The location of the source that needs to be built.

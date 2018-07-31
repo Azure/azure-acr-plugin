@@ -62,16 +62,18 @@ public class AzureStorageBlob extends AzureService {
      * @throws Exception {@link IOException}, {@link ServiceException}, {@link InterruptedException}
      */
     public String readLine() throws Exception {
+        Long skipLines = 0L;
         if (this.reader == null) {
             if (this.offset == 0) {  // blob may not ready at the very beginning
                 this.reader = createReaderWithRetry();
             } else {
                 this.reader = createReader();
-                this.reader.skipLines(this.offset);
+                skipLines = this.offset;
             }
         }
 
         try {
+            this.reader.skipLines(skipLines);
             String line = this.reader.readLine();
 
             if (line != null) {
