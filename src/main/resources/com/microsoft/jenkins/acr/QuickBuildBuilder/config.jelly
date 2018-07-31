@@ -31,4 +31,9 @@
             </f:entry>
         </f:repeatableProperty>
     </f:entry>
+    <f:advanced title="${%moreConfig_title}">
+        <f:entry title="${%dockerPath_title}">
+            <f:textbox field="dockerfile"/>
+        </f:entry>
+    </f:advanced>
 </j:jelly>

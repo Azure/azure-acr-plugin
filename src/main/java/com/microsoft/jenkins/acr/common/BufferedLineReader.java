@@ -5,9 +5,12 @@
 
 package com.microsoft.jenkins.acr.common;
 
+import com.microsoft.jenkins.acr.util.Constants;
+import com.microsoft.jenkins.acr.util.Util;
+
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.Reader;
+import java.util.concurrent.Callable;
 
 public class BufferedLineReader extends BufferedReader {
     public BufferedLineReader(Reader in, int sz) {
@@ -24,9 +27,9 @@ public class BufferedLineReader extends BufferedReader {
      * @param n The number of lines to skip
      * @return The number of lines actually skipped
      * @throws IllegalArgumentException If <code>n</code> is negative.
-     * @throws IOException              If an I/O error occurs
+     * @throws Exception              If an I/O error occurs
      */
-    public long skipLines(long n) throws IOException {
+    public long skipLines(long n) throws Exception {
         if (n < 0L) {
             throw new IllegalArgumentException("skip value is negative");
         }
@@ -36,10 +39,16 @@ public class BufferedLineReader extends BufferedReader {
         }
 
         long remain = n;
-        String line = this.readLine();
+        String line = new String();
+        final BufferedLineReader reader = this;
 
-        while (--remain > 0 && line != null) {
-            line = this.readLine();
+        while (remain-- > 0 && line != null) {
+            Util.retry(new Callable<String>() {
+                @Override
+                public String call() throws Exception {
+                    return reader.readLine();
+                }
+            }, Constants.DEFAULT_RETRY);
         }
 
         return n - remain;

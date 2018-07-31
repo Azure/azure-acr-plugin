@@ -48,12 +48,6 @@ public class QuickBuildRequest {
     private List<String> buildArguments;
 
     /**
-     * The value of this property indicates whether the image built should be
-     * pushed to the registry or not.
-     */
-    private boolean isPushEnabled = true;
-
-    /**
      * The value of this property indicates whether the image cache is enabled
      * or not.
      */
@@ -158,26 +152,6 @@ public class QuickBuildRequest {
      */
     public QuickBuildRequest withBuildArguments(List<String> pBuildArguments) {
         this.buildArguments = pBuildArguments;
-        return this;
-    }
-
-    /**
-     * Get the isPushEnabled value.
-     *
-     * @return the isPushEnabled value
-     */
-    public boolean isPushEnabled() {
-        return this.isPushEnabled;
-    }
-
-    /**
-     * Set the isPushEnabled value.
-     *
-     * @param pIsPushEnabled the isPushEnabled value to set
-     * @return the QuickBuildRequest object itself.
-     */
-    public QuickBuildRequest withIsPushEnabled(boolean pIsPushEnabled) {
-        this.isPushEnabled = pIsPushEnabled;
         return this;
     }
 

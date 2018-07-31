@@ -52,6 +52,7 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
     private final String registryName;
     private final String source;
     private final List<Image> imageNames;
+    private String dockerfile = Constants.DOCKERFILE;
 
 
     /**
@@ -69,12 +70,14 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
                              final String resourceGroupName,
                              final String registryName,
                              final String source,
-                             final List<Image> imageNames) {
+                             final List<Image> imageNames,
+                             final String dockerfile) {
         this.azureCredentialsId = azureCredentialsId;
         this.resourceGroupName = resourceGroupName;
         this.registryName = registryName;
         this.source = source;
         this.imageNames = imageNames;
+        this.dockerfile = dockerfile;
     }
 
     @Override
@@ -90,7 +93,8 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
                 getSource());
         QuickBuildRequest buildRequest = new QuickBuildRequest()
                 .withSourceLocation(getSource())
-                .withImageNames(getImageNames());
+                .withImageNames(getImageNames())
+                .withDockerFilePath(getDockerfile());
         QuickBuildContext context = new QuickBuildContext();
         context.configure(run, workspace, launcher, listener)
                 .withResourceGroupName(getResourceGroupName())
@@ -133,6 +137,10 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
 
     public List<Image> getImageNames() {
         return imageNames;
+    }
+
+    public String getDockerfile() {
+        return dockerfile;
     }
 
     /**

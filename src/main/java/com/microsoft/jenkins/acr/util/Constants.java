@@ -27,4 +27,5 @@ public final class Constants {
 
     public static final String GIT_SUFFIX = ".git";
 
+    public static final String DOCKERFILE = "Dockerfile";
 }
