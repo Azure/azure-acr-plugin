@@ -6,7 +6,6 @@
 package com.microsoft.jenkins.acr.common;
 
 import com.microsoft.jenkins.acr.descriptor.Image;
-import com.microsoft.jenkins.acr.util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +60,7 @@ public class QuickBuildRequest {
     /**
      * The platform properties against which the build will happen.
      */
-    private String platform = Constants.LINUX;
+    private String platform;
 
     /**
      * The Docker file path relative to the source location.

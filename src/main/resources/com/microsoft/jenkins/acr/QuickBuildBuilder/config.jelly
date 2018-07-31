@@ -35,5 +35,8 @@
         <f:entry title="${%dockerPath_title}">
             <f:textbox field="dockerfile"/>
         </f:entry>
+        <f:entry title="${%platform_title}" field="platform">
+                <f:select />
+            </f:entry>
     </f:advanced>
 </j:jelly>

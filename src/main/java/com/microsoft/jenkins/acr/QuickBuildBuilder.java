@@ -13,6 +13,7 @@ import java.util.concurrent.Callable;
 
 import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
 import com.microsoft.azure.util.AzureBaseCredentials;
+import com.microsoft.jenkins.acr.common.Platform;
 import com.microsoft.jenkins.acr.descriptor.Image;
 import com.microsoft.jenkins.acr.common.QuickBuildRequest;
 import com.microsoft.jenkins.acr.common.scm.AbstractSCM;
@@ -52,8 +53,8 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
     private final String registryName;
     private final String source;
     private final List<Image> imageNames;
+    private final String platform;
     private String dockerfile = Constants.DOCKERFILE;
-
 
     /**
      * This annotation tells Jenkins to call this constructor, with values from
@@ -71,13 +72,15 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
                              final String registryName,
                              final String source,
                              final List<Image> imageNames,
-                             final String dockerfile) {
+                             final String dockerfile,
+                             final String platform) {
         this.azureCredentialsId = azureCredentialsId;
         this.resourceGroupName = resourceGroupName;
         this.registryName = registryName;
         this.source = source;
         this.imageNames = imageNames;
         this.dockerfile = dockerfile;
+        this.platform = platform;
     }
 
     @Override
@@ -94,6 +97,7 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
         QuickBuildRequest buildRequest = new QuickBuildRequest()
                 .withSourceLocation(getSource())
                 .withImageNames(getImageNames())
+                .withPlatform(getPlatform())
                 .withDockerFilePath(getDockerfile());
         QuickBuildContext context = new QuickBuildContext();
         context.configure(run, workspace, launcher, listener)
@@ -141,6 +145,10 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
 
     public String getDockerfile() {
         return dockerfile;
+    }
+
+    public String getPlatform() {
+        return platform;
     }
 
     /**
@@ -195,6 +203,20 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
         /**
          * ============= Input fill and check ================.
          */
+
+        /**
+         * Fill platform with {@link Platform}.
+         *
+         * @param owner Item
+         * @return Platform list
+         */
+        public ListBoxModel doFillPlatformItems(@AncestorInPath final Item owner) {
+            ListBoxModel list = new ListBoxModel();
+            for (Platform p : Platform.values()) {
+                list.add(p.toString());
+            }
+            return list;
+        }
 
         /**
          * Dynamic fill the resource group name.
