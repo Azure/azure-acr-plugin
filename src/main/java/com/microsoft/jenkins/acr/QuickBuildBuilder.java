@@ -56,6 +56,8 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
     private final List<Image> imageNames;
     private final String platform;
     private final String buildArgs;
+    private final int timeout;
+    private boolean withCache = true;
     private String dockerfile = Constants.DOCKERFILE;
 
     /**
@@ -67,6 +69,11 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
      * @param registryName       ACR name, which will run the build and the image will be default push to.
      * @param source             SCM source location.
      * @param imageNames         Image name with tag.
+     * @param dockerfile         Dockerfile path related to {@link #source}.
+     * @param platform           {@link Platform}.
+     * @param buildArgs          Docker build argument.
+     * @param timeout            Docker build timeout option.
+     * @param withCache          Docker build with cache or not.
      */
     @DataBoundConstructor
     public QuickBuildBuilder(final String azureCredentialsId,
@@ -76,7 +83,9 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
                              final List<Image> imageNames,
                              final String dockerfile,
                              final String platform,
-                             final String buildArgs) {
+                             final String buildArgs,
+                             final int timeout,
+                             final boolean withCache) {
         this.azureCredentialsId = azureCredentialsId;
         this.resourceGroupName = resourceGroupName;
         this.registryName = registryName;
@@ -85,6 +94,8 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
         this.dockerfile = dockerfile;
         this.platform = platform;
         this.buildArgs = buildArgs;
+        this.withCache = withCache;
+        this.timeout = timeout;
     }
 
     @Override
@@ -103,7 +114,9 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
                 .withImageNames(Util.toStringArray(getImageNames()))
                 .withPlatform(getPlatform())
                 .withBuildArguments(getBuildArgs())
-                .withDockerFilePath(getDockerfile());
+                .withDockerFilePath(getDockerfile())
+                .withNoCache(!isWithCache())
+                .withTimeout(getTimeout());
         QuickBuildContext context = new QuickBuildContext();
         context.configure(run, workspace, launcher, listener)
                 .withResourceGroupName(getResourceGroupName())
@@ -158,6 +171,14 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
 
     public String getBuildArgs() {
         return buildArgs;
+    }
+
+    public int getTimeout() {
+        return timeout;
+    }
+
+    public boolean isWithCache() {
+        return withCache;
     }
 
     /**
