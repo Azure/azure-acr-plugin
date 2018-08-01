@@ -32,17 +32,17 @@
         </f:repeatableProperty>
     </f:entry>
     <f:advanced title="${%moreConfig_title}">
-        <f:entry title="${%dockerPath_title}">
-            <f:textbox field="dockerfile"/>
+        <f:entry title="${%dockerPath_title}" field="dockerfile">
+            <f:textbox default="${%dockerPath_default}"/>
         </f:entry>
         <f:entry title="${%buildArgs_title}" field="buildArgs">
             <f:textbox />
         </f:entry>
         <f:entry title="${%timeout_title}" field="timeout">
-            <f:number />
+            <f:number default="${%timeout_default}"/>
         </f:entry>
         <f:entry title="${%cache_title}" field="withCache">
-            <f:checkbox default="true" />
+            <f:checkbox default="${%withCache_default}" />
         </f:entry>
         <f:entry title="${%platform_title}" field="platform">
             <f:select />

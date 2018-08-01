@@ -57,8 +57,8 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
     private final String platform;
     private final String buildArgs;
     private final int timeout;
-    private boolean withCache = true;
-    private String dockerfile = Constants.DOCKERFILE;
+    private final boolean withCache;
+    private final String dockerfile;
 
     /**
      * This annotation tells Jenkins to call this constructor, with values from
