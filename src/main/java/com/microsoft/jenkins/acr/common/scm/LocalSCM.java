@@ -5,6 +5,9 @@
 
 package com.microsoft.jenkins.acr.common.scm;
 
+import com.microsoft.jenkins.acr.common.UploadRequest;
+import com.microsoft.jenkins.acr.service.AzureContainerRegistry;
+
 public class LocalSCM extends AbstractSCM {
 
     protected LocalSCM(String source) {
@@ -13,6 +16,9 @@ public class LocalSCM extends AbstractSCM {
 
     @Override
     public String getSCMUrl() {
-        return null;
+        UploadRequest request = AzureContainerRegistry.getInstance()
+                .getUploadUrl(getResourceGroup(), getAcrName());
+        
+        return request.getRelativePath();
     }
 }

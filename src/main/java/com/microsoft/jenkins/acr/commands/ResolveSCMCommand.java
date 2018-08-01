@@ -5,6 +5,7 @@
 
 package com.microsoft.jenkins.acr.commands;
 
+import com.microsoft.jenkins.acr.Messages;
 import com.microsoft.jenkins.acr.common.QuickBuildRequest;
 import com.microsoft.jenkins.acr.common.scm.AbstractSCM;
 import com.microsoft.jenkins.azurecommons.command.CommandState;
@@ -17,9 +18,13 @@ public class ResolveSCMCommand implements ICommand<ResolveSCMCommand.ISCMData> {
     public void execute(ISCMData data) {
 
         try {
+            data.logStatus(Messages.source_getUrl());
             String url = AbstractSCM.getInstance(data.getBuildRequest()
                     .sourceLocation())
+                    .withResourceGroup(data.getResourceGroupName())
+                    .withAcrName(data.getACRName())
                     .getSCMUrl();
+            data.logStatus(Messages.source_url(url));
             data.withSCMUrl(url)
                     .setCommandState(CommandState.Success);
         } catch (Exception e) {
@@ -30,6 +35,10 @@ public class ResolveSCMCommand implements ICommand<ResolveSCMCommand.ISCMData> {
 
     public interface ISCMData extends IBaseCommandData {
         QuickBuildRequest getBuildRequest();
+
+        String getResourceGroupName();
+
+        String getACRName();
 
         ISCMData withSCMUrl(String url);
     }

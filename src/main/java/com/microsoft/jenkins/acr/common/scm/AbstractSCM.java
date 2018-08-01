@@ -14,6 +14,8 @@ import java.io.File;
 public abstract class AbstractSCM {
 
     private final String source;
+    private String resourceGroup;
+    private String acrName;
 
     protected AbstractSCM(String source) {
         this.source = source;
@@ -85,6 +87,24 @@ public abstract class AbstractSCM {
 
     protected String getSource() {
         return this.source;
+    }
+
+    protected String getResourceGroup() {
+        return resourceGroup;
+    }
+
+    public AbstractSCM withResourceGroup(String pResourceGroup) {
+        this.resourceGroup = pResourceGroup;
+        return this;
+    }
+
+    protected String getAcrName() {
+        return acrName;
+    }
+
+    public AbstractSCM withAcrName(String pAcrName) {
+        this.acrName = pAcrName;
+        return this;
     }
 
     public abstract String getSCMUrl();
