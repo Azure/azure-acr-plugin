@@ -23,6 +23,7 @@ public final class Constants {
     public static final int DEFAULT_RETRY = 10;
 
     public static final String GIT_SUFFIX = ".git";
-
-    public static final String DOCKERFILE = "Dockerfile";
+    public static final String GIT_SSH_PREFIX = "git@";
+    public static final String HTTP_SCHEMA = "http://";
+    public static final String HTTPS_SCHEMA = "https://";
 }
