@@ -296,12 +296,9 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
         }
 
         public FormValidation doCheckSource(@QueryParameter String source) {
-            try {
-                AbstractSCM.getType(StringUtils.trimToEmpty(source));
-                return FormValidation.ok();
-            } catch (Exception e) {
-                return FormValidation.error(e.getMessage());
-            }
+            return AbstractSCM.verifyLocation(source)
+                    ? FormValidation.ok()
+                    : FormValidation.error(Messages.source_help());
         }
 
         private ListBoxModel constructListBox(String defaultValue,
