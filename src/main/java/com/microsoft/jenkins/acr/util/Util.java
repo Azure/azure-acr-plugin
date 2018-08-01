@@ -6,7 +6,9 @@
 package com.microsoft.jenkins.acr.util;
 
 import com.google.gson.Gson;
+import org.apache.commons.lang.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -40,13 +42,21 @@ public final class Util {
     }
 
     public static String[] toStringArray(List list) {
+        List<String> result = toStringList(list);
+        return result.toArray(new String[result.size()]);
+    }
+
+    public static List<String> toStringList(List list) {
+        List<String> result = new ArrayList<>();
         if (list == null || list.size() == 0) {
-            return new String[0];
+            return result;
         }
 
-        String[] result = new String[list.size()];
-        for (int i = 0; i < result.length; i++) {
-            result[i] = list.get(i).toString();
+        for (Object o : list) {
+            String s = StringUtils.trimToEmpty(o.toString());
+            if (!s.isEmpty()) {
+                result.add(s);
+            }
         }
         return result;
     }
