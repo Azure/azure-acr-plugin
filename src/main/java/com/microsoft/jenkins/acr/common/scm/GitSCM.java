@@ -5,6 +5,8 @@
 
 package com.microsoft.jenkins.acr.common.scm;
 
+import com.microsoft.jenkins.acr.Messages;
+
 public class GitSCM extends AbstractSCM {
     protected GitSCM(String source) {
         super(source);
@@ -12,6 +14,7 @@ public class GitSCM extends AbstractSCM {
 
     @Override
     public String getSCMUrl() {
+        this.getLogger().logStatus(Messages.scm_git(this.getSource()));
         return this.getSource();
     }
 }

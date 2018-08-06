@@ -23,6 +23,7 @@ public class ResolveSCMCommand implements ICommand<ResolveSCMCommand.ISCMData> {
                     .sourceLocation())
                     .withResourceGroup(data.getResourceGroupName())
                     .withAcrName(data.getACRName())
+                    .withLogger(data)
                     .getSCMUrl();
             data.logStatus(Messages.source_url(url));
             data.withSCMUrl(url)
