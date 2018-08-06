@@ -119,5 +119,5 @@ public abstract class AbstractSCM {
         return logger;
     }
 
-    public abstract String getSCMUrl();
+    public abstract String getSCMUrl() throws Exception;
 }

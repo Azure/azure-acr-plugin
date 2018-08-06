@@ -25,7 +25,7 @@ import java.util.concurrent.Callable;
 /**
  * Azure Storage append blob.
  */
-public class AzureStorageBlob extends AzureService {
+public class AzureStorageBlob {
     private final CloudAppendBlob blob;
     private BufferedLineReader reader;
     private long offset;
@@ -100,6 +100,15 @@ public class AzureStorageBlob extends AzureService {
         this.reader = null;
         return readLine();
     }
+
+    /**
+     * Write a file to the blob and upload it.
+     * @param filename filename
+     */
+    public void uploadFile(String filename) throws IOException, StorageException {
+        this.blob.uploadFromFile(filename);
+    }
+
 
     /**
      * If the append blob is finished, service will set the metadata[Completed] with success or failed value.
