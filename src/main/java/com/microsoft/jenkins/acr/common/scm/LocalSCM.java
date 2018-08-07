@@ -6,13 +6,15 @@
 package com.microsoft.jenkins.acr.common.scm;
 
 import com.microsoft.jenkins.acr.Messages;
-import com.microsoft.jenkins.acr.common.CompressableFile;
+import com.microsoft.jenkins.acr.common.compression.CompressibleFileImpl;
 import com.microsoft.jenkins.acr.common.UploadRequest;
 import com.microsoft.jenkins.acr.service.AzureContainerRegistry;
-import com.microsoft.jenkins.acr.service.AzureStorageBlob;
+import com.microsoft.jenkins.acr.service.AzureStorageBlockBlob;
 import com.microsoft.jenkins.acr.util.Constants;
+import com.microsoft.jenkins.acr.util.Util;
 import org.apache.commons.lang.StringUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,25 +29,24 @@ public class LocalSCM extends AbstractSCM {
         this.getLogger().logStatus(Messages.scm_local(this.getSource()));
         UploadRequest request = AzureContainerRegistry.getInstance()
                 .getUploadUrl(getResourceGroup(), getAcrName());
-        String localFileName = getFileName(request.getRelativePath());
-        this.getLogger().logStatus(Messages.compress_filename(localFileName));
+        String localFileName = Util.getFileName(request.getRelativePath());
+        this.getLogger().logStatus(Messages.scm_compress_filename(localFileName));
         List<String> ignoreList = parseDockerIgnoreFile(Constants.DOCKER_IGNORE);
         ignoreList.addAll(Constants.COMMON_IGNORE);
-        this.getLogger().logStatus(Messages.compress_ignore(StringUtils.join(ignoreList, Constants.LIST_SPERATE)));
-        String filename = new CompressableFile()
-                .withDirectory(this.getSource())
+        this.getLogger().logStatus(
+                Messages.scm_compress_ignore(StringUtils.join(ignoreList, Constants.SHORT_LIST_SPERATE)));
+        String[] filenames = CompressibleFileImpl.compressToFile(localFileName)
                 .withIgnoreList(ignoreList)
-                .compress(localFileName);
+                .withDirectory(this.getSource())
+                .compress()
+                .fileList();
+        this.getLogger().logStatus(
+                Messages.scm_compress_files(StringUtils.join(filenames, Constants.LONG_LIST_SPERATE)));
         this.getLogger().logStatus(Messages.scm_upload(request.getUrl()));
-        AzureStorageBlob blob = new AzureStorageBlob(request.getUrl());
-        blob.uploadFile(filename);
+        AzureStorageBlockBlob blob = new AzureStorageBlockBlob(request.getUrl());
+        blob.uploadFile(localFileName);
+        new File(localFileName).deleteOnExit();
         return request.getRelativePath();
-    }
-
-    private String getFileName(String relativePath) {
-        relativePath = "/" + relativePath;
-        int index = relativePath.lastIndexOf('/');
-        return relativePath.substring(index + 1, relativePath.length());
     }
 
     private List<String> parseDockerIgnoreFile(String filename) {

@@ -31,7 +31,8 @@ public final class Constants {
     public static final String HTTP_SCHEMA = "http://";
     public static final String HTTPS_SCHEMA = "https://";
 
-    public static final String LIST_SPERATE = ", ";
+    public static final String SHORT_LIST_SPERATE = ", ";
+    public static final String LONG_LIST_SPERATE = "\n    ";
     public static final String DOCKER_IGNORE = ".dockerignore";
     public static final List<String> COMMON_IGNORE = ImmutableList.of(".git",
             ".gitignore",

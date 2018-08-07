@@ -8,6 +8,7 @@ package com.microsoft.jenkins.acr.util;
 import com.google.gson.Gson;
 import org.apache.commons.lang.StringUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -15,14 +16,6 @@ import java.util.concurrent.Callable;
 public final class Util {
 
     private Util() {
-    }
-
-    public static boolean isGitHubRepo(String url) {
-        return true;
-    }
-
-    public static boolean isLocalDirectory(String path) {
-        return true;
     }
 
     public static String toJson(Object o) {
@@ -59,6 +52,14 @@ public final class Util {
             }
         }
         return result;
+    }
+
+    public static String getFileName(String path) {
+        return new File(path).getName();
+    }
+
+    public static String normalizeFilename(String path) {
+        return path.replaceAll("\\\\", "/");
     }
 }
 

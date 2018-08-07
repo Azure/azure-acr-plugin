@@ -25,12 +25,12 @@ import java.util.concurrent.Callable;
 /**
  * Azure Storage append blob.
  */
-public class AzureStorageBlob {
+public class AzureStorageAppendBlob {
     private final CloudAppendBlob blob;
     private BufferedLineReader reader;
     private long offset;
 
-    public AzureStorageBlob(String link) throws URISyntaxException, ServiceException {
+    public AzureStorageAppendBlob(String link) throws URISyntaxException, ServiceException {
         try {
             this.blob = new CloudAppendBlob(new StorageUri(new URI(link)));
             this.offset = 0L;
@@ -99,14 +99,6 @@ public class AzureStorageBlob {
         }
         this.reader = null;
         return readLine();
-    }
-
-    /**
-     * Write a file to the blob and upload it.
-     * @param filename filename
-     */
-    public void uploadFile(String filename) throws IOException, StorageException {
-        this.blob.uploadFromFile(filename);
     }
 
 

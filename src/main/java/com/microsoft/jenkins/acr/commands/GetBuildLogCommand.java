@@ -7,7 +7,7 @@ package com.microsoft.jenkins.acr.commands;
 
 import com.microsoft.jenkins.acr.Messages;
 import com.microsoft.jenkins.acr.service.AzureContainerRegistry;
-import com.microsoft.jenkins.acr.service.AzureStorageBlob;
+import com.microsoft.jenkins.acr.service.AzureStorageAppendBlob;
 import com.microsoft.jenkins.azurecommons.command.CommandState;
 import com.microsoft.jenkins.azurecommons.command.IBaseCommandData;
 import com.microsoft.jenkins.azurecommons.command.ICommand;
@@ -27,7 +27,7 @@ public class GetBuildLogCommand implements ICommand<GetBuildLogCommand.IBuildLog
                             data.getACRName(),
                             data.getBuildId());
             data.logStatus(Messages.log_getLogLink(blobLink));
-            AzureStorageBlob blob = new AzureStorageBlob(blobLink);
+            AzureStorageAppendBlob blob = new AzureStorageAppendBlob(blobLink);
 
             String line = blob.readLine();
             while (line != null) {

@@ -40,7 +40,7 @@ public final class AzureContainerRegistry extends AzureService {
                 .queuedBuilds()
                 .queueQuickBuild()
                 .withOSType(OsType.fromString(request.platform()))
-                .withSourceLocation(request.sourceLocation())
+                .withSourceLocation(request.sourceUrl())
                 .withDockerFilePath(request.dockerFilePath());
         if (request.imageNames() == null || request.imageNames().length == 0) {
             withCreate.withImagePushDisabled();
