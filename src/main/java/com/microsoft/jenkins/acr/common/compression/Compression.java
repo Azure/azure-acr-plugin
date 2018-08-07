@@ -6,7 +6,6 @@
 package com.microsoft.jenkins.acr.common.compression;
 
 import java.io.IOException;
-import java.util.List;
 
 public interface Compression {
 
@@ -24,10 +23,10 @@ public interface Compression {
         /**
          * Set the compress ignore list.
          * The file meets ignore rule will not be added to the archive file.
-         * @param ignoreList List contains strings like .gitignore.
+         * @param ignoreList List contains strings like build/.
          * @return Compressible object.
          */
-        CompressibleWithFile withIgnoreList(List<String> ignoreList);
+        CompressibleWithFile withIgnoreList(String[] ignoreList);
     }
 
     interface CompressibleWithFile {
