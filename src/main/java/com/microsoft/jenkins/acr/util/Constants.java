@@ -5,6 +5,10 @@
 
 package com.microsoft.jenkins.acr.util;
 
+import com.google.common.collect.ImmutableList;
+
+import java.util.List;
+
 public final class Constants {
     private Constants() {
     }
@@ -26,4 +30,15 @@ public final class Constants {
     public static final String GIT_SSH_PREFIX = "git@";
     public static final String HTTP_SCHEMA = "http://";
     public static final String HTTPS_SCHEMA = "https://";
+
+    public static final String SHORT_LIST_SPERATE = ", ";
+    public static final String LONG_LIST_SPERATE = "\n    ";
+    public static final String DOCKER_IGNORE = ".dockerignore";
+    public static final List<String> COMMON_IGNORE = ImmutableList.of(".git",
+            ".gitignore",
+            ".bzr",
+            "bzrignore",
+            ".hg",
+            ".hgignore",
+            ".svn");
 }

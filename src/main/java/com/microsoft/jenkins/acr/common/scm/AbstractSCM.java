@@ -7,6 +7,7 @@ package com.microsoft.jenkins.acr.common.scm;
 
 import com.microsoft.jenkins.acr.Messages;
 import com.microsoft.jenkins.acr.util.Constants;
+import com.microsoft.jenkins.azurecommons.command.IBaseCommandData;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
@@ -14,6 +15,9 @@ import java.io.File;
 public abstract class AbstractSCM {
 
     private final String source;
+    private String resourceGroup;
+    private String acrName;
+    private IBaseCommandData logger;
 
     protected AbstractSCM(String source) {
         this.source = source;
@@ -33,7 +37,7 @@ public abstract class AbstractSCM {
             return Type.GIT;
         }
         File file = new File(sourceLocation);
-        if (!file.isDirectory()) {
+        if (file.isDirectory()) {
             return Type.LOCAL;
         }
 
@@ -42,6 +46,7 @@ public abstract class AbstractSCM {
 
     /**
      * Verify whether the location is a legal git url or a local directory.
+     *
      * @param location github url or local directory.
      * @return boolean
      */
@@ -84,8 +89,35 @@ public abstract class AbstractSCM {
     }
 
     protected String getSource() {
-        return this.source;
+        return source;
     }
 
-    public abstract String getSCMUrl();
+    protected String getResourceGroup() {
+        return resourceGroup;
+    }
+
+    public AbstractSCM withResourceGroup(String pResourceGroup) {
+        this.resourceGroup = pResourceGroup;
+        return this;
+    }
+
+    protected String getAcrName() {
+        return acrName;
+    }
+
+    public AbstractSCM withAcrName(String pAcrName) {
+        this.acrName = pAcrName;
+        return this;
+    }
+
+    public AbstractSCM withLogger(IBaseCommandData pLogger) {
+        this.logger = pLogger;
+        return this;
+    }
+
+    protected IBaseCommandData getLogger() {
+        return logger;
+    }
+
+    public abstract String getSCMUrl() throws Exception;
 }
