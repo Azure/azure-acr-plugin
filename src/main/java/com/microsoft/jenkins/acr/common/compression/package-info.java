@@ -4,10 +4,10 @@
  */
 
 /**
- * Sub descriptor will be used in this plugin.
+ * Compression method.
  *
  * @since 1.0
  * @author yuwzho
  * @version 1.0
  */
-package com.microsoft.jenkins.acr.descriptor;
+package com.microsoft.jenkins.acr.common.compression;
