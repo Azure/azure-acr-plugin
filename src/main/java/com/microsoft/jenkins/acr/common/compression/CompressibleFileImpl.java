@@ -30,13 +30,13 @@ public class CompressibleFileImpl extends TarArchiveOutputStream
         Compression.CompressibleWithFile,
         Compression.CompressibleWithIgnore {
     private final List<String> fileList;
-    private String[] ignore;
+    private IgnoreRule[] ignore;
     private int workspaceLength;
 
     protected CompressibleFileImpl(String filename) throws IOException {
         super(new GZIPOutputStream(new BufferedOutputStream(new FileOutputStream(filename))));
         this.fileList = new ArrayList<>();
-        this.ignore = new String[0];
+        this.ignore = new IgnoreRule[0];
         this.workspaceLength = 0;
     }
 
@@ -74,7 +74,13 @@ public class CompressibleFileImpl extends TarArchiveOutputStream
 
     @Override
     public Compression.CompressibleWithFile withIgnoreList(String[] ignoreList) {
-        this.ignore = ignoreList;
+        if (ignoreList == null || ignoreList.length == 0) {
+            return this;
+        }
+        this.ignore = new IgnoreRule[ignoreList.length];
+        for (int i = 0; i < this.ignore.length; i++) {
+            this.ignore[i] = new IgnoreRule(ignoreList[i]);
+        }
         return this;
     }
 
@@ -85,12 +91,13 @@ public class CompressibleFileImpl extends TarArchiveOutputStream
      * @throws IOException
      */
     private void addFile(File file) throws IOException {
-        if (!file.exists() || isCommonIgnore(file.getName()) || isIgnoreFile(file.getAbsolutePath())) {
+        String relativePath = file.getAbsolutePath().substring(workspaceLength);
+        if (!file.exists() || isCommonIgnore(file.getName()) || isIgnoreFile(relativePath)) {
             // return directly if the file isn't exist or ignored.
             return;
         }
         this.fileList.add(file.getAbsolutePath());
-        this.putArchiveEntry(new TarArchiveEntry(file, file.getAbsolutePath().substring(workspaceLength)));
+        this.putArchiveEntry(new TarArchiveEntry(file, relativePath));
         if (file.isFile()) {
             BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
             IOUtils.copy(bis, this);
@@ -108,14 +115,14 @@ public class CompressibleFileImpl extends TarArchiveOutputStream
      * Check whether the file is ignored.
      * 1. Start with a specific pattern?
      * 2. End with a specific extension?
-     * @param absolutePath file full path
+     * @param path file path
      * @return boolean
      */
-    private boolean isIgnoreFile(String absolutePath) {
-        absolutePath = Util.normalizeFilename(absolutePath);
-        for (String rule : this.ignore) {
-            if (absolutePath.matches(rule)) {
-                return true;
+    private boolean isIgnoreFile(String path) {
+        path = Util.normalizeFilename(path);
+        for (IgnoreRule rule : this.ignore) {
+            if (path.matches(rule.getPattern())) {
+                return rule.isIgnore();
             }
         }
         return false;

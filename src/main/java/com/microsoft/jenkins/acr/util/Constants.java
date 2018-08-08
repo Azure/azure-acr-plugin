@@ -31,6 +31,8 @@ public final class Constants {
     public static final String HTTP_SCHEMA = "http://";
     public static final String HTTPS_SCHEMA = "https://";
 
+    public static final String COMMENT = "#";
+    public static final String EXCLAMATION = "!";
     public static final String FILE_SPERATE = "/";
     public static final String SHORT_LIST_SPERATE = ", ";
     public static final String LONG_LIST_SPERATE = "\n    ";
