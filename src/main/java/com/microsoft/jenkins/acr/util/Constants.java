@@ -23,6 +23,7 @@ public final class Constants {
     public static final String BLOB_COMPLETE = "Complete";
     public static final String BUILD_FAILED = "failed";
 
+    public static final int GIVE_UP_CONTROL = 100;
     public static final int SLEEP_IN_MS = 2000;
     public static final int DEFAULT_RETRY = 10;
 

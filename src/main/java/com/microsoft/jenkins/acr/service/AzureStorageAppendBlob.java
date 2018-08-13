@@ -84,7 +84,7 @@ public class AzureStorageAppendBlob {
             if (line != null || this.isFinished()) {
                 return line;
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
             //skip and retry
         }

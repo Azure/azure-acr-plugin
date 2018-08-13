@@ -32,6 +32,12 @@ public class GetBuildLogCommand implements ICommand<GetBuildLogCommand.IBuildLog
             String line = blob.readLine();
             while (line != null) {
                 data.logStatus(line);
+
+                if (Thread.currentThread().isInterrupted()) {
+                    Thread.currentThread().interrupt();
+                    return;
+                }
+
                 line = blob.readLine();
             }
             data.setCommandState(blob.isSuccess() ? CommandState.Success : CommandState.HasError);

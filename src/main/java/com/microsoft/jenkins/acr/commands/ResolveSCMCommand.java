@@ -29,6 +29,9 @@ public class ResolveSCMCommand implements ICommand<ResolveSCMCommand.ISCMData> {
             data.withSCMUrl(url)
                     .setCommandState(CommandState.Success);
         } catch (Exception e) {
+            if (e instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+            }
             data.logError(e.getMessage());
             data.setCommandState(CommandState.HasError);
         }
