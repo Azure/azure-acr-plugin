@@ -52,7 +52,7 @@ public class AzureStorageAppendBlob {
             return null;
         }
 
-        return !result.equals(Constants.BUILD_FAILED);
+        return result.equals(Constants.BUILD_SUCCEEDED);
     }
 
     /**

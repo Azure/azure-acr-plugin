@@ -12,11 +12,14 @@ import com.microsoft.jenkins.azurecommons.command.CommandState;
 import com.microsoft.jenkins.azurecommons.command.IBaseCommandData;
 import com.microsoft.jenkins.azurecommons.command.ICommand;
 
+import java.io.InterruptedIOException;
+
 public class GetBuildLogCommand implements ICommand<GetBuildLogCommand.IBuildLogData> {
 
     /**
      * Get Azure Storage blob which saves build log from ACR.
      * Stream out the blob content.
+     *
      * @param data context
      */
     @Override
@@ -34,7 +37,7 @@ public class GetBuildLogCommand implements ICommand<GetBuildLogCommand.IBuildLog
                 data.logStatus(line);
 
                 if (Thread.currentThread().isInterrupted()) {
-                    Thread.currentThread().interrupt();
+                    handleAbort(data);
                     return;
                 }
 
@@ -42,10 +45,25 @@ public class GetBuildLogCommand implements ICommand<GetBuildLogCommand.IBuildLog
             }
             data.setCommandState(blob.isSuccess() ? CommandState.Success : CommandState.HasError);
         } catch (Exception e) {
-            e.printStackTrace();
-            data.logError(Messages.log_getLogError(e.getMessage()));
-            data.setCommandState(CommandState.HasError);
+            if (e instanceof InterruptedException || e.getCause() instanceof InterruptedIOException) {
+                handleAbort(data);
+            } else {
+                e.printStackTrace();
+                data.logError(Messages.log_getLogError(e.getMessage()));
+                data.setCommandState(CommandState.HasError);
+            }
         }
+    }
+
+    private void handleAbort(IBuildLogData data) {
+        if (!data.isCanceled()) {
+            data.logStatus(Messages.build_cancelBuild());
+            data.cancel();
+            AzureContainerRegistry.getInstance().cancelBuildAsync(data.getResourceGroupName(),
+                    data.getACRName(),
+                    data.getBuildId());
+        }
+        Thread.currentThread().interrupt();
     }
 
     public interface IBuildLogData extends IBaseCommandData {
@@ -54,5 +72,9 @@ public class GetBuildLogCommand implements ICommand<GetBuildLogCommand.IBuildLog
         String getResourceGroupName();
 
         String getACRName();
+
+        IBuildLogData cancel();
+
+        boolean isCanceled();
     }
 }

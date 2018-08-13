@@ -135,4 +135,15 @@ public class QuickBuildContext extends BaseCommandContext
         this.registryName = pRegistryName;
         return this;
     }
+
+    @Override
+    public QuickBuildContext cancel() {
+        this.buildRequest.cancel();
+        return this;
+    }
+
+    @Override
+    public boolean isCanceled() {
+        return this.buildRequest.isCanceled();
+    }
 }

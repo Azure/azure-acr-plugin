@@ -63,6 +63,11 @@ public class QuickBuildRequest {
     private String dockerFilePath;
 
     /**
+     * Whether the docker build in the ACR canceled.
+     */
+    private boolean canceled = false;
+
+    /**
      * =============== Getter and Setter ================
      */
 
@@ -223,6 +228,23 @@ public class QuickBuildRequest {
      */
     public QuickBuildRequest withDockerFilePath(String pDockerFilePath) {
         this.dockerFilePath = pDockerFilePath;
+        return this;
+    }
+
+    /**
+     * Whether the docker build in ACR is canceled.
+     * @return Whether the docker build in ACR is canceled.
+     */
+    public boolean isCanceled() {
+        return canceled;
+    }
+
+    /**
+     * Cancel the docker build in ACR.
+     * @return the QuickBuildRequest object itself.
+     */
+    public QuickBuildRequest cancel() {
+        this.canceled = true;
         return this;
     }
 }

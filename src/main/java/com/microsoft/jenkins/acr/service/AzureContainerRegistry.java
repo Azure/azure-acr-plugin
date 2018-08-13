@@ -12,6 +12,7 @@ import com.microsoft.azure.management.containerregistry.SourceUploadDefinition;
 import com.microsoft.jenkins.acr.common.QuickBuildRequest;
 import com.microsoft.azure.management.containerregistry.Registry;
 import com.microsoft.jenkins.acr.common.UploadRequest;
+import rx.Completable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,9 +27,10 @@ public final class AzureContainerRegistry extends AzureService {
 
     /**
      * Send a quickBuildRequest to ACR build.
+     *
      * @param resourceGroupName resource group of Azure Container Registry.
-     * @param acrName   name of Azure Container Registry.
-     * @param request   request object.
+     * @param acrName           name of Azure Container Registry.
+     * @param request           request object.
      * @return Build object contain build id.
      */
     public Build queueBuildRequest(String resourceGroupName,
@@ -53,6 +55,7 @@ public final class AzureContainerRegistry extends AzureService {
 
     /**
      * List all ACR names in a resource group.
+     *
      * @param resourceGroupName resource group
      * @return List of ACR name.
      */
@@ -70,6 +73,7 @@ public final class AzureContainerRegistry extends AzureService {
     /**
      * Azure Container Registry Build will write build result to an Azure Storage Blob.
      * This function will get the blob URL with build ID.
+     *
      * @param resourceGroupName resource group of ACR.
      * @param acrName           name of ACR.
      * @param buildId           build ID.
@@ -87,9 +91,10 @@ public final class AzureContainerRegistry extends AzureService {
     /**
      * If queue an ACR build from local SCM, need to write the code into an Azure Storage Blob.
      * This function will get the blob URL.
-     * @param resourceGroupName  resource group of ACR.
-     * @param acrName            name of ACR.
-     * @return  blob url and relative path.
+     *
+     * @param resourceGroupName resource group of ACR.
+     * @param acrName           name of ACR.
+     * @return blob url and relative path.
      */
     public UploadRequest getUploadUrl(String resourceGroupName, String acrName) {
         SourceUploadDefinition definition = this.getClient()
@@ -97,6 +102,22 @@ public final class AzureContainerRegistry extends AzureService {
                 .getByResourceGroup(resourceGroupName, acrName)
                 .getBuildSourceUploadUrl();
         return new UploadRequest(definition.uploadUrl(), definition.relativePath());
+    }
+
+    /**
+     * Cancel a processing ACR build.
+     *
+     * @param resourceGroupName resource group of ACR.
+     * @param acrName           name of ACR.
+     * @param buildId           build ID.
+     * @return Completable job.
+     */
+    public Completable cancelBuildAsync(String resourceGroupName, String acrName, String buildId) {
+        return this.getClient()
+                .containerRegistries()
+                .getByResourceGroup(resourceGroupName, acrName)
+                .queuedBuilds()
+                .cancelAsync(buildId);
     }
 
     public static AzureContainerRegistry getInstance() {
