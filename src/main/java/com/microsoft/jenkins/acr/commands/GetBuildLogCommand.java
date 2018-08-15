@@ -59,9 +59,10 @@ public class GetBuildLogCommand implements ICommand<GetBuildLogCommand.IBuildLog
         if (!data.isCanceled()) {
             data.logStatus(Messages.build_cancelBuild());
             data.cancel();
-            AzureContainerRegistry.getInstance().cancelBuildAsync(data.getResourceGroupName(),
-                    data.getACRName(),
-                    data.getBuildId());
+            AzureContainerRegistry.getInstance()
+                    .cancelBuildAsync(data.getResourceGroupName(),
+                            data.getACRName(),
+                            data.getBuildId());
         }
         Thread.currentThread().interrupt();
     }
