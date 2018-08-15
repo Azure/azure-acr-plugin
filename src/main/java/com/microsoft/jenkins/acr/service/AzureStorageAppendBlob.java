@@ -52,7 +52,7 @@ public class AzureStorageAppendBlob {
             return null;
         }
 
-        return !result.equals(Constants.BUILD_FAILED);
+        return result.equals(Constants.BUILD_SUCCEEDED);
     }
 
     /**
@@ -84,7 +84,7 @@ public class AzureStorageAppendBlob {
             if (line != null || this.isFinished()) {
                 return line;
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
             //skip and retry
         }
