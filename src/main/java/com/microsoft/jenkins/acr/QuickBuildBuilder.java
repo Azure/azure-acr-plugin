@@ -14,9 +14,9 @@ import java.util.concurrent.Callable;
 import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
 import com.microsoft.azure.util.AzureBaseCredentials;
 import com.microsoft.jenkins.acr.common.Platform;
+import com.microsoft.jenkins.acr.common.scm.GitSCMResolver;
 import com.microsoft.jenkins.acr.descriptor.Image;
 import com.microsoft.jenkins.acr.common.QuickBuildRequest;
-import com.microsoft.jenkins.acr.common.scm.AbstractSCM;
 import com.microsoft.jenkins.acr.service.AzureContainerRegistry;
 import com.microsoft.jenkins.acr.service.AzureHelper;
 import com.microsoft.jenkins.acr.service.AzureResourceGroup;
@@ -36,10 +36,13 @@ import com.microsoft.jenkins.acr.util.Constants;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 import jenkins.tasks.SimpleBuildStep;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 
 /**
@@ -49,16 +52,58 @@ import org.kohsuke.stapler.QueryParameter;
  */
 public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
 
+    @Getter
     private final String azureCredentialsId;
+    @Getter
     private final String resourceGroupName;
+    @Getter
     private final String registryName;
-    private final String source;
-    private final List<Image> imageNames;
-    private final String platform;
-    private final String buildArgs;
-    private final int timeout;
-    private final boolean withCache;
-    private final String dockerfile;
+
+    @Getter
+    @Setter
+    @DataBoundSetter
+    private List<Image> imageNames;
+    @Getter
+    @Setter
+    @DataBoundSetter
+    private String platform;
+    @Getter
+    @Setter
+    @DataBoundSetter
+    private String buildArgs;
+    @Getter
+    @Setter
+    @DataBoundSetter
+    private int timeout;
+    @Getter
+    @Setter
+    @DataBoundSetter
+    private boolean withCache;
+    @Getter
+    @Setter
+    @DataBoundSetter
+    private String dockerfile;
+
+    @Getter
+    @Setter
+    @DataBoundSetter
+    private String sourceType = Constants.GIT;
+    @Getter
+    @Setter
+    @DataBoundSetter
+    private String gitRepo;
+    @Getter
+    @Setter
+    @DataBoundSetter
+    private String gitBranch;
+    @Getter
+    @Setter
+    @DataBoundSetter
+    private String gitPath;
+    @Getter
+    @Setter
+    @DataBoundSetter
+    private String local;
 
     /**
      * This annotation tells Jenkins to call this constructor, with values from
@@ -67,35 +112,14 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
      * @param azureCredentialsId Jenkins credential id.
      * @param resourceGroupName  ACR resource group name.
      * @param registryName       ACR name, which will run the build and the image will be default push to.
-     * @param source             SCM source location.
-     * @param imageNames         Image name with tag.
-     * @param dockerfile         Dockerfile path related to {@link #source}.
-     * @param platform           {@link Platform}.
-     * @param buildArgs          Docker build argument.
-     * @param timeout            Docker build timeout option.
-     * @param withCache          Docker build with cache or not.
      */
     @DataBoundConstructor
     public QuickBuildBuilder(final String azureCredentialsId,
                              final String resourceGroupName,
-                             final String registryName,
-                             final String source,
-                             final List<Image> imageNames,
-                             final String dockerfile,
-                             final String platform,
-                             final String buildArgs,
-                             final int timeout,
-                             final boolean withCache) {
+                             final String registryName) {
         this.azureCredentialsId = azureCredentialsId;
         this.resourceGroupName = resourceGroupName;
         this.registryName = registryName;
-        this.source = source;
-        this.imageNames = imageNames;
-        this.dockerfile = dockerfile;
-        this.platform = platform;
-        this.buildArgs = buildArgs;
-        this.withCache = withCache;
-        this.timeout = timeout;
     }
 
     @Override
@@ -108,15 +132,22 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
                 getAzureCredentialsId(),
                 getResourceGroupName(),
                 getRegistryName(),
-                getSource());
-        QuickBuildRequest buildRequest = new QuickBuildRequest()
-                .withSourceLocation(getSource())
-                .withImageNames(Util.toStringArray(getImageNames()))
-                .withPlatform(getPlatform())
-                .withBuildArguments(getBuildArgs())
-                .withDockerFilePath(getDockerfile())
-                .withNoCache(!isWithCache())
-                .withTimeout(getTimeout());
+                // at least one of the local and git repo should contain value.
+                getLocal().concat(getGitRepo()));
+        QuickBuildRequest buildRequest = QuickBuildRequest.builder()
+                .sourceType(getSourceType())
+                .gitRepo(getGitRepo())
+                .gitBranch(getGitBranch())
+                .gitPath(getGitPath())
+                .localDir(getLocal())
+                .imageNames(Util.toStringArray(getImageNames()))
+                .platform(getPlatform())
+                .buildArguments(getBuildArgs())
+                .dockerFilePath(getDockerfile())
+                .noCache(!isWithCache())
+                .timeout(getTimeout())
+                .build();
+
         QuickBuildContext context = new QuickBuildContext();
         context.configure(run, workspace, launcher, listener)
                 .withResourceGroupName(getResourceGroupName())
@@ -139,46 +170,6 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
         } else {
             listener.getLogger().println(Messages.context_finished());
         }
-    }
-
-    public String getAzureCredentialsId() {
-        return azureCredentialsId;
-    }
-
-    public String getResourceGroupName() {
-        return resourceGroupName;
-    }
-
-    public String getRegistryName() {
-        return registryName;
-    }
-
-    public String getSource() {
-        return source;
-    }
-
-    public List<Image> getImageNames() {
-        return imageNames;
-    }
-
-    public String getDockerfile() {
-        return dockerfile;
-    }
-
-    public String getPlatform() {
-        return platform;
-    }
-
-    public String getBuildArgs() {
-        return buildArgs;
-    }
-
-    public int getTimeout() {
-        return timeout;
-    }
-
-    public boolean isWithCache() {
-        return withCache;
     }
 
     /**
@@ -295,8 +286,11 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
             return model;
         }
 
-        public FormValidation doCheckSource(@QueryParameter String source) {
-            return AbstractSCM.verifyLocation(source)
+        public FormValidation doCheckGitRepo(@QueryParameter String sourceType, @QueryParameter String gitRepo) {
+            if (sourceType == null || !sourceType.equals(Constants.GIT)) {
+                return FormValidation.ok();
+            }
+            return GitSCMResolver.verifyLocation(gitRepo)
                     ? FormValidation.ok()
                     : FormValidation.error(Messages.source_help());
         }

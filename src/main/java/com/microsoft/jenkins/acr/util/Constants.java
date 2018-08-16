@@ -26,6 +26,7 @@ public final class Constants {
     public static final int SLEEP_IN_MS = 3000;
     public static final int DEFAULT_RETRY = 10;
 
+    public static final String GIT = "git";
     public static final String GIT_SUFFIX = ".git";
     public static final String GIT_SSH_PREFIX = "git@";
     public static final String HTTP_SCHEMA = "http://";
@@ -34,6 +35,8 @@ public final class Constants {
     public static final String COMMENT = "#";
     public static final String EXCLAMATION = "!";
     public static final String FILE_SPERATE = "/";
+    public static final String HASHTAG = "#";
+    public static final String COLON = ":";
     public static final String SHORT_LIST_SPERATE = ", ";
     public static final String LONG_LIST_SPERATE = "\n    ";
     public static final String DOCKER_IGNORE = ".dockerignore";
