@@ -22,20 +22,22 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LocalSCM extends AbstractSCM {
+public class LocalSCMResolver extends AbstractSCMResolver {
 
-    protected LocalSCM(String source) {
-        super(source);
+    private final String source;
+
+    protected LocalSCMResolver(LocalSCMRequest request) {
+        this.source = request.getLocalDir();
     }
 
     @Override
     public String getSCMUrl() throws Exception {
-        this.getLogger().logStatus(Messages.scm_local(this.getSource()));
+        this.getLogger().logStatus(Messages.scm_local(this.source));
         UploadRequest request = AzureContainerRegistry.getInstance()
                 .getUploadUrl(getResourceGroup(), getAcrName());
         String localFileName = Util.getFileName(request.getRelativePath());
         this.getLogger().logStatus(Messages.scm_compress_filename(localFileName));
-        String[] ignoreList = parseDockerIgnoreFile(this.getSource()
+        String[] ignoreList = parseDockerIgnoreFile(this.source
                 + Constants.FILE_SPERATE
                 + Constants.DOCKER_IGNORE);
         this.getLogger().logStatus(
@@ -43,7 +45,7 @@ public class LocalSCM extends AbstractSCM {
         try {
             String[] filenames = CompressibleFileImpl.compressToFile(localFileName)
                     .withIgnoreList(ignoreList)
-                    .withDirectory(this.getSource())
+                    .withDirectory(this.source)
                     .compress()
                     .fileList();
             this.getLogger().logStatus(

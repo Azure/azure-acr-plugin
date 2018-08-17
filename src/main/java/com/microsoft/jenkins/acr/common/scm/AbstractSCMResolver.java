@@ -8,19 +8,16 @@ package com.microsoft.jenkins.acr.common.scm;
 import com.microsoft.jenkins.acr.Messages;
 import com.microsoft.jenkins.acr.util.Constants;
 import com.microsoft.jenkins.azurecommons.command.IBaseCommandData;
-import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
 
-public abstract class AbstractSCM {
+public abstract class AbstractSCMResolver {
 
-    private final String source;
     private String resourceGroup;
     private String acrName;
     private IBaseCommandData logger;
 
-    protected AbstractSCM(String source) {
-        this.source = source;
+    protected AbstractSCMResolver() {
     }
 
     /**
@@ -32,7 +29,7 @@ public abstract class AbstractSCM {
         LOCAL
     }
 
-    private static AbstractSCM.Type getType(String sourceLocation) {
+    private static AbstractSCMResolver.Type getType(String sourceLocation) {
         if (sourceLocation.endsWith(Constants.GIT_SUFFIX)) {
             return Type.GIT;
         }
@@ -45,58 +42,28 @@ public abstract class AbstractSCM {
     }
 
     /**
-     * Verify whether the location is a legal git url or a local directory.
-     *
-     * @param location github url or local directory.
-     * @return boolean
-     */
-    public static boolean verifyLocation(String location) {
-        String source = StringUtils.trimToEmpty(location).toLowerCase();
-        if (source.isEmpty()) {
-            return false;
-        }
-
-        // HTTP mode for git mush end with ".git"
-        if (source.startsWith(Constants.HTTP_SCHEMA) || source.startsWith(Constants.HTTPS_SCHEMA)) {
-            return source.endsWith(Constants.GIT_SUFFIX);
-        }
-
-        // SSH model for git is not supported
-        if (source.startsWith(Constants.GIT_SSH_PREFIX)) {
-            return false;
-        }
-
-        // Here we cannot verify the file schema since the directory may not exist when configuration
-        return true;
-    }
-
-    /**
      * Get the SCM instance to get the upload URL.
      *
-     * @param sourceLocation github url or local directory
-     * @return Instance of AbstractSCM
+     * @param source github url or local directory
+     * @return Instance of AbstractSCMResolver
      */
-    public static AbstractSCM getInstance(String sourceLocation) {
-        Type type = getType(sourceLocation);
+    public static AbstractSCMResolver getInstance(SCMRequest source) {
+        Type type = Type.valueOf(source.getSourceType().toUpperCase());
         switch (type) {
             case GIT:
-                return new GitSCM(sourceLocation);
+                return new GitSCMResolver(source);
             case LOCAL:
-                return new LocalSCM(sourceLocation);
+                return new LocalSCMResolver(source);
             default:
                 throw new IllegalArgumentException(Messages.source_help());
         }
-    }
-
-    protected String getSource() {
-        return source;
     }
 
     protected String getResourceGroup() {
         return resourceGroup;
     }
 
-    public AbstractSCM withResourceGroup(String pResourceGroup) {
+    public AbstractSCMResolver withResourceGroup(String pResourceGroup) {
         this.resourceGroup = pResourceGroup;
         return this;
     }
@@ -105,12 +72,12 @@ public abstract class AbstractSCM {
         return acrName;
     }
 
-    public AbstractSCM withAcrName(String pAcrName) {
+    public AbstractSCMResolver withAcrName(String pAcrName) {
         this.acrName = pAcrName;
         return this;
     }
 
-    public AbstractSCM withLogger(IBaseCommandData pLogger) {
+    public AbstractSCMResolver withLogger(IBaseCommandData pLogger) {
         this.logger = pLogger;
         return this;
     }

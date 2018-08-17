@@ -24,23 +24,23 @@ public class QueueBuildCommand implements ICommand<QueueBuildCommand.IQueueBuild
         try {
             context.logStatus(Messages.build_queueABuild(
                     context.getResourceGroupName(),
-                    context.getACRName(),
+                    context.getRegistryName(),
                     Util.toJson(context.getBuildRequest())));
 
             Build build = AzureContainerRegistry.
                     getInstance().
                     queueBuildRequest(context.getResourceGroupName(),
-                            context.getACRName(),
+                            context.getRegistryName(),
                             context.getBuildRequest());
 
             context.logStatus(Messages.build_finishQueueABuild(build.buildId()));
-            context.withBuildId(build.buildId())
-                    .setCommandState(CommandState.Success);
+            context.setBuildId(build.buildId());
+            context.setCommandState(CommandState.Success);
 
             ACRQuickBuildPlugin.sendEvent(Constants.AI, Constants.AI_QUEUE,
                     "Run", AppInsightsUtils.hash(context.getJobContext().getRun().getUrl()),
                     "ResourceGroup", AppInsightsUtils.hash(context.getResourceGroupName()),
-                    "Registry", AppInsightsUtils.hash(context.getACRName()));
+                    "Registry", AppInsightsUtils.hash(context.getRegistryName()));
         } catch (Exception e) {
             e.printStackTrace();
             context.logError(Messages.build_failQueueBuild(e.getMessage()));
@@ -49,17 +49,17 @@ public class QueueBuildCommand implements ICommand<QueueBuildCommand.IQueueBuild
                     "Message", e.getMessage(),
                     "Run", AppInsightsUtils.hash(context.getJobContext().getRun().getUrl()),
                     "ResourceGroup", AppInsightsUtils.hash(context.getResourceGroupName()),
-                    "Registry", AppInsightsUtils.hash(context.getACRName()));
+                    "Registry", AppInsightsUtils.hash(context.getRegistryName()));
         }
     }
 
     public interface IQueueBuildData extends IBaseCommandData {
         String getResourceGroupName();
 
-        String getACRName();
+        String getRegistryName();
 
         QuickBuildRequest getBuildRequest();
 
-        IQueueBuildData withBuildId(String id);
+        void setBuildId(String id);
     }
 }

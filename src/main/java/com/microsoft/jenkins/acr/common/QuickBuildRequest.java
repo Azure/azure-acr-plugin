@@ -5,12 +5,50 @@
 
 package com.microsoft.jenkins.acr.common;
 
+import lombok.Builder;
+import lombok.Getter;
+
 /**
  * Azure Container Request object.
  * It should contains all arguments to queue a quick build to ACR.
  * Each argument should have an entry in the {@link com.microsoft.jenkins.acr.QuickBuildBuilder}
  */
-public class QuickBuildRequest {
+@Builder
+public class QuickBuildRequest extends AbstractRequest {
+
+    /**
+     * =========== SCM ================
+     */
+    /**
+     * SCM type: git or local.
+     */
+    @Getter
+    private String sourceType;
+
+    /**
+     * SCM git url when the source type is git.
+     */
+    @Getter
+    private String gitRepo;
+
+    /**
+     * SCM git branch.
+     */
+    @Getter
+    private String gitBranch;
+
+    /**
+     * Docker build path in the git repo.
+     */
+    @Getter
+    private String gitPath;
+
+    /**
+     * Local directory path when source type is local.
+     */
+    @Getter
+    private String localDir;
+
     /**
      * ============ Required ===============
      */
@@ -18,19 +56,8 @@ public class QuickBuildRequest {
     /**
      * The fully qualified image names including the repository and tag.
      */
+    @Getter
     private String[] imageNames;
-
-    /**
-     * The location of the source that needs to be built.
-     * For docker build, it can be an GitHub URL or local directory path.
-     */
-    private String sourceLocation;
-
-    /**
-     * The URL of the source that needs to be built.
-     * For docker build, it can be an GitHub URL or Azure Blob URL.
-     */
-    private String sourceUrl;
 
     /**
      * ============ Optional ===============
@@ -39,212 +66,31 @@ public class QuickBuildRequest {
     /**
      * The collection of build arguments to be used.
      */
+    @Getter
     private String buildArguments;
 
     /**
      * The value of this property indicates whether the image cache is enabled
      * or not.
      */
+    @Getter
     private boolean noCache;
 
     /**
      * Build timeout in seconds.
      */
+    @Getter
     private int timeout;
 
     /**
      * The platform properties against which the build will happen.
      */
+    @Getter
     private String platform;
 
     /**
      * The Docker file path relative to the source location.
      */
+    @Getter
     private String dockerFilePath;
-
-    /**
-     * Whether the docker build in the ACR canceled.
-     */
-    private boolean canceled = false;
-
-    /**
-     * =============== Getter and Setter ================
-     */
-
-    /**
-     * Get the imageNames value.
-     *
-     * @return the imageNames value
-     */
-    public String[] imageNames() {
-        return this.imageNames;
-    }
-
-    /**
-     * Set the imageNames value.
-     *
-     * @param pImageNames the imageNames value to set
-     * @return the QuickBuildRequest object itself.
-     */
-    public QuickBuildRequest withImageNames(String[] pImageNames) {
-        this.imageNames = pImageNames;
-        return this;
-    }
-
-    /**
-     * Get the sourceLocation value.
-     *
-     * @return the sourceLocation value
-     */
-    public String sourceLocation() {
-        return this.sourceLocation;
-    }
-
-    /**
-     * Set the sourceLocation value.
-     *
-     * @param pSourceLocation the sourceLocation value to set
-     * @return the QuickBuildRequest object itself.
-     */
-    public QuickBuildRequest withSourceLocation(String pSourceLocation) {
-        this.sourceLocation = pSourceLocation;
-        return this;
-    }
-
-    /**
-     * Get the sourceUrl value.
-     *
-     * @return the sourceUrl value
-     */
-    public String sourceUrl() {
-        return this.sourceUrl;
-    }
-
-    /**
-     * Set the sourceLocation value.
-     *
-     * @param pSourceUrl the sourceUrl value to set
-     * @return the QuickBuildRequest object itself.
-     */
-    public QuickBuildRequest withSourceUrl(String pSourceUrl) {
-        this.sourceUrl = pSourceUrl;
-        return this;
-    }
-
-    /**
-     * Get the buildArguments value.
-     *
-     * @return the buildArguments value
-     */
-    public String buildArguments() {
-        return this.buildArguments;
-    }
-
-    /**
-     * Set the buildArguments value.
-     *
-     * @param pBuildArguments the buildArguments value to set
-     * @return the QuickBuildRequest object itself.
-     */
-    public QuickBuildRequest withBuildArguments(String pBuildArguments) {
-        this.buildArguments = pBuildArguments;
-        return this;
-    }
-
-    /**
-     * Get the noCache value.
-     *
-     * @return the noCache value
-     */
-    public boolean noCache() {
-        return this.noCache;
-    }
-
-    /**
-     * Set the noCache value.
-     *
-     * @param pNoCache the noCache value to set
-     * @return the QuickBuildRequest object itself.
-     */
-    public QuickBuildRequest withNoCache(boolean pNoCache) {
-        this.noCache = pNoCache;
-        return this;
-    }
-
-    /**
-     * Get the timeout value.
-     *
-     * @return the timeout value
-     */
-    public Integer timeout() {
-        return this.timeout;
-    }
-
-    /**
-     * Set the timeout value.
-     *
-     * @param pTimeout the timeout value to set
-     * @return the QuickBuildRequest object itself.
-     */
-    public QuickBuildRequest withTimeout(Integer pTimeout) {
-        this.timeout = pTimeout;
-        return this;
-    }
-
-    /**
-     * Get the platform value.
-     *
-     * @return the platform value
-     */
-    public String platform() {
-        return this.platform;
-    }
-
-    /**
-     * Set the platform value.
-     *
-     * @param pPlatform the platform value to set
-     * @return the QuickBuildRequest object itself.
-     */
-    public QuickBuildRequest withPlatform(String pPlatform) {
-        this.platform = pPlatform;
-        return this;
-    }
-
-    /**
-     * Get the dockerFilePath value.
-     *
-     * @return the dockerFilePath value
-     */
-    public String dockerFilePath() {
-        return this.dockerFilePath;
-    }
-
-    /**
-     * Set the dockerFilePath value.
-     *
-     * @param pDockerFilePath the dockerFilePath value to set
-     * @return the QuickBuildRequest object itself.
-     */
-    public QuickBuildRequest withDockerFilePath(String pDockerFilePath) {
-        this.dockerFilePath = pDockerFilePath;
-        return this;
-    }
-
-    /**
-     * Whether the docker build in ACR is canceled.
-     * @return Whether the docker build in ACR is canceled.
-     */
-    public boolean isCanceled() {
-        return canceled;
-    }
-
-    /**
-     * Cancel the docker build in ACR.
-     * @return the QuickBuildRequest object itself.
-     */
-    public QuickBuildRequest cancel() {
-        this.canceled = true;
-        return this;
-    }
 }

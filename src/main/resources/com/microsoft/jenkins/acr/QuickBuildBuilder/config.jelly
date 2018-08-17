@@ -5,47 +5,68 @@
   ~ license information.
   -->
 <?jelly escape-by-default='true'?>
-<j:jelly
-    xmlns:j="jelly:core"
-    xmlns:c="/lib/credentials"
-    xmlns:f="/lib/form"
-    xmlns:st="jelly:stapler">
-    <f:entry title="${%azureCredentialsId_title}" field="azureCredentialsId">
-        <c:select expressionAllowed="false" />
-    </f:entry>
-    <f:entry title="${%resourceGroupName_title}" field="resourceGroupName">
-        <f:select />
-    </f:entry>
-    <f:entry title="${%registryName_title}" field="registryName">
-        <f:select />
-    </f:entry>
-    <f:entry title="${%source_title}" field="source">
-        <f:textbox />
-    </f:entry>
-    <f:entry title="${%imageNames_title}" field="imageNames">
-        <f:repeatableProperty  field="imageNames" minimum="1">
-            <f:entry title="">
-                <div align="right">
-                    <f:repeatableDeleteButton />
-                </div>
+<j:jelly xmlns:j="jelly:core" xmlns:c="/lib/credentials" xmlns:f="/lib/form" xmlns:st="jelly:stapler">
+   <f:entry title="${%azureCredentialsId_title}" field="azureCredentialsId">
+      <c:select expressionAllowed="false" />
+   </f:entry>
+   <f:entry title="${%resourceGroupName_title}" field="resourceGroupName">
+      <f:select />
+   </f:entry>
+   <f:entry title="${%registryName_title}" field="registryName">
+      <f:select />
+   </f:entry>
+   <f:section title="${%source_title}">
+      <f:radioBlock name="sourceType"
+                    title="${%source_type_git}"
+                    value="git" inline="true"
+                    checked="${instance.getSourceType() == 'git'}">
+         <f:nested>
+            <f:entry title="${%source_git_title}" field="gitRepo">
+               <f:textbox />
             </f:entry>
-        </f:repeatableProperty>
-    </f:entry>
-    <f:advanced title="${%moreConfig_title}">
-        <f:entry title="${%dockerPath_title}" field="dockerfile">
-            <f:textbox default="${%dockerPath_default}"/>
-        </f:entry>
-        <f:entry title="${%buildArgs_title}" field="buildArgs">
-            <f:textbox />
-        </f:entry>
-        <f:entry title="${%timeout_title}" field="timeout">
-            <f:number default="${%timeout_default}"/>
-        </f:entry>
-        <f:entry title="${%cache_title}" field="withCache">
-            <f:checkbox default="${%withCache_default}" />
-        </f:entry>
-        <f:entry title="${%platform_title}" field="platform">
-            <f:select />
-        </f:entry>
-    </f:advanced>
+            <f:entry title="${%source_git_branch}" field="gitBranch">
+               <f:textbox />
+            </f:entry>
+            <f:entry title="${%source_git_path}" field="gitPath">
+               <f:textbox />
+            </f:entry>
+         </f:nested>
+      </f:radioBlock>
+      <f:radioBlock name="sourceType"
+                    title="${%source_type_local}"
+                    value="local" inline="true"
+                    checked="${!instance.getSourceType() || instance.getSourceType() == 'local'}">
+         <f:nested>
+            <f:entry title="${%source_local_title}" field="local">
+               <f:textbox />
+            </f:entry>
+         </f:nested>
+      </f:radioBlock>
+   </f:section>
+   <f:entry title="${%imageNames_title}" field="imageNames">
+      <f:repeatableProperty field="imageNames" minimum="1">
+         <f:entry title="">
+            <div align="right">
+               <f:repeatableDeleteButton />
+            </div>
+         </f:entry>
+      </f:repeatableProperty>
+   </f:entry>
+   <f:advanced title="${%moreConfig_title}">
+      <f:entry title="${%dockerPath_title}" field="dockerfile">
+         <f:textbox default="${%dockerPath_default}" />
+      </f:entry>
+      <f:entry title="${%buildArgs_title}" field="buildArgs">
+         <f:textbox />
+      </f:entry>
+      <f:entry title="${%timeout_title}" field="timeout">
+         <f:number default="${%timeout_default}" />
+      </f:entry>
+      <f:entry title="${%cache_title}" field="withCache">
+         <f:checkbox default="${%withCache_default}" />
+      </f:entry>
+      <f:entry title="${%platform_title}" field="platform">
+         <f:select />
+      </f:entry>
+   </f:advanced>
 </j:jelly>

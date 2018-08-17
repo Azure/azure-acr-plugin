@@ -41,14 +41,14 @@ public final class AzureContainerRegistry extends AzureService {
                 .getByResourceGroup(resourceGroupName, acrName)
                 .queuedBuilds()
                 .queueQuickBuild()
-                .withOSType(OsType.fromString(request.platform()))
-                .withSourceLocation(request.sourceUrl())
-                .withDockerFilePath(request.dockerFilePath());
-        if (request.imageNames() == null || request.imageNames().length == 0) {
+                .withOSType(OsType.fromString(request.getPlatform()))
+                .withSourceLocation(request.getSourceUrl())
+                .withDockerFilePath(request.getDockerFilePath());
+        if (request.getImageNames() == null || request.getImageNames().length == 0) {
             withCreate.withImagePushDisabled();
         } else {
             withCreate.withImagePushEnabled()
-                    .withImageNames(request.imageNames());
+                    .withImageNames(request.getImageNames());
         }
         return withCreate.create();
     }

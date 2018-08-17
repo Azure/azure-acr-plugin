@@ -6,8 +6,8 @@
 package com.microsoft.jenkins.acr.commands;
 
 import com.microsoft.jenkins.acr.Messages;
-import com.microsoft.jenkins.acr.common.QuickBuildRequest;
-import com.microsoft.jenkins.acr.common.scm.AbstractSCM;
+import com.microsoft.jenkins.acr.common.scm.SCMRequest;
+import com.microsoft.jenkins.acr.common.scm.AbstractSCMResolver;
 import com.microsoft.jenkins.azurecommons.command.CommandState;
 import com.microsoft.jenkins.azurecommons.command.IBaseCommandData;
 import com.microsoft.jenkins.azurecommons.command.ICommand;
@@ -19,10 +19,9 @@ public class ResolveSCMCommand implements ICommand<ResolveSCMCommand.ISCMData> {
 
         try {
             data.logStatus(Messages.source_getUrl());
-            String url = AbstractSCM.getInstance(data.getBuildRequest()
-                    .sourceLocation())
+            String url = AbstractSCMResolver.getInstance(data.getSCMRequest())
                     .withResourceGroup(data.getResourceGroupName())
-                    .withAcrName(data.getACRName())
+                    .withAcrName(data.getRegistryName())
                     .withLogger(data)
                     .getSCMUrl();
             data.logStatus(Messages.source_url(url));
@@ -38,11 +37,11 @@ public class ResolveSCMCommand implements ICommand<ResolveSCMCommand.ISCMData> {
     }
 
     public interface ISCMData extends IBaseCommandData {
-        QuickBuildRequest getBuildRequest();
+        SCMRequest getSCMRequest();
 
         String getResourceGroupName();
 
-        String getACRName();
+        String getRegistryName();
 
         ISCMData withSCMUrl(String url);
     }

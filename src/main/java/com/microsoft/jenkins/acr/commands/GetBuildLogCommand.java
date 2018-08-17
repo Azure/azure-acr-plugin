@@ -27,7 +27,7 @@ public class GetBuildLogCommand implements ICommand<GetBuildLogCommand.IBuildLog
         try {
             String blobLink = AzureContainerRegistry.getInstance()
                     .getLog(data.getResourceGroupName(),
-                            data.getACRName(),
+                            data.getRegistryName(),
                             data.getBuildId());
             data.logStatus(Messages.log_getLogLink(blobLink));
             AzureStorageAppendBlob blob = new AzureStorageAppendBlob(blobLink);
@@ -61,7 +61,7 @@ public class GetBuildLogCommand implements ICommand<GetBuildLogCommand.IBuildLog
             data.cancel();
             AzureContainerRegistry.getInstance()
                     .cancelBuildAsync(data.getResourceGroupName(),
-                            data.getACRName(),
+                            data.getRegistryName(),
                             data.getBuildId());
         }
         Thread.currentThread().interrupt();
@@ -72,7 +72,7 @@ public class GetBuildLogCommand implements ICommand<GetBuildLogCommand.IBuildLog
 
         String getResourceGroupName();
 
-        String getACRName();
+        String getRegistryName();
 
         IBuildLogData cancel();
 

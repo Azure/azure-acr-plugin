@@ -9,6 +9,7 @@ import com.microsoft.jenkins.acr.commands.GetBuildLogCommand;
 import com.microsoft.jenkins.acr.commands.QueueBuildCommand;
 import com.microsoft.jenkins.acr.commands.ResolveSCMCommand;
 import com.microsoft.jenkins.acr.common.QuickBuildRequest;
+import com.microsoft.jenkins.acr.common.scm.SCMRequest;
 import com.microsoft.jenkins.azurecommons.command.BaseCommandContext;
 import com.microsoft.jenkins.azurecommons.command.CommandService;
 import com.microsoft.jenkins.azurecommons.command.IBaseCommandData;
@@ -17,6 +18,8 @@ import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.Run;
 import hudson.model.TaskListener;
+import lombok.Getter;
+import lombok.Setter;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.StepExecution;
 
@@ -32,9 +35,14 @@ public class QuickBuildContext extends BaseCommandContext
     /**
      * DATA TRANSITION DECLARATION.
      */
+    @Getter
     private QuickBuildRequest buildRequest;
+    @Getter
     private String resourceGroupName;
+    @Getter
     private String registryName;
+    @Getter
+    @Setter
     private String buildId;
 
     /**
@@ -80,26 +88,9 @@ public class QuickBuildContext extends BaseCommandContext
     /**
      * {@link QueueBuildCommand.IQueueBuildData}.
      */
-
     @Override
-    public String getResourceGroupName() {
-        return this.resourceGroupName;
-    }
-
-    @Override
-    public String getACRName() {
-        return this.registryName;
-    }
-
-    @Override
-    public QuickBuildRequest getBuildRequest() {
+    public SCMRequest getSCMRequest() {
         return this.buildRequest;
-    }
-
-    @Override
-    public QueueBuildCommand.IQueueBuildData withBuildId(String id) {
-        this.buildId = id;
-        return this;
     }
 
     /**
@@ -108,18 +99,13 @@ public class QuickBuildContext extends BaseCommandContext
 
     @Override
     public QuickBuildContext withSCMUrl(String url) {
-        this.buildRequest.withSourceUrl(url);
+        this.buildRequest.setSourceUrl(url);
         return this;
     }
 
     /**
      * {@link GetBuildLogCommand.IBuildLogData}.
      */
-
-    @Override
-    public String getBuildId() {
-        return this.buildId;
-    }
 
     public QuickBuildContext withResourceGroupName(String pResourceGroupName) {
         this.resourceGroupName = pResourceGroupName;
