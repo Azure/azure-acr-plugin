@@ -19,7 +19,7 @@
       <f:radioBlock name="sourceType"
                     title="${%source_type_git}"
                     value="git" inline="true"
-                    checked="${instance.getSourceType() == 'git'}">
+                    checked="${!instance.getSourceType() || instance.getSourceType() == 'git'}">
          <f:nested>
             <f:entry title="${%source_git_title}" field="gitRepo">
                <f:textbox />
@@ -35,7 +35,7 @@
       <f:radioBlock name="sourceType"
                     title="${%source_type_local}"
                     value="local" inline="true"
-                    checked="${!instance.getSourceType() || instance.getSourceType() == 'local'}">
+                    checked="${instance.getSourceType() == 'local'}">
          <f:nested>
             <f:entry title="${%source_local_title}" field="local">
                <f:textbox />
