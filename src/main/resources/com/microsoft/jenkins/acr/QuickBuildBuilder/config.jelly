@@ -62,8 +62,8 @@
       <f:entry title="${%timeout_title}" field="timeout">
          <f:number default="${%timeout_default}" />
       </f:entry>
-      <f:entry title="${%cache_title}" field="withCache">
-         <f:checkbox default="${%withCache_default}" />
+      <f:entry title="${%noCache_title}" field="noCache">
+         <f:checkbox />
       </f:entry>
       <f:entry title="${%platform_title}" field="platform">
          <f:select />

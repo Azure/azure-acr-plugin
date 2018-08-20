@@ -78,7 +78,7 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
     @Getter
     @Setter
     @DataBoundSetter
-    private boolean withCache;
+    private boolean noCache = false;
     @Getter
     @Setter
     @DataBoundSetter
@@ -144,7 +144,7 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
                 .platform(getPlatform())
                 .buildArguments(getBuildArgs())
                 .dockerFilePath(getDockerfile())
-                .noCache(!isWithCache())
+                .noCache(isNoCache())
                 .timeout(getTimeout())
                 .build();
 
