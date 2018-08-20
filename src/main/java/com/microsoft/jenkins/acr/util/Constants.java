@@ -26,7 +26,11 @@ public final class Constants {
     public static final int SLEEP_IN_MS = 3000;
     public static final int DEFAULT_RETRY = 10;
 
+    public static final String CWD = ".";
+
+    public static final String LOCAL = "local";
     public static final String GIT = "git";
+
     public static final String GIT_SUFFIX = ".git";
     public static final String GIT_SSH_PREFIX = "git@";
     public static final String HTTP_SCHEMA = "http://";

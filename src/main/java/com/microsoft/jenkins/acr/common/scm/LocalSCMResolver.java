@@ -19,6 +19,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.File;
 import java.io.InputStreamReader;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,9 +38,7 @@ public class LocalSCMResolver extends AbstractSCMResolver {
                 .getUploadUrl(getResourceGroup(), getAcrName());
         String localFileName = Util.getFileName(request.getRelativePath());
         this.getLogger().logStatus(Messages.scm_compress_filename(localFileName));
-        String[] ignoreList = parseDockerIgnoreFile(this.source
-                + Constants.FILE_SPERATE
-                + Constants.DOCKER_IGNORE);
+        String[] ignoreList = parseDockerIgnoreFile(Paths.get(this.source, Constants.DOCKER_IGNORE).toString());
         this.getLogger().logStatus(
                 Messages.scm_compress_ignore(StringUtils.join(ignoreList, Constants.SHORT_LIST_SPERATE)));
         try {
@@ -56,7 +55,7 @@ public class LocalSCMResolver extends AbstractSCMResolver {
         } catch (Exception e) {
             throw e;
         } finally {
-            new File(localFileName).deleteOnExit();
+            new File(localFileName).delete();
         }
         return request.getRelativePath();
     }

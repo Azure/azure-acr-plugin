@@ -6,6 +6,7 @@
 package com.microsoft.jenkins.acr;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -87,7 +88,7 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
     @Getter
     @Setter
     @DataBoundSetter
-    private String sourceType = Constants.GIT;
+    private String sourceType = Constants.LOCAL;
     @Getter
     @Setter
     @DataBoundSetter
@@ -103,7 +104,7 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
     @Getter
     @Setter
     @DataBoundSetter
-    private String local;
+    private String local = Constants.CWD;
 
     /**
      * This annotation tells Jenkins to call this constructor, with values from
@@ -139,7 +140,7 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
                 .gitRepo(getGitRepo())
                 .gitBranch(getGitBranch())
                 .gitPath(getGitPath())
-                .localDir(getLocal())
+                .localDir(Paths.get(workspace.getRemote(), getLocal()).toString())
                 .imageNames(Util.toStringArray(getImageNames()))
                 .platform(getPlatform())
                 .buildArguments(getBuildArgs())
