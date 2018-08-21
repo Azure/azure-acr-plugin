@@ -6,10 +6,13 @@
 package com.microsoft.jenkins.acr.common.compression;
 
 import com.microsoft.jenkins.acr.util.Constants;
+import lombok.Getter;
 import org.apache.commons.lang.StringUtils;
 
 public class IgnoreRule {
+    @Getter
     private final boolean ignore;
+    @Getter
     private final String pattern;
 
     public IgnoreRule(String rule) {
@@ -33,13 +36,5 @@ public class IgnoreRule {
             }
         }
         this.pattern = "^" + StringUtils.join(tokens, '/') + "$";
-    }
-
-    public boolean isIgnore() {
-        return ignore;
-    }
-
-    public String getPattern() {
-        return pattern;
     }
 }

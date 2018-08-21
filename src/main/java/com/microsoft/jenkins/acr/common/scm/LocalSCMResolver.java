@@ -37,9 +37,7 @@ public class LocalSCMResolver extends AbstractSCMResolver {
                 .getUploadUrl(getResourceGroup(), getAcrName());
         String localFileName = Util.getFileName(request.getRelativePath());
         this.getLogger().logStatus(Messages.scm_compress_filename(localFileName));
-        String[] ignoreList = parseDockerIgnoreFile(this.source
-                + Constants.FILE_SPERATE
-                + Constants.DOCKER_IGNORE);
+        String[] ignoreList = parseDockerIgnoreFile(Util.concatPath(this.source, Constants.DOCKER_IGNORE));
         this.getLogger().logStatus(
                 Messages.scm_compress_ignore(StringUtils.join(ignoreList, Constants.SHORT_LIST_SPERATE)));
         try {
@@ -56,7 +54,7 @@ public class LocalSCMResolver extends AbstractSCMResolver {
         } catch (Exception e) {
             throw e;
         } finally {
-            new File(localFileName).deleteOnExit();
+            new File(localFileName).delete();
         }
         return request.getRelativePath();
     }

@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -60,6 +61,14 @@ public final class Util {
 
     public static String normalizeFilename(String path) {
         return path.replaceAll("\\\\", "/");
+    }
+
+    public static String concatPath(String root, String param) {
+        if (Paths.get(param).isAbsolute()) {
+            return param;
+        }
+
+        return Paths.get(root, param).toString();
     }
 }
 
