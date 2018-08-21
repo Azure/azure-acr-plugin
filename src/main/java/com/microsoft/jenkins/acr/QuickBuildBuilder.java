@@ -6,7 +6,6 @@
 package com.microsoft.jenkins.acr;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -140,7 +139,7 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
                 .gitRepo(getGitRepo())
                 .gitBranch(getGitBranch())
                 .gitPath(getGitPath())
-                .localDir(Paths.get(workspace.getRemote(), getLocal()).toString())
+                .localDir(Util.concatPath(workspace.getRemote(), getLocal()))
                 .imageNames(Util.toStringArray(getImageNames()))
                 .platform(getPlatform())
                 .buildArguments(getBuildArgs())
