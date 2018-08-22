@@ -15,6 +15,7 @@ import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
 import com.microsoft.azure.util.AzureBaseCredentials;
 import com.microsoft.jenkins.acr.common.Platform;
 import com.microsoft.jenkins.acr.common.scm.GitSCMResolver;
+import com.microsoft.jenkins.acr.descriptor.BuildArgument;
 import com.microsoft.jenkins.acr.descriptor.Image;
 import com.microsoft.jenkins.acr.common.QuickBuildRequest;
 import com.microsoft.jenkins.acr.service.AzureContainerRegistry;
@@ -70,7 +71,7 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
     @Getter
     @Setter
     @DataBoundSetter
-    private String buildArgs;
+    private List<BuildArgument> buildArgs;
     @Getter
     @Setter
     @DataBoundSetter
@@ -142,7 +143,7 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
                 .localDir(Util.concatPath(workspace.getRemote(), getLocal()))
                 .imageNames(Util.toStringArray(getImageNames()))
                 .platform(getPlatform())
-                .buildArguments(getBuildArgs())
+                .buildArguments(getBuildArgsArray())
                 .dockerFilePath(getDockerfile())
                 .noCache(isNoCache())
                 .timeout(getTimeout())
@@ -170,6 +171,15 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
         } else {
             listener.getLogger().println(Messages.context_finished());
         }
+    }
+
+    private BuildArgument[] getBuildArgsArray() {
+        List<BuildArgument> list = getBuildArgs();
+        if (list == null || list.size() == 0) {
+            return new BuildArgument[0];
+        }
+
+        return list.toArray(new BuildArgument[list.size()]);
     }
 
     /**

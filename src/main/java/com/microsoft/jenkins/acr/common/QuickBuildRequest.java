@@ -5,6 +5,7 @@
 
 package com.microsoft.jenkins.acr.common;
 
+import com.microsoft.jenkins.acr.descriptor.BuildArgument;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -67,7 +68,7 @@ public class QuickBuildRequest extends AbstractRequest {
      * The collection of build arguments to be used.
      */
     @Getter
-    private String buildArguments;
+    private BuildArgument[] buildArguments;
 
     /**
      * The value of this property indicates whether the image cache is enabled

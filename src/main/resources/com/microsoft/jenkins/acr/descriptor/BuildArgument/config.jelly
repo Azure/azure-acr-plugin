@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) Microsoft Corporation. All rights reserved.
+  ~ Licensed under the MIT License. See License.txt in the project root for
+  ~ license information.
+  -->
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:c="/lib/credentials" xmlns:f="/lib/form" xmlns:st="jelly:stapler">
+   <f:entry field="key">
+      <f:textbox />
+   </f:entry>
+   <f:entry field="value">
+      <f:textbox />
+   </f:entry>
+         <f:entry title="${%secrecy_title}" field="secrecy">
+            <f:checkbox />
+         </f:entry>
+</j:jelly>
