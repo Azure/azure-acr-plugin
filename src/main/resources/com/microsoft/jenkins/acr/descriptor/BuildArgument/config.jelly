@@ -6,10 +6,10 @@
   -->
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:c="/lib/credentials" xmlns:f="/lib/form" xmlns:st="jelly:stapler">
-   <f:entry field="key">
+   <f:entry title="${%key_title}" field="key">
       <f:textbox />
    </f:entry>
-   <f:entry field="value">
+   <f:entry title="${%value_title}" field="value">
       <f:textbox />
    </f:entry>
          <f:entry title="${%secrecy_title}" field="secrecy">
