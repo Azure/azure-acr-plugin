@@ -16,10 +16,7 @@
       <f:select />
    </f:entry>
    <f:section title="${%source_title}">
-      <f:radioBlock name="sourceType"
-                    title="${%source_type_git}"
-                    value="git" inline="true"
-                    checked="${instance.getSourceType() == 'git'}">
+      <f:radioBlock name="sourceType" title="${%source_type_git}" value="git" inline="true" checked="${instance.getSourceType() == 'git'}">
          <f:nested>
             <f:entry title="${%source_git_title}" field="gitRepo">
                <f:textbox />
@@ -32,13 +29,10 @@
             </f:entry>
          </f:nested>
       </f:radioBlock>
-      <f:radioBlock name="sourceType"
-                    title="${%source_type_local}"
-                    value="local" inline="true"
-                    checked="${!instance.getSourceType() || instance.getSourceType() == 'local'}">
+      <f:radioBlock name="sourceType" title="${%source_type_local}" value="local" inline="true" checked="${!instance.getSourceType() || instance.getSourceType() == 'local'}">
          <f:nested>
             <f:entry title="${%source_local_title}" field="local">
-               <f:textbox default="${%source_local_default}"/>
+               <f:textbox default="${%source_local_default}" />
             </f:entry>
          </f:nested>
       </f:radioBlock>
@@ -57,14 +51,14 @@
          <f:textbox default="${%dockerPath_default}" />
       </f:entry>
       <f:entry title="${%buildArgs_title}" field="buildArgs">
-            <f:repeatableProperty field="buildArgs">
-               <f:entry title="">
-                  <div align="right">
-                     <f:repeatableDeleteButton />
-                  </div>
-               </f:entry>
-            </f:repeatableProperty>
-         </f:entry>
+         <f:repeatableProperty field="buildArgs">
+            <f:entry title="">
+               <div align="right">
+                  <f:repeatableDeleteButton />
+               </div>
+            </f:entry>
+         </f:repeatableProperty>
+      </f:entry>
       <f:entry title="${%timeout_title}" field="timeout">
          <f:number default="${%timeout_default}" />
       </f:entry>
