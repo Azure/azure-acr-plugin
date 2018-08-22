@@ -7,11 +7,14 @@ package com.microsoft.jenkins.acr.service;
 
 import com.microsoft.azure.management.containerregistry.Build;
 import com.microsoft.azure.management.containerregistry.Build.QueuedQuickBuildDefinitionStages.WithCreate;
+import com.microsoft.azure.management.containerregistry.Build.
+        QueuedQuickBuildDefinitionStages.QueuedQuickBuildArgumentDefinitionStages.WithBuildArgumentAttach;
 import com.microsoft.azure.management.containerregistry.OsType;
 import com.microsoft.azure.management.containerregistry.SourceUploadDefinition;
 import com.microsoft.jenkins.acr.common.QuickBuildRequest;
 import com.microsoft.azure.management.containerregistry.Registry;
 import com.microsoft.jenkins.acr.common.UploadRequest;
+import com.microsoft.jenkins.acr.descriptor.BuildArgument;
 import rx.Completable;
 
 import java.util.ArrayList;
@@ -50,6 +53,18 @@ public final class AzureContainerRegistry extends AzureService {
             withCreate.withImagePushEnabled()
                     .withImageNames(request.getImageNames());
         }
+
+        for (BuildArgument arg : request.getBuildArguments()) {
+            WithBuildArgumentAttach<WithCreate> argumentAttach = withCreate.defineBuildArgument(arg.getKey())
+                    .withValue(arg.getValue());
+            if (arg.isSecrecy()) {
+                argumentAttach.withSecrecyEnabled();
+            } else {
+                argumentAttach.withSecrecyDisabled();
+            }
+            withCreate = argumentAttach.attach();
+        }
+
         return withCreate.create();
     }
 
