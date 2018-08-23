@@ -5,7 +5,6 @@
 
 package com.microsoft.jenkins.acr.descriptor;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import hudson.Extension;
 import hudson.model.AbstractDescribableImpl;
 import hudson.model.Descriptor;
@@ -16,8 +15,7 @@ public class BuildArgument extends AbstractDescribableImpl<BuildArgument> {
     @Getter
     private final String key;
     @Getter
-    @JsonIgnore
-    private final String value;
+    private final transient String value;
     @Getter
     private final boolean secrecy;
 
