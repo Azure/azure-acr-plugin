@@ -1,3 +1,16 @@
+# Azure ACR Plugin
+
+This plugin allows to queue an [Azure Container Registry Quick Build](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-build-overview#quick-build-inner-loop-extended-to-the-cloud).
+
+## Installation
+
+This plugin is in preview release, you can download the [latest release](https://github.com/Azure/azure-acr-plugin/releases) hpi file, go to `Manage Jenkins`|`Manage Plugins`|`Advanced`
+
+## Credentials
+
+## Creating a job
+
+## Job DSL Support
 
 # Contributing
 
