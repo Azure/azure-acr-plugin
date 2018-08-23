@@ -134,7 +134,8 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
                 getResourceGroupName(),
                 getRegistryName(),
                 // at least one of the local and git repo should contain value.
-                getLocal().concat(getGitRepo()));
+                StringUtils.trimToEmpty(getLocal())
+                        .concat(StringUtils.trimToEmpty(getGitRepo())));
         QuickBuildRequest buildRequest = QuickBuildRequest.builder()
                 .sourceType(getSourceType())
                 .gitRepo(getGitRepo())

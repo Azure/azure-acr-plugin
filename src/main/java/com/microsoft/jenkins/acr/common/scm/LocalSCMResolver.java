@@ -35,14 +35,16 @@ public class LocalSCMResolver extends AbstractSCMResolver {
         this.getLogger().logStatus(Messages.scm_local(this.source));
         UploadRequest request = AzureContainerRegistry.getInstance()
                 .getUploadUrl(getResourceGroup(), getAcrName());
-        String localFileName = Util.getFileName(request.getRelativePath());
+        String tarFilename = Util.getFileName(request.getRelativePath());
+        String localFileName = Util.concatPath(source, tarFilename);
         this.getLogger().logStatus(Messages.scm_compress_filename(localFileName));
-        String[] ignoreList = parseDockerIgnoreFile(Util.concatPath(this.source, Constants.DOCKER_IGNORE));
+        List<String> ignoreList = parseDockerIgnoreFile(Util.concatPath(this.source, Constants.DOCKER_IGNORE));
+        ignoreList.add(tarFilename);
         this.getLogger().logStatus(
                 Messages.scm_compress_ignore(StringUtils.join(ignoreList, Constants.SHORT_LIST_SPERATE)));
         try {
             String[] filenames = CompressibleFileImpl.compressToFile(localFileName)
-                    .withIgnoreList(ignoreList)
+                    .withIgnoreList(ignoreList.toArray(new String[ignoreList.size()]))
                     .withDirectory(this.source)
                     .compress()
                     .fileList();
@@ -59,13 +61,13 @@ public class LocalSCMResolver extends AbstractSCMResolver {
         return request.getRelativePath();
     }
 
-    private String[] parseDockerIgnoreFile(String filename) {
+    private List<String> parseDockerIgnoreFile(String filename) {
+        List<String> list = new ArrayList<>();
         File file = new File(filename);
         if (!file.exists()) {
-            return new String[0];
+            return list;
         }
 
-        List<String> list = new ArrayList<>();
         try {
             BufferedLineReader reader = new BufferedLineReader(new InputStreamReader(new FileInputStream(file)));
             String line = reader.readLine();
@@ -77,8 +79,7 @@ public class LocalSCMResolver extends AbstractSCMResolver {
                 line = reader.readLine();
             }
         } catch (IOException e) {
-            return new String[0];
         }
-        return list.toArray(new String[list.size()]);
+        return list;
     }
 }
