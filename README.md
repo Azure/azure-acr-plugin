@@ -4,9 +4,10 @@ This plugin allows to queue an [Azure Container Registry Quick Build](https://do
 
 ## Installation
 
-This plugin is in preview release, you can download the [latest release](https://github.com/Azure/azure-acr-plugin/releases) hpi file, go to `Manage Jenkins`|`Manage Plugins`|`Advanced`
+This plugin is in preview release, you can download the [latest release](https://github.com/Azure/azure-acr-plugin/releases) hpi file. Go to your Jenkins home page, click `Manage Jenkins`|`Manage Plugins`|`Advanced`, upload the hpi file and restart your Jenkins server.
 
 ## Credentials
+This plugin requires your Azure Credential to auth your operation. You can refer [Azure Credential Plugin](https://wiki.jenkins.io/display/JENKINS/Azure+Credentials+plugin) to find what kind of autherization methods are supported.
 
 ## Creating a job
 
