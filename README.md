@@ -7,7 +7,7 @@ This plugin allows to queue an
 
 This plugin is in preview release, you can download the 
 [latest release](https://github.com/Azure/azure-acr-plugin/releases) hpi file.
-Go to your Jenkins home page, click `Manage Jenkins`|`Manage Plugins`|`Advanced`, 
+To install the hpi file, go to your Jenkins home page, click `Manage Jenkins`|`Manage Plugins`|`Advanced`, 
 upload the hpi file and restart your Jenkins server.
 
 ## Credentials
@@ -25,17 +25,18 @@ You will see the configuration.
 * Select your Resource group which contains your Azure Container Registry.
 * Select your Azure Container Registry name, which will be used to build and host your docker image.
 
-* Under **`Source code location`**, you can choose `git`, `local directory` and `remote tarball`.
+* Under **`Source code location`**, you can choose `git`, `local directory` and `remote tarball` as your docker build 
+  path as `docker build [PATH | URL | -]`.
     * **`Git`** - If you want to directly build a docker image from a git repo,
       choose `Git` type and enter the repository Url.
       
       The Url should use HTTP(S) protocol instead of SSH protocol. 
       If your git repo is a private one, add the PAT in the URL, *e.g. https://<github_token>@github.com/user/repo.git*.
       
-      You can use **`Refspec`** to specify a branch with branch name or a pull request with format `pull/<pr number>/head`.
+      You can use **`Refspec`** to specify a branch with branch name or a pull request in format `pull/<pr number>/head`.
       Leave this field empty means the Azure Container Registry will build with default branch.
       
-      **`Docker build path`** helps you set the docker build path.
+      **`Docker build path`** helps you set the docker build path. 
       If you want to build your docker image under a sub-directory, add the relative path to the git repo's root path.
       Leave this field empty means the Azure Container Registry will build in the git repo's root path.
     
@@ -46,7 +47,7 @@ You will see the configuration.
     * **`Remote tarball`** - If you have already host your code as a `tar.gz` file on a web server,
        choose `Remote tarball` and send the url directly to Azure Container Registry. 
     
-    > This plugin will use `Local directory` with value `.` as default.
+    > This plugin uses `Local directory` with value `.` as default.
       It will upload the code got from `Source Code Management` and processed by previous steps to Azure Storage Blob.
 
 * After Azure Container Registry finishes docker build, it will execute docker push to push images to your registry.
