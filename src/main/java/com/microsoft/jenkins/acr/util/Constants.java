@@ -31,6 +31,8 @@ public final class Constants {
     public static final String LOCAL = "local";
     public static final String GIT = "git";
 
+    public static final String LINUX = "Linux";
+
     public static final String GIT_SUFFIX = ".git";
     public static final String GIT_SSH_PREFIX = "git@";
     public static final String HTTP_SCHEMA = "http://";
@@ -44,6 +46,7 @@ public final class Constants {
     public static final String SHORT_LIST_SPERATE = ", ";
     public static final String LONG_LIST_SPERATE = "\n    ";
     public static final String DOCKER_IGNORE = ".dockerignore";
+    public static final String DOCKERFILE = "Dockerfile";
     public static final List<String> COMMON_IGNORE = ImmutableList.of(".git",
             ".gitignore",
             ".bzr",

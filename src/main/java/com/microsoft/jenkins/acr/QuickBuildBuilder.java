@@ -67,7 +67,7 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
     @Getter
     @Setter
     @DataBoundSetter
-    private String platform;
+    private String platform = Constants.LINUX;
     @Getter
     @Setter
     @DataBoundSetter
@@ -79,11 +79,11 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
     @Getter
     @Setter
     @DataBoundSetter
-    private boolean noCache = false;
+    private boolean noCache;
     @Getter
     @Setter
     @DataBoundSetter
-    private String dockerfile;
+    private String dockerfile = Constants.DOCKERFILE;
 
     @Getter
     @Setter
