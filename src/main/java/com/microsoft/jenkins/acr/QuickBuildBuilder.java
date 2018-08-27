@@ -67,7 +67,7 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
     @Getter
     @Setter
     @DataBoundSetter
-    private String platform;
+    private String platform = Constants.LINUX;
     @Getter
     @Setter
     @DataBoundSetter
@@ -79,11 +79,11 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
     @Getter
     @Setter
     @DataBoundSetter
-    private boolean noCache = false;
+    private boolean noCache;
     @Getter
     @Setter
     @DataBoundSetter
-    private String dockerfile;
+    private String dockerfile = Constants.DOCKERFILE;
 
     @Getter
     @Setter
@@ -96,7 +96,7 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
     @Getter
     @Setter
     @DataBoundSetter
-    private String gitBranch;
+    private String gitRefs;
     @Getter
     @Setter
     @DataBoundSetter
@@ -105,6 +105,10 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
     @Setter
     @DataBoundSetter
     private String local = Constants.CWD;
+    @Getter
+    @Setter
+    @DataBoundSetter
+    private String tarball;
 
     /**
      * This annotation tells Jenkins to call this constructor, with values from
@@ -139,9 +143,10 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
         QuickBuildRequest buildRequest = QuickBuildRequest.builder()
                 .sourceType(getSourceType())
                 .gitRepo(getGitRepo())
-                .gitBranch(getGitBranch())
+                .gitRef(getGitRefs())
                 .gitPath(getGitPath())
                 .localDir(Util.concatPath(workspace.getRemote(), getLocal()))
+                .tarball(getTarball())
                 .imageNames(Util.toStringArray(getImageNames()))
                 .platform(getPlatform())
                 .buildArguments(getBuildArgsArray())

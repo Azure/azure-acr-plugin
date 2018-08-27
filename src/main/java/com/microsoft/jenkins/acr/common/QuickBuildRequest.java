@@ -33,10 +33,10 @@ public class QuickBuildRequest extends AbstractRequest {
     private String gitRepo;
 
     /**
-     * SCM git branch.
+     * SCM git branch or pull request.
      */
     @Getter
-    private String gitBranch;
+    private String gitRef;
 
     /**
      * Docker build path in the git repo.
@@ -49,6 +49,12 @@ public class QuickBuildRequest extends AbstractRequest {
      */
     @Getter
     private String localDir;
+
+    /**
+     * Files in a compressed archive on a remote web server.
+     */
+    @Getter
+    private String tarball;
 
     /**
      * ============ Required ===============

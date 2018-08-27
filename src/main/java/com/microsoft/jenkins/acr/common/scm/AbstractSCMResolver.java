@@ -6,10 +6,7 @@
 package com.microsoft.jenkins.acr.common.scm;
 
 import com.microsoft.jenkins.acr.Messages;
-import com.microsoft.jenkins.acr.util.Constants;
 import com.microsoft.jenkins.azurecommons.command.IBaseCommandData;
-
-import java.io.File;
 
 public abstract class AbstractSCMResolver {
 
@@ -26,19 +23,8 @@ public abstract class AbstractSCMResolver {
      */
     public enum Type {
         GIT,
-        LOCAL
-    }
-
-    private static AbstractSCMResolver.Type getType(String sourceLocation) {
-        if (sourceLocation.endsWith(Constants.GIT_SUFFIX)) {
-            return Type.GIT;
-        }
-        File file = new File(sourceLocation);
-        if (file.isDirectory()) {
-            return Type.LOCAL;
-        }
-
-        throw new IllegalArgumentException(Messages.source_help());
+        LOCAL,
+        TARBALL
     }
 
     /**
@@ -54,6 +40,8 @@ public abstract class AbstractSCMResolver {
                 return new GitSCMResolver(source);
             case LOCAL:
                 return new LocalSCMResolver(source);
+            case TARBALL:
+                return new RemoteTarballSCMResolver(source);
             default:
                 throw new IllegalArgumentException(Messages.source_help());
         }
