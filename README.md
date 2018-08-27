@@ -26,7 +26,8 @@ You will see the configuration.
 * Select your Azure Container Registry name, which will be used to build and host your docker image.
 
 * Under **`Source code location`**, you can choose `git`, `local directory` and `remote tarball`.
-    * `Git` - If you want to directly build a docker image from a git repo, choose `Git` type and enter the repository Url.
+    * **`Git`** - If you want to directly build a docker image from a git repo,
+      choose `Git` type and enter the repository Url.
       
       The Url should use HTTP(S) protocol instead of SSH protocol. 
       If your git repo is a private one, add the PAT in the URL, *e.g. https://<github_token>@github.com/user/repo.git*.
@@ -38,11 +39,11 @@ You will see the configuration.
       If you want to build your docker image under a sub-directory, add the relative path to the git repo's root path.
       Leave this field empty means the Azure Container Registry will build in the git repo's root path.
     
-    * `Local directory` - If you want to build a docker image with a local directory on your Jenkins server,
+    * **`Local directory`** - If you want to build a docker image with a local directory on your Jenkins server,
        choose `Local directory` and input the path. This plugin will upload the directory to an Azure Storage Blob
        and send the URL to Azure Container Registry.
     
-    * `Remote tarball` - If you have already host your code as a `tar.gz` file on a web server,
+    * **`Remote tarball`** - If you have already host your code as a `tar.gz` file on a web server,
        choose `Remote tarball` and send the url directly to Azure Container Registry. 
     
     > This plugin will use `Local directory` with value `.` as default.
