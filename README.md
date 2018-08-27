@@ -69,7 +69,7 @@ You will see the configuration.
 ## Supporting Pipeline
 This plugin also supports Pipeline project. You can use `Pipeline Syntax` to generate pipeline script.
 
-# Contributing
+## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
 Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
