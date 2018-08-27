@@ -51,6 +51,12 @@ public class QuickBuildRequest extends AbstractRequest {
     private String localDir;
 
     /**
+     * Files in a compressed archive on a remote web server.
+     */
+    @Getter
+    private String tarball;
+
+    /**
      * ============ Required ===============
      */
 

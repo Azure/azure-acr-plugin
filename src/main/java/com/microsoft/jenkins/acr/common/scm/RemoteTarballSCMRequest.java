@@ -5,9 +5,6 @@
 
 package com.microsoft.jenkins.acr.common.scm;
 
-public interface SCMRequest extends GitSCMRequest, LocalSCMRequest, RemoteTarballSCMRequest {
-
-    String getSourceType();
-
-    void setSourceUrl(String sourceUrl);
+public interface RemoteTarballSCMRequest {
+    String getTarball();
 }
