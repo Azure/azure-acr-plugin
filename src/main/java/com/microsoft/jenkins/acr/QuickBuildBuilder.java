@@ -143,7 +143,7 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
         QuickBuildRequest buildRequest = QuickBuildRequest.builder()
                 .sourceType(getSourceType())
                 .gitRepo(getGitRepo())
-                .gitBranch(getGitRefs())
+                .gitRef(getGitRefs())
                 .gitPath(getGitPath())
                 .localDir(Util.concatPath(workspace.getRemote(), getLocal()))
                 .tarball(getTarball())
