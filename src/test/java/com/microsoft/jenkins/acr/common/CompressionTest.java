@@ -33,7 +33,7 @@ public class CompressionTest {
     @After
     public void tearDown() {
         File dir = new File(workspace);
-        Util.deleteDir(dir);
+        UTUtil.deleteDir(dir);
     }
 
     @Test
@@ -79,7 +79,7 @@ public class CompressionTest {
     public void CompressionWithDirectory() throws IOException {
         File source = prepareFiles("source", new String[]{
                 "dir/",
-                "dir/a.txt",
+                "dir\\a.txt",
                 "dir/b.txt",
                 ".git/",
                 "directory/",
@@ -142,7 +142,7 @@ public class CompressionTest {
     }
 
     private File prepareSource(String filename, String content) throws IOException {
-        return Util.writeFile(filename, content, false);
+        return UTUtil.writeFile(filename, content, false);
     }
 
     private String getFilename(String name) {
@@ -150,7 +150,7 @@ public class CompressionTest {
     }
 
     private File prepareSource(String filename, int length) throws IOException {
-        return prepareSource(filename, Util.randomString(length));
+        return prepareSource(filename, UTUtil.randomString(length));
     }
 
     private File prepareSource(String filename) throws IOException {

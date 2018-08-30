@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Random;
 
-public class Util {
+public class UTUtil {
     public static String randomString(int length) {
         if (length <= 0) {
             return new String();

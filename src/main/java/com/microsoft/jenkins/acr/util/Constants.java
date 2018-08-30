@@ -35,8 +35,6 @@ public final class Constants {
 
     public static final String GIT_SUFFIX = ".git";
     public static final String GIT_SSH_PREFIX = "git@";
-    public static final String HTTP_SCHEMA = "http://";
-    public static final String HTTPS_SCHEMA = "https://";
 
     public static final String COMMENT = "#";
     public static final String EXCLAMATION = "!";

@@ -8,10 +8,11 @@ package com.microsoft.jenkins.acr.common.scm;
 
 import com.microsoft.azure.storage.StorageException;
 import com.microsoft.jenkins.acr.common.UploadRequest;
-import com.microsoft.jenkins.acr.common.Util;
+import com.microsoft.jenkins.acr.common.UTUtil;
 import com.microsoft.jenkins.acr.common.compression.CompressibleFileImpl;
 import com.microsoft.jenkins.acr.service.AzureContainerRegistry;
 import com.microsoft.jenkins.acr.service.AzureStorageBlockBlob;
+import com.microsoft.jenkins.acr.util.Util;
 import lombok.Getter;
 import org.junit.After;
 import org.junit.Assert;
@@ -56,7 +57,7 @@ public class LocalSCMTest extends AbstractSCMTest {
 
     @After
     public void tearDown() {
-        Util.deleteDir(new File(dir));
+        UTUtil.deleteDir(new File(dir));
     }
 
     @Override
@@ -76,6 +77,8 @@ public class LocalSCMTest extends AbstractSCMTest {
     }
 
     private void mockCompression(String filename, String folder, List<String> ignoreList) throws IOException {
+        filename = Util.normalizeFilename(filename);
+        folder = Util.normalizeFilename(folder);
         PowerMockito.mockStatic(CompressibleFileImpl.class);
         PowerMockito.when(CompressibleFileImpl.compressToFile(filename)).thenReturn(compressibleFile);
         String name = new File(filename).getName();
@@ -87,6 +90,7 @@ public class LocalSCMTest extends AbstractSCMTest {
     }
 
     private void mockBlob(String filename, String url) throws Exception {
+        filename = Util.normalizeFilename(filename);
         blockBlob = PowerMockito.mock(AzureStorageBlockBlob.class);
         PowerMockito.whenNew(AzureStorageBlockBlob.class).withArguments(url).thenReturn(blockBlob);
         PowerMockito.doNothing().when(blockBlob).uploadFile(filename);
@@ -109,7 +113,7 @@ public class LocalSCMTest extends AbstractSCMTest {
 
     @Test
     public void dockerIgnoreTest() throws Exception {
-        Util.writeFile(dir + "/.dockerignore", "a*.txt\n!ab.txt\n# comment", false);
+        UTUtil.writeFile(dir + "/.dockerignore", "a*.txt\n!ab.txt\n# comment", false);
         String relativePath = "src/relative-path-mock.tar.gz";
         String blobUrl = "https://azure-storage-blob-mock/src/relatvice-path-mock.tar.gz";
         String workspace = new File(dir).getAbsolutePath();

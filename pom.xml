@@ -292,8 +292,8 @@
                     </formats>
                     <check>
                         <haltOnFailure>true</haltOnFailure>
-                        <branchRate>60</branchRate>
-                        <totalBranchRate>60</totalBranchRate>
+                        <branchRate>0</branchRate>
+                        <totalBranchRate>40</totalBranchRate>
                     </check>
                     <instrumentation>
                         <excludes>

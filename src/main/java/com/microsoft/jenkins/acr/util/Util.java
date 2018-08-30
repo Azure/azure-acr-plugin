@@ -65,10 +65,10 @@ public final class Util {
 
     public static String concatPath(String root, String param) {
         if (Paths.get(param).isAbsolute()) {
-            return param;
+            return normalizeFilename(param);
         }
 
-        return Paths.get(root, param).toString();
+        return normalizeFilename(Paths.get(root, param).toString());
     }
 }
 

@@ -49,7 +49,7 @@ public class LocalSCMResolver extends AbstractSCMResolver {
 
             String[] filenames = CompressibleFileImpl.compressToFile(localFileName)
                     .withIgnoreList(ignoreList.toArray(new String[ignoreList.size()]))
-                    .withDirectory(this.source)
+                    .withDirectory(Util.normalizeFilename(this.source))
                     .compress()
                     .fileList();
             this.getLogger().logStatus(
