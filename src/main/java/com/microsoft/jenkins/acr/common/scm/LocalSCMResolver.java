@@ -9,6 +9,7 @@ import com.microsoft.jenkins.acr.Messages;
 import com.microsoft.jenkins.acr.common.BufferedLineReader;
 import com.microsoft.jenkins.acr.common.compression.CompressibleFileImpl;
 import com.microsoft.jenkins.acr.common.UploadRequest;
+import com.microsoft.jenkins.acr.common.compression.Compression;
 import com.microsoft.jenkins.acr.service.AzureContainerRegistry;
 import com.microsoft.jenkins.acr.service.AzureStorageBlockBlob;
 import com.microsoft.jenkins.acr.util.Constants;
@@ -43,6 +44,9 @@ public class LocalSCMResolver extends AbstractSCMResolver {
         this.getLogger().logStatus(
                 Messages.scm_compress_ignore(StringUtils.join(ignoreList, Constants.SHORT_LIST_SPERATE)));
         try {
+            Compression.CompressibleWithFile temp = CompressibleFileImpl.compressToFile(localFileName)
+                    .withIgnoreList(ignoreList.toArray(new String[ignoreList.size()]));
+
             String[] filenames = CompressibleFileImpl.compressToFile(localFileName)
                     .withIgnoreList(ignoreList.toArray(new String[ignoreList.size()]))
                     .withDirectory(this.source)
@@ -69,14 +73,20 @@ public class LocalSCMResolver extends AbstractSCMResolver {
         }
 
         try {
-            BufferedLineReader reader = new BufferedLineReader(new InputStreamReader(new FileInputStream(file)));
-            String line = reader.readLine();
-            while (line != null) {
-                line = StringUtils.trimToEmpty(line);
-                if (!line.isEmpty() && !line.startsWith(Constants.COMMENT)) {
-                    list.add(line);
+            BufferedLineReader reader = null;
+            try {
+                reader = new BufferedLineReader(new InputStreamReader(new FileInputStream(file)));
+                String line = reader.readLine();
+                while (line != null) {
+                    line = StringUtils.trimToEmpty(line);
+                    if (!line.isEmpty() && !line.startsWith(Constants.COMMENT)) {
+                        list.add(line);
+                    }
+                    line = reader.readLine();
                 }
-                line = reader.readLine();
+            } catch (IOException e) {
+            } finally {
+                reader.close();
             }
         } catch (IOException e) {
         }

@@ -23,9 +23,20 @@ public class Util {
     }
 
     public static File writeFile(String filename, String content, boolean append) throws IOException {
-        BufferedWriter bw = new BufferedWriter(new FileWriter(filename, append));
+        FileWriter fw = new FileWriter(filename, append);
+        BufferedWriter bw = new BufferedWriter(fw);
         bw.append(content);
         bw.close();
+        fw.close();
         return new File(filename);
+    }
+
+    public static void deleteDir(File dir) {
+        if (dir.isDirectory()) {
+            for (File file : dir.listFiles()) {
+                deleteDir(file);
+            }
+        }
+        dir.delete();
     }
 }

@@ -13,7 +13,6 @@ import org.junit.Test;
 import org.junit.Assert;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 
 public class CompressionTest {
@@ -34,7 +33,7 @@ public class CompressionTest {
     @After
     public void tearDown() {
         File dir = new File(workspace);
-        deleteDir(dir);
+        Util.deleteDir(dir);
     }
 
     @Test
@@ -158,14 +157,7 @@ public class CompressionTest {
         return prepareSource(filename, contentLength);
     }
 
-    private void deleteDir(File dir) {
-        if (dir.isDirectory()) {
-            for (File file : dir.listFiles()) {
-                deleteDir(file);
-            }
-        }
-        dir.delete();
-    }
+
 
     private File prepareFiles(String name, String[] files) throws IOException {
         File file = new File(getFilename(name));
