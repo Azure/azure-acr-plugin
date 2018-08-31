@@ -76,8 +76,6 @@ public class QuickBuildContextTest {
                 .build();
 
         mockAzureService(request);
-
-
         context.withBuildRequest(request);
 
         SCMRequest scmRequest = context.getSCMRequest();

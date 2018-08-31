@@ -336,7 +336,7 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
 
             AzureHelper.getInstance().auth(owner, azureCredentialsId);
 
-            if (params != null || params.length == 0) {
+            if (params == null || params.length == 0) {
                 return true;
             }
 

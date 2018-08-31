@@ -297,8 +297,8 @@
                     </check>
                     <instrumentation>
                         <excludes>
-                            <exclude>com/microsoft/jenkins/acr/util/Constants.class</exclude>
-                            <exclude>com/microsoft/jenkins/acr/common/Platform.class</exclude>
+                            <exclude>com.microsoft.jenkins.acr.util.Constants.class</exclude>
+                            <exclude>com.microsoft.jenkins.acr.common.Platform.class</exclude>
                         </excludes>
                     </instrumentation>
                 </configuration>
