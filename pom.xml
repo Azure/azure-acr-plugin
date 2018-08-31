@@ -293,11 +293,12 @@
                     <check>
                         <haltOnFailure>true</haltOnFailure>
                         <branchRate>0</branchRate>
-                        <totalBranchRate>40</totalBranchRate>
+                        <totalBranchRate>60</totalBranchRate>
                     </check>
                     <instrumentation>
                         <excludes>
-                            <exclude>com/microsoft/azure/**/Constants.class</exclude>
+                            <exclude>com/microsoft/jenkins/acr/util/Constants.class</exclude>
+                            <exclude>com/microsoft/jenkins/acr/common/Platform.class</exclude>
                         </excludes>
                     </instrumentation>
                 </configuration>
