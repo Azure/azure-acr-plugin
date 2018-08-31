@@ -10,9 +10,6 @@ import com.google.common.collect.ImmutableList;
 import java.util.List;
 
 public final class Constants {
-    private Constants() {
-    }
-
     public static final String PLUGIN_NAME = "AzureJenkinsContainerRegistryBuild";
 
     public static final String AI = "ACRBuildRequest";
@@ -52,4 +49,7 @@ public final class Constants {
             ".hg",
             ".hgignore",
             ".svn");
+
+    private Constants() {
+    }
 }
