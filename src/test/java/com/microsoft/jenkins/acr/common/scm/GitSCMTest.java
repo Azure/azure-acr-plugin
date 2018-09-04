@@ -68,6 +68,7 @@ public class GitSCMTest extends AbstractSCMTest {
         Assert.assertFalse(GitSCMResolver.verifyLocation("git@github.com:Azure/azure-acr-plugin.git"));
     }
 
+    @Override
     protected String getSCMUrl(AbstractSCMRequest request) throws Exception {
         return AbstractSCMResolver.getInstance(request).withLogger(data).getSCMUrl();
     }

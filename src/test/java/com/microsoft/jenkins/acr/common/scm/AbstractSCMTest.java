@@ -18,5 +18,5 @@ public abstract class AbstractSCMTest {
         PowerMockito.doNothing().when(data).logStatus("");
     }
 
-    abstract String getSCMUrl(AbstractSCMRequest request) throws Exception;
+    abstract protected String getSCMUrl(AbstractSCMRequest request) throws Exception;
 }

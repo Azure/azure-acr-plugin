@@ -11,7 +11,7 @@ import org.junit.Test;
 
 public class RemoteTarballSCMTest extends AbstractSCMTest {
     @Override
-    String getSCMUrl(AbstractSCMRequest request) throws Exception {
+    protected String getSCMUrl(AbstractSCMRequest request) throws Exception {
         return AbstractSCMResolver.getInstance(request).withLogger(data).getSCMUrl();
     }
 

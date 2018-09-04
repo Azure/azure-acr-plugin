@@ -3,7 +3,9 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  */
 
-package com.microsoft.jenkins.acr.common;
+package com.microsoft.jenkins.acr;
+
+import org.apache.commons.lang.StringUtils;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -12,10 +14,10 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Random;
 
-public class UTUtil {
+public class Utils {
     public static String randomString(int length) {
         if (length <= 0) {
-            return new String();
+            return "";
         }
         byte[] array = new byte[length];
         new Random().nextBytes(array);
@@ -38,5 +40,18 @@ public class UTUtil {
             }
         }
         dir.delete();
+    }
+
+    public static String loadFromEnv(String name) {
+        return loadFromEnv(name, "");
+    }
+
+    public static String loadFromEnv(String name, String defaultValue) {
+        final String value = System.getenv(name);
+        if (StringUtils.trimToNull(value) == null) {
+            return defaultValue;
+        } else {
+            return value;
+        }
     }
 }

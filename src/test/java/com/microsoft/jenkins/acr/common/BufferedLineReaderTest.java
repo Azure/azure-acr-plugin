@@ -5,6 +5,7 @@
 
 package com.microsoft.jenkins.acr.common;
 
+import com.microsoft.jenkins.acr.Utils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -28,7 +29,7 @@ public class BufferedLineReaderTest {
 
     @Test
     public void commonTest() throws IOException {
-        UTUtil.writeFile(filename, "1. a\n\n\n3. b\n#4. c", false);
+        Utils.writeFile(filename, "1. a\n\n\n3. b\n#4. c", false);
         reader = new BufferedLineReader(new FileReader(filename));
         try {
             reader.skipLines(-1);

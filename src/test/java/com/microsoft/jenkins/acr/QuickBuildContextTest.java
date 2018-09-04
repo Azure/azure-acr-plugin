@@ -11,7 +11,7 @@ import com.microsoft.jenkins.acr.commands.GetBuildLogCommand;
 import com.microsoft.jenkins.acr.commands.QueueBuildCommand;
 import com.microsoft.jenkins.acr.commands.ResolveSCMCommand;
 import com.microsoft.jenkins.acr.common.QuickBuildRequest;
-import com.microsoft.jenkins.acr.common.UTUtil;
+import com.microsoft.jenkins.acr.Utils;
 import com.microsoft.jenkins.acr.common.scm.AbstractSCMResolver;
 import com.microsoft.jenkins.acr.common.scm.LocalSCMResolver;
 import com.microsoft.jenkins.acr.common.scm.SCMRequest;
@@ -57,7 +57,7 @@ public class QuickBuildContextTest {
 
     @After
     public void tearDown() {
-        UTUtil.deleteDir(new File(dir));
+        Utils.deleteDir(new File(dir));
     }
 
     @Test

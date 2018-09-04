@@ -7,8 +7,8 @@ package com.microsoft.jenkins.acr.common.scm;
 
 
 import com.microsoft.azure.storage.StorageException;
+import com.microsoft.jenkins.acr.Utils;
 import com.microsoft.jenkins.acr.common.UploadRequest;
-import com.microsoft.jenkins.acr.common.UTUtil;
 import com.microsoft.jenkins.acr.common.compression.CompressibleFileImpl;
 import com.microsoft.jenkins.acr.service.AzureContainerRegistry;
 import com.microsoft.jenkins.acr.service.AzureStorageBlockBlob;
@@ -47,9 +47,6 @@ public class LocalSCMTest extends AbstractSCMTest {
     @Mock
     private CompressibleFileImpl compressibleFile;
 
-    @Mock
-    private AzureStorageBlockBlob blockBlob;
-
     @Before
     public void prepareDir() throws IOException, StorageException {
         new File(dir).mkdir();
@@ -57,7 +54,7 @@ public class LocalSCMTest extends AbstractSCMTest {
 
     @After
     public void tearDown() {
-        UTUtil.deleteDir(new File(dir));
+        Utils.deleteDir(new File(dir));
     }
 
     @Override
@@ -76,8 +73,8 @@ public class LocalSCMTest extends AbstractSCMTest {
         PowerMockito.when(containerRegistry.getUploadUrl(anyString(), anyString())).thenReturn(uploadRequest);
     }
 
-    private void mockCompression(String filename, String folder, List<String> ignoreList) throws IOException {
-        filename = Util.normalizeFilename(filename);
+    private void mockCompression(String filenameP, String folder, List<String> ignoreList) throws IOException {
+        String filename = Util.normalizeFilename(filenameP);
         folder = Util.normalizeFilename(folder);
         PowerMockito.mockStatic(CompressibleFileImpl.class);
         PowerMockito.when(CompressibleFileImpl.compressToFile(filename)).thenReturn(compressibleFile);
@@ -89,9 +86,9 @@ public class LocalSCMTest extends AbstractSCMTest {
         PowerMockito.when(compressibleFile.compress()).thenReturn(compressibleFile);
     }
 
-    private void mockBlob(String filename, String url) throws Exception {
-        filename = Util.normalizeFilename(filename);
-        blockBlob = PowerMockito.mock(AzureStorageBlockBlob.class);
+    private void mockBlob(String filenameP, String url) throws Exception {
+        String filename = Util.normalizeFilename(filenameP);
+        AzureStorageBlockBlob blockBlob = PowerMockito.mock(AzureStorageBlockBlob.class);
         PowerMockito.whenNew(AzureStorageBlockBlob.class).withArguments(url).thenReturn(blockBlob);
         PowerMockito.doNothing().when(blockBlob).uploadFile(filename);
     }
@@ -113,7 +110,7 @@ public class LocalSCMTest extends AbstractSCMTest {
 
     @Test
     public void dockerIgnoreTest() throws Exception {
-        UTUtil.writeFile(dir + "/.dockerignore", "a*.txt\n!ab.txt\n# comment", false);
+        Utils.writeFile(dir + "/.dockerignore", "a*.txt\n!ab.txt\n# comment", false);
         String relativePath = "src/relative-path-mock.tar.gz";
         String blobUrl = "https://azure-storage-blob-mock/src/relatvice-path-mock.tar.gz";
         String workspace = new File(dir).getAbsolutePath();

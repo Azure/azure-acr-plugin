@@ -5,6 +5,7 @@
 
 package com.microsoft.jenkins.acr.common;
 
+import com.microsoft.jenkins.acr.Utils;
 import com.microsoft.jenkins.acr.common.compression.CompressibleFileImpl;
 import com.microsoft.jenkins.acr.common.compression.Compression;
 import org.junit.After;
@@ -33,11 +34,11 @@ public class CompressionTest {
     @After
     public void tearDown() {
         File dir = new File(workspace);
-        UTUtil.deleteDir(dir);
+        Utils.deleteDir(dir);
     }
 
     @Test
-    public void CompressionWithoutIgnoreTest() throws IOException {
+    public void compressionWithoutIgnoreTest() throws IOException {
         File source = prepareSource(getFilename("a.txt"));
         String tarball = getFilename("a.tar.gz");
         Compression.CompressedFile file = CompressibleFileImpl.compressToFile(tarball)
@@ -50,7 +51,7 @@ public class CompressionTest {
     }
 
     @Test
-    public void CompressionWithIgnore() throws IOException {
+    public void compressionWithIgnore() throws IOException {
         File source = prepareSource(getFilename("a.txt"));
         File ignore = prepareSource(getFilename("b.txt"));
         String tarball = getFilename("a.tar.gz");
@@ -64,7 +65,7 @@ public class CompressionTest {
     }
 
     @Test
-    public void CompressionWithNonExistFile() throws IOException {
+    public void compressionWithNonExistFile() throws IOException {
         File source = new File(getFilename("a.txt"));
         String tarball = getFilename("a.tar.gz");
         Compression.CompressedFile file = CompressibleFileImpl.compressToFile(tarball)
@@ -76,7 +77,7 @@ public class CompressionTest {
     }
 
     @Test
-    public void CompressionWithDirectory() throws IOException {
+    public void compressionWithDirectory() throws IOException {
         File source = prepareFiles("source", new String[]{
                 "dir/",
                 "dir\\a.txt",
@@ -98,7 +99,7 @@ public class CompressionTest {
     }
 
     @Test
-    public void CompressionWithDirectoryIgnoreDir() throws IOException {
+    public void compressionWithDirectoryIgnoreDir() throws IOException {
         File source = prepareFiles("source", new String[]{
                 "dir/",
                 "dir/a.txt",
@@ -120,7 +121,7 @@ public class CompressionTest {
     }
 
     @Test
-    public void CompressionWithDirectoryIgnoreFile() throws IOException {
+    public void compressionWithDirectoryIgnoreFile() throws IOException {
         File source = prepareFiles("source", new String[]{
                 "dir/",
                 "dir/a.txt",
@@ -142,7 +143,7 @@ public class CompressionTest {
     }
 
     private File prepareSource(String filename, String content) throws IOException {
-        return UTUtil.writeFile(filename, content, false);
+        return Utils.writeFile(filename, content, false);
     }
 
     private String getFilename(String name) {
@@ -150,7 +151,7 @@ public class CompressionTest {
     }
 
     private File prepareSource(String filename, int length) throws IOException {
-        return prepareSource(filename, UTUtil.randomString(length));
+        return prepareSource(filename, Utils.randomString(length));
     }
 
     private File prepareSource(String filename) throws IOException {

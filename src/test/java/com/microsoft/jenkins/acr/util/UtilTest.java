@@ -3,12 +3,11 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  */
 
-package com.microsoft.jenkins.acr.Util;
+package com.microsoft.jenkins.acr.util;
 
 import com.microsoft.jenkins.acr.common.QuickBuildRequest;
 import com.microsoft.jenkins.acr.descriptor.BuildArgument;
 import com.microsoft.jenkins.acr.descriptor.Image;
-import com.microsoft.jenkins.acr.util.Util;
 import org.junit.Assert;
 import org.junit.Test;
 
