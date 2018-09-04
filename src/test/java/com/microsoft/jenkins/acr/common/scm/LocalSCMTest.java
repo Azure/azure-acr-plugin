@@ -73,9 +73,9 @@ public class LocalSCMTest extends AbstractSCMTest {
         PowerMockito.when(containerRegistry.getUploadUrl(anyString(), anyString())).thenReturn(uploadRequest);
     }
 
-    private void mockCompression(String filenameP, String folder, List<String> ignoreList) throws IOException {
+    private void mockCompression(String filenameP, String folderP, List<String> ignoreList) throws IOException {
         String filename = Util.normalizeFilename(filenameP);
-        folder = Util.normalizeFilename(folder);
+        String folder = Util.normalizeFilename(folderP);
         PowerMockito.mockStatic(CompressibleFileImpl.class);
         PowerMockito.when(CompressibleFileImpl.compressToFile(filename)).thenReturn(compressibleFile);
         String name = new File(filename).getName();
