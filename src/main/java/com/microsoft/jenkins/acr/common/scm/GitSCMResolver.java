@@ -55,11 +55,6 @@ public class GitSCMResolver extends AbstractSCMResolver {
         }
 
         // SSH model for git is not supported
-        if (source.startsWith(Constants.GIT_SSH_PREFIX)) {
-            return false;
-        }
-
-        // Here we cannot verify the file schema since the directory may not exist when configuration
-        return true;
+        return !source.startsWith(Constants.GIT_SSH_PREFIX);
     }
 }

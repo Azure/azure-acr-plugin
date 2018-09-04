@@ -45,7 +45,7 @@ public class LocalSCMResolver extends AbstractSCMResolver {
         try {
             String[] filenames = CompressibleFileImpl.compressToFile(localFileName)
                     .withIgnoreList(ignoreList.toArray(new String[ignoreList.size()]))
-                    .withDirectory(this.source)
+                    .withDirectory(Util.normalizeFilename(this.source))
                     .compress()
                     .fileList();
             this.getLogger().logStatus(
@@ -69,14 +69,20 @@ public class LocalSCMResolver extends AbstractSCMResolver {
         }
 
         try {
-            BufferedLineReader reader = new BufferedLineReader(new InputStreamReader(new FileInputStream(file)));
-            String line = reader.readLine();
-            while (line != null) {
-                line = StringUtils.trimToEmpty(line);
-                if (!line.isEmpty() && !line.startsWith(Constants.COMMENT)) {
-                    list.add(line);
+            BufferedLineReader reader = null;
+            try {
+                reader = new BufferedLineReader(new InputStreamReader(new FileInputStream(file)));
+                String line = reader.readLine();
+                while (line != null) {
+                    line = StringUtils.trimToEmpty(line);
+                    if (!line.isEmpty() && !line.startsWith(Constants.COMMENT)) {
+                        list.add(line);
+                    }
+                    line = reader.readLine();
                 }
-                line = reader.readLine();
+            } catch (IOException e) {
+            } finally {
+                reader.close();
             }
         } catch (IOException e) {
         }

@@ -10,9 +10,6 @@ import com.google.common.collect.ImmutableList;
 import java.util.List;
 
 public final class Constants {
-    private Constants() {
-    }
-
     public static final String PLUGIN_NAME = "AzureJenkinsContainerRegistryBuild";
 
     public static final String AI = "ACRBuildRequest";
@@ -35,8 +32,6 @@ public final class Constants {
 
     public static final String GIT_SUFFIX = ".git";
     public static final String GIT_SSH_PREFIX = "git@";
-    public static final String HTTP_SCHEMA = "http://";
-    public static final String HTTPS_SCHEMA = "https://";
 
     public static final String COMMENT = "#";
     public static final String EXCLAMATION = "!";
@@ -54,4 +49,7 @@ public final class Constants {
             ".hg",
             ".hgignore",
             ".svn");
+
+    private Constants() {
+    }
 }
