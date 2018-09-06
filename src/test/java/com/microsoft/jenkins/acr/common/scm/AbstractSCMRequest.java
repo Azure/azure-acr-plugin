@@ -20,7 +20,7 @@ public abstract class AbstractSCMRequest implements SCMRequest {
     }
 
     @Override
-    public String getGitRef() {
+    public String getGitRefspec() {
         throw new NotImplementedException();
     }
 

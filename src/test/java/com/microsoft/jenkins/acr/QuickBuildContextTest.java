@@ -68,7 +68,7 @@ public class QuickBuildContextTest {
 
         QuickBuildRequest request = QuickBuildRequest.builder()
                 .gitRepo("https://github.com/Azure/azure-acr-plugin")
-                .gitRef("master")
+                .gitRefspec("master")
                 .imageNames(new String[]{"azure-acr-plugin:latest"})
                 .platform("Linux")
                 .dockerFilePath("Dockerfile")
@@ -82,7 +82,7 @@ public class QuickBuildContextTest {
         Assert.assertNull(scmRequest.getLocalDir());
         Assert.assertNull(scmRequest.getTarball());
         Assert.assertEquals("https://github.com/Azure/azure-acr-plugin", scmRequest.getGitRepo());
-        Assert.assertEquals("master", scmRequest.getGitRef());
+        Assert.assertEquals("master", scmRequest.getGitRefspec());
         Assert.assertEquals("git", scmRequest.getSourceType());
 
         ImmutableSet set = context.getCommandService().getRegisteredCommands();

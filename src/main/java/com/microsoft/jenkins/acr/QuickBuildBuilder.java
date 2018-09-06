@@ -96,7 +96,7 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
     @Getter
     @Setter
     @DataBoundSetter
-    private String gitRef;
+    private String gitRefspec;
     @Getter
     @Setter
     @DataBoundSetter
@@ -143,7 +143,7 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
         QuickBuildRequest buildRequest = QuickBuildRequest.builder()
                 .sourceType(getSourceType())
                 .gitRepo(getGitRepo())
-                .gitRef(getGitRef())
+                .gitRefspec(getGitRefspec())
                 .gitPath(getGitPath())
                 .localDir(Util.concatPath(workspace.getRemote(), getLocal()))
                 .tarball(getTarball())

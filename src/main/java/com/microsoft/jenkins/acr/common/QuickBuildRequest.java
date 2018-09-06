@@ -36,7 +36,7 @@ public class QuickBuildRequest extends AbstractRequest {
      * SCM git branch or pull request.
      */
     @Getter
-    private String gitRef;
+    private String gitRefspec;
 
     /**
      * Docker build path in the git repo.

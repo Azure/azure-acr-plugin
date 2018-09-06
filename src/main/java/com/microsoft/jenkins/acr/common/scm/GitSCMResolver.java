@@ -28,8 +28,8 @@ public class GitSCMResolver extends AbstractSCMResolver {
             builder.append(Constants.GIT_SUFFIX);
         }
 
-        if (StringUtils.trimToNull(request.getGitRef()) != null) {
-            builder.append(Constants.HASHTAG).append(request.getGitRef());
+        if (StringUtils.trimToNull(request.getGitRefspec()) != null) {
+            builder.append(Constants.HASHTAG).append(request.getGitRefspec());
         }
 
         if (StringUtils.trimToNull(request.getGitPath()) != null) {

@@ -8,7 +8,7 @@ package com.microsoft.jenkins.acr.common.scm;
 public interface GitSCMRequest {
     String getGitRepo();
 
-    String getGitRef();
+    String getGitRefspec();
 
     String getGitPath();
 }

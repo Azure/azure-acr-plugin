@@ -24,7 +24,7 @@
             <f:entry title="${%source_git_title}" field="gitRepo">
                <f:textbox />
             </f:entry>
-            <f:entry title="${%source_git_refs}" field="gitRefs">
+            <f:entry title="${%source_git_refs}" field="gitRefspec">
                <f:textbox />
             </f:entry>
             <f:entry title="${%source_git_path}" field="gitPath">

@@ -77,13 +77,13 @@ public class GitSCMTest extends AbstractSCMTest {
         @Getter
         private final String gitRepo;
         @Getter
-        private final String gitRef;
+        private final String gitRefspec;
         @Getter
         private final String gitPath;
 
-        public Request(String repo, String ref, String path) {
+        public Request(String repo, String refspec, String path) {
             this.gitRepo = repo;
-            this.gitRef = ref;
+            this.gitRefspec = refspec;
             this.gitPath = path;
         }
 
