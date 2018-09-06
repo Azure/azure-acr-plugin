@@ -330,7 +330,8 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
         }
 
         private boolean checkPrerequisites(final Item owner, String azureCredentialsId, String... params) {
-            if (StringUtils.trimToNull(azureCredentialsId) == null) {
+            if (StringUtils.trimToNull(azureCredentialsId) == null
+                    || azureCredentialsId.equals(Constants.INVALID_OPTION)) {
                 return false;
             }
 
