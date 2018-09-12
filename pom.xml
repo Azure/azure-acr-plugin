@@ -292,11 +292,12 @@
                     </formats>
                     <check>
                         <haltOnFailure>true</haltOnFailure>
-                        <branchRate>0</branchRate>
+                        <branchRate>60</branchRate>
                         <totalBranchRate>60</totalBranchRate>
                     </check>
                     <instrumentation>
                         <excludes>
+                            <exclude>com.microsoft.jenkins.acr.descriptor.*</exclude>
                             <exclude>com.microsoft.jenkins.acr.util.Constants.class</exclude>
                             <exclude>com.microsoft.jenkins.acr.common.Platform.class</exclude>
                         </excludes>

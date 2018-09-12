@@ -5,7 +5,7 @@
 
 package com.microsoft.jenkins.acr.commands.scm;
 
-import com.microsoft.jenkins.acr.command.scm.RemoteTarballSCMRequest;
+import com.microsoft.jenkins.acr.common.scm.RemoteTarballSCMRequest;
 
 public class TarballSCMCommand extends AbstractSCMCommand<TarballSCMCommand.ITarballSCMData> {
     @Override

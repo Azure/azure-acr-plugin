@@ -9,7 +9,7 @@ import com.microsoft.jenkins.acr.Messages;
 import com.microsoft.jenkins.acr.common.BufferedLineReader;
 import com.microsoft.jenkins.acr.common.UploadRequest;
 import com.microsoft.jenkins.acr.common.compression.CompressibleFileImpl;
-import com.microsoft.jenkins.acr.command.scm.LocalSCMRequest;
+import com.microsoft.jenkins.acr.common.scm.LocalSCMRequest;
 import com.microsoft.jenkins.acr.service.AzureContainerRegistry;
 import com.microsoft.jenkins.acr.service.AzureStorageBlockBlob;
 import com.microsoft.jenkins.acr.util.Constants;

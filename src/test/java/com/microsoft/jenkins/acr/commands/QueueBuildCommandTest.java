@@ -3,12 +3,7 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  */
 
-package com.microsoft.jenkins.acr.command.scm;
+package com.microsoft.jenkins.acr.commands;
 
-public interface GitSCMRequest {
-    String getGitRepo();
-
-    String getGitRefspec();
-
-    String getGitPath();
+public class QueueBuildCommandTest {
 }

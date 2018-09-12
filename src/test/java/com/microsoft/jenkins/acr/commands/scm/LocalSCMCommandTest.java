@@ -3,15 +3,14 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  */
 
-package com.microsoft.jenkins.acr.command.scm;
+package com.microsoft.jenkins.acr.commands.scm;
 
 
 import com.microsoft.azure.storage.StorageException;
 import com.microsoft.jenkins.acr.Utils;
-import com.microsoft.jenkins.acr.commands.scm.AbstractSCMCommand;
-import com.microsoft.jenkins.acr.commands.scm.LocalSCMCommand;
 import com.microsoft.jenkins.acr.common.UploadRequest;
 import com.microsoft.jenkins.acr.common.compression.CompressibleFileImpl;
+import com.microsoft.jenkins.acr.common.scm.LocalSCMRequest;
 import com.microsoft.jenkins.acr.service.AzureContainerRegistry;
 import com.microsoft.jenkins.acr.service.AzureStorageBlockBlob;
 import com.microsoft.jenkins.acr.util.Util;
@@ -35,7 +34,7 @@ import java.util.List;
         CompressibleFileImpl.class,
         LocalSCMCommand.class
 })
-public class LocalSCMTest extends AbstractSCMTest<LocalSCMTest.Request> {
+public class LocalSCMCommandTest extends AbstractSCMTest<LocalSCMCommandTest.Request> {
     private final String dir = "localSCMTest";
     private final String acr = "acr";
     private final String resourceGroup = "resourcegroup";
@@ -123,7 +122,7 @@ public class LocalSCMTest extends AbstractSCMTest<LocalSCMTest.Request> {
         return LocalSCMCommand.class.newInstance();
     }
 
-    class Request extends AbstractSCMRequest implements LocalSCMCommand.ILocalSCMData, LocalSCMRequest{
+    class Request extends AbstractSCMRequest implements LocalSCMCommand.ILocalSCMData, LocalSCMRequest {
         @Getter
         private final String localDir;
 

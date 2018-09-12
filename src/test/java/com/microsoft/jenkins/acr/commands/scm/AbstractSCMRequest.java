@@ -3,9 +3,8 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  */
 
-package com.microsoft.jenkins.acr.command.scm;
+package com.microsoft.jenkins.acr.commands.scm;
 
-import com.microsoft.jenkins.acr.commands.scm.AbstractSCMCommand;
 import com.microsoft.jenkins.azurecommons.JobContext;
 import com.microsoft.jenkins.azurecommons.command.CommandState;
 import hudson.EnvVars;

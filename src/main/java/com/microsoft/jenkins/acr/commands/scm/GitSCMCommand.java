@@ -6,7 +6,7 @@
 package com.microsoft.jenkins.acr.commands.scm;
 
 import com.microsoft.jenkins.acr.Messages;
-import com.microsoft.jenkins.acr.command.scm.GitSCMRequest;
+import com.microsoft.jenkins.acr.common.scm.GitSCMRequest;
 import com.microsoft.jenkins.acr.util.Constants;
 import org.apache.commons.lang.StringUtils;
 

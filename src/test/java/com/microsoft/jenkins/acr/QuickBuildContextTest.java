@@ -13,11 +13,9 @@ import com.microsoft.jenkins.acr.commands.scm.GitSCMCommand;
 import com.microsoft.jenkins.acr.commands.scm.LocalSCMCommand;
 import com.microsoft.jenkins.acr.commands.scm.TarballSCMCommand;
 import com.microsoft.jenkins.acr.common.QuickBuildRequest;
-import com.microsoft.jenkins.acr.command.scm.SCMRequest;
-import com.microsoft.jenkins.acr.exception.ServiceException;
+import com.microsoft.jenkins.acr.common.scm.SCMRequest;
 import com.microsoft.jenkins.acr.service.AzureContainerRegistry;
 import com.microsoft.jenkins.acr.service.AzureStorageAppendBlob;
-import com.microsoft.jenkins.acr.service.AzureStorageBlockBlob;
 import com.microsoft.jenkins.azurecommons.command.CommandState;
 import hudson.FilePath;
 import hudson.Launcher;
@@ -36,8 +34,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.File;
 import java.io.PrintStream;
-
-import static org.mockito.ArgumentMatchers.anyString;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({

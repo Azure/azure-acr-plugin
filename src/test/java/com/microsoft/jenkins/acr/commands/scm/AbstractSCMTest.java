@@ -3,9 +3,7 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  */
 
-package com.microsoft.jenkins.acr.command.scm;
-
-import com.microsoft.jenkins.acr.commands.scm.AbstractSCMCommand;
+package com.microsoft.jenkins.acr.commands.scm;
 
 public abstract class AbstractSCMTest<T extends AbstractSCMRequest> {
 

@@ -3,8 +3,11 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  */
 
-package com.microsoft.jenkins.acr.command.scm;
-
-public interface RemoteTarballSCMRequest {
-    String getTarball();
-}
+/**
+ * Command to resolve the build request source url.
+ *
+ * @since 1.0
+ * @author yuwzho
+ * @version 1.0
+ */
+package com.microsoft.jenkins.acr.common.scm;

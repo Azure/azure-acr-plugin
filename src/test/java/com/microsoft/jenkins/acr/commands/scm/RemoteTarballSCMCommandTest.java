@@ -3,15 +3,14 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  */
 
-package com.microsoft.jenkins.acr.command.scm;
+package com.microsoft.jenkins.acr.commands.scm;
 
-import com.microsoft.jenkins.acr.commands.scm.AbstractSCMCommand;
-import com.microsoft.jenkins.acr.commands.scm.TarballSCMCommand;
+import com.microsoft.jenkins.acr.common.scm.RemoteTarballSCMRequest;
 import lombok.Getter;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class RemoteTarballSCMTest extends AbstractSCMTest<RemoteTarballSCMTest.Request> {
+public class RemoteTarballSCMCommandTest extends AbstractSCMTest<RemoteTarballSCMCommandTest.Request> {
 
 
     @Test

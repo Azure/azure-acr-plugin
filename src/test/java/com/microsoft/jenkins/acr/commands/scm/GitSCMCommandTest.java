@@ -3,16 +3,15 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  */
 
-package com.microsoft.jenkins.acr.command.scm;
+package com.microsoft.jenkins.acr.commands.scm;
 
-import com.microsoft.jenkins.acr.commands.scm.AbstractSCMCommand;
-import com.microsoft.jenkins.acr.commands.scm.GitSCMCommand;
+import com.microsoft.jenkins.acr.common.scm.GitSCMRequest;
 import lombok.Getter;
 import org.junit.Assert;
 import org.junit.Test;
 
 
-public class GitSCMTest extends AbstractSCMTest<GitSCMTest.Request> {
+public class GitSCMCommandTest extends AbstractSCMTest<GitSCMCommandTest.Request> {
 
     @Test
     public void commonTest() throws Exception {
