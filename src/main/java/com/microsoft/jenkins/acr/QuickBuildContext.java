@@ -57,7 +57,7 @@ public class QuickBuildContext extends AbstractQuickBuildContext {
                                           FilePath aWorkspace,
                                           Launcher aLauncher,
                                           TaskListener aTaskListener) {
-        Class scmCommand = LocalSCMCommand.class;
+        Class scmCommand;
 
 
         switch (AbstractSCMCommand.Type.valueOf(buildRequest.getSourceType().toUpperCase())) {

@@ -30,7 +30,7 @@ public final class AzureHelper {
     }
 
     public AzureHelper auth(TokenCredentialData token) {
-        this.client = AzureClientFactory.getClient(token, new AzureClientFactory.Configurer() {
+        AzureHelper.client = AzureClientFactory.getClient(token, new AzureClientFactory.Configurer() {
             @Override
             public Azure.Configurable configure(Azure.Configurable configurable) {
                 return configurable
@@ -39,6 +39,11 @@ public final class AzureHelper {
                                 AzureHelper.class.getPackage().getImplementationVersion()));
             }
         });
+        return this;
+    }
+
+    protected AzureHelper auth(Azure azure) {
+        AzureHelper.client = azure;
         return this;
     }
 
