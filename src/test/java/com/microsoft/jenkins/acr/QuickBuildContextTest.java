@@ -9,15 +9,15 @@ import com.google.common.collect.ImmutableSet;
 import com.microsoft.azure.management.containerregistry.Build;
 import com.microsoft.jenkins.acr.commands.GetBuildLogCommand;
 import com.microsoft.jenkins.acr.commands.QueueBuildCommand;
-import com.microsoft.jenkins.acr.commands.ResolveSCMCommand;
+import com.microsoft.jenkins.acr.commands.scm.GitSCMCommand;
+import com.microsoft.jenkins.acr.commands.scm.LocalSCMCommand;
+import com.microsoft.jenkins.acr.commands.scm.TarballSCMCommand;
 import com.microsoft.jenkins.acr.common.QuickBuildRequest;
-import com.microsoft.jenkins.acr.Utils;
-import com.microsoft.jenkins.acr.common.scm.AbstractSCMResolver;
-import com.microsoft.jenkins.acr.common.scm.LocalSCMResolver;
-import com.microsoft.jenkins.acr.common.scm.SCMRequest;
+import com.microsoft.jenkins.acr.command.scm.SCMRequest;
 import com.microsoft.jenkins.acr.exception.ServiceException;
 import com.microsoft.jenkins.acr.service.AzureContainerRegistry;
 import com.microsoft.jenkins.acr.service.AzureStorageAppendBlob;
+import com.microsoft.jenkins.acr.service.AzureStorageBlockBlob;
 import com.microsoft.jenkins.azurecommons.command.CommandState;
 import hudson.FilePath;
 import hudson.Launcher;
@@ -37,12 +37,14 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.io.File;
 import java.io.PrintStream;
 
+import static org.mockito.ArgumentMatchers.anyString;
+
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
         AzureContainerRegistry.class,
         AzureStorageAppendBlob.class,
         GetBuildLogCommand.class,
-        AbstractSCMResolver.class
+        LocalSCMCommand.class
 })
 public class QuickBuildContextTest {
     private String dir = "context-workspace";
@@ -63,9 +65,6 @@ public class QuickBuildContextTest {
     @Test
     public void configureTest() throws Exception {
 
-        QuickBuildContext context = prepareContext();
-
-
         QuickBuildRequest request = QuickBuildRequest.builder()
                 .gitRepo("https://github.com/Azure/azure-acr-plugin")
                 .gitRefspec("master")
@@ -76,9 +75,9 @@ public class QuickBuildContextTest {
                 .build();
 
         mockAzureService(request);
-        context.withBuildRequest(request);
+        QuickBuildContext context = prepareContext(request);
 
-        SCMRequest scmRequest = context.getSCMRequest();
+        SCMRequest scmRequest = context.getBuildRequest();
         Assert.assertNull(scmRequest.getLocalDir());
         Assert.assertNull(scmRequest.getTarball());
         Assert.assertEquals("https://github.com/Azure/azure-acr-plugin", scmRequest.getGitRepo());
@@ -86,7 +85,7 @@ public class QuickBuildContextTest {
         Assert.assertEquals("git", scmRequest.getSourceType());
 
         ImmutableSet set = context.getCommandService().getRegisteredCommands();
-        Assert.assertTrue(set.contains(ResolveSCMCommand.class));
+        Assert.assertTrue(set.contains(GitSCMCommand.class));
         Assert.assertTrue(set.contains(QueueBuildCommand.class));
         Assert.assertTrue(set.contains(GetBuildLogCommand.class));
 
@@ -101,7 +100,6 @@ public class QuickBuildContextTest {
 
     @Test
     public void cancelTest() throws Exception {
-        QuickBuildContext context = prepareContext();
 
         QuickBuildRequest request = QuickBuildRequest.builder()
                 .tarball("https://remote-mock-server/mock-tarball.tar.gz")
@@ -111,9 +109,10 @@ public class QuickBuildContextTest {
                 .sourceType("tarball")
                 .build();
 
-        context.withBuildRequest(request);
+        QuickBuildContext context = prepareContext(request);
+
         mockAzureService(request);
-        SCMRequest scmRequest = context.getSCMRequest();
+        SCMRequest scmRequest = context.getBuildRequest();
         Assert.assertNull(scmRequest.getGitRepo());
         Assert.assertNull(scmRequest.getGitPath());
         Assert.assertNull(scmRequest.getGitPath());
@@ -122,7 +121,7 @@ public class QuickBuildContextTest {
         Assert.assertEquals("tarball", scmRequest.getSourceType());
 
         ImmutableSet set = context.getCommandService().getRegisteredCommands();
-        Assert.assertTrue(set.contains(ResolveSCMCommand.class));
+        Assert.assertTrue(set.contains(TarballSCMCommand.class));
         Assert.assertTrue(set.contains(QueueBuildCommand.class));
         Assert.assertTrue(set.contains(GetBuildLogCommand.class));
 
@@ -138,8 +137,6 @@ public class QuickBuildContextTest {
 
     @Test
     public void failedTest() throws Exception {
-        QuickBuildContext context = prepareContext();
-
         QuickBuildRequest request = QuickBuildRequest.builder()
                 .localDir("/home/user/workspace/azure-acr-plugin")
                 .imageNames(new String[]{"azure-acr-plugin:latest"})
@@ -148,14 +145,11 @@ public class QuickBuildContextTest {
                 .sourceType("local")
                 .build();
 
-        context.withBuildRequest(request);
+        QuickBuildContext context = prepareContext(request);
+
         mockAzureService(request);
 
-        LocalSCMResolver scmResolver = PowerMockito.mock(LocalSCMResolver.class);
-        PowerMockito.whenNew(LocalSCMResolver.class).withAnyArguments().thenReturn(scmResolver);
-        PowerMockito.when(scmResolver.getSCMUrl()).thenThrow(new ServiceException("Azure blob", "upload", "message"));
-
-        SCMRequest scmRequest = context.getSCMRequest();
+        SCMRequest scmRequest = context.getBuildRequest();
         Assert.assertNull(scmRequest.getGitRepo());
         Assert.assertNull(scmRequest.getGitPath());
         Assert.assertNull(scmRequest.getGitPath());
@@ -164,7 +158,7 @@ public class QuickBuildContextTest {
         Assert.assertEquals("local", scmRequest.getSourceType());
 
         ImmutableSet set = context.getCommandService().getRegisteredCommands();
-        Assert.assertTrue(set.contains(ResolveSCMCommand.class));
+        Assert.assertTrue(set.contains(LocalSCMCommand.class));
         Assert.assertTrue(set.contains(QueueBuildCommand.class));
         Assert.assertTrue(set.contains(GetBuildLogCommand.class));
 
@@ -175,8 +169,12 @@ public class QuickBuildContextTest {
         Assert.assertEquals(CommandState.HasError, context.getLastCommandState());
     }
 
-    private QuickBuildContext prepareContext() {
-        QuickBuildContext context = new QuickBuildContext();
+    private QuickBuildContext prepareContext(QuickBuildRequest request) {
+        QuickBuildContext context = QuickBuildContext.builder()
+                .buildRequest(request)
+                .registryName("name")
+                .resourceGroupName("resourcegroup")
+                .build();
 
         FilePath workspace = new FilePath(new File(dir));
         Run run = PowerMockito.mock(Run.class);
@@ -190,8 +188,6 @@ public class QuickBuildContextTest {
                 workspace,
                 launcher,
                 listener);
-        context.withResourceGroupName("resourcegroup")
-                .withRegistryName("name");
         return context;
     }
 

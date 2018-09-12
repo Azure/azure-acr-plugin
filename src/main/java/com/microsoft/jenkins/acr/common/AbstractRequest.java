@@ -5,7 +5,7 @@
 
 package com.microsoft.jenkins.acr.common;
 
-import com.microsoft.jenkins.acr.common.scm.SCMRequest;
+import com.microsoft.jenkins.acr.command.scm.SCMRequest;
 import lombok.Getter;
 import lombok.Setter;
 

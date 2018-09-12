@@ -14,7 +14,6 @@ import java.util.concurrent.Callable;
 import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
 import com.microsoft.azure.util.AzureBaseCredentials;
 import com.microsoft.jenkins.acr.common.Platform;
-import com.microsoft.jenkins.acr.common.scm.GitSCMResolver;
 import com.microsoft.jenkins.acr.descriptor.BuildArgument;
 import com.microsoft.jenkins.acr.descriptor.Image;
 import com.microsoft.jenkins.acr.common.QuickBuildRequest;
@@ -155,11 +154,12 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
                 .timeout(getTimeout())
                 .build();
 
-        QuickBuildContext context = new QuickBuildContext();
+        QuickBuildContext context = QuickBuildContext.builder()
+                .resourceGroupName(getResourceGroupName())
+                .registryName(getRegistryName())
+                .buildRequest(buildRequest)
+                .build();
         context.configure(run, workspace, launcher, listener)
-                .withResourceGroupName(getResourceGroupName())
-                .withRegistryName(getRegistryName())
-                .withBuildRequest(buildRequest)
                 .executeCommands();
 
         if (context.getLastCommandState().isError()) {
@@ -306,7 +306,8 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
             if (sourceType == null || !sourceType.equals(Constants.GIT)) {
                 return FormValidation.ok();
             }
-            return GitSCMResolver.verifyLocation(gitRepo)
+
+            return Util.verifyGitUrl(gitRepo)
                     ? FormValidation.ok()
                     : FormValidation.error(Messages.source_help());
         }

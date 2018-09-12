@@ -39,6 +39,17 @@ public class UtilTest {
     }
 
     @Test
+    public void verifyLocation() {
+        Assert.assertTrue(Util.verifyGitUrl(null));
+        Assert.assertTrue(Util.verifyGitUrl(""));
+        Assert.assertTrue(Util.verifyGitUrl("https://github.com/Azure/azure-acr-plugin.git"));
+        Assert.assertTrue(Util.verifyGitUrl("https://github.com/Azure/azure-acr-plugin"));
+        Assert.assertTrue(Util.verifyGitUrl("https://github.com/Azure/azure-acr-plugin/"));
+        Assert.assertTrue(Util.verifyGitUrl("http://github.com/Azure/azure-acr-plugin/"));
+        Assert.assertFalse(Util.verifyGitUrl("git@github.com:Azure/azure-acr-plugin.git"));
+    }
+
+    @Test
     public void toStringArrayTest() {
 
         String[] src = new String[]{"a", "b", "c"};

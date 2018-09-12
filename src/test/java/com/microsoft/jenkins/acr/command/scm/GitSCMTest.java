@@ -3,14 +3,16 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  */
 
-package com.microsoft.jenkins.acr.common.scm;
+package com.microsoft.jenkins.acr.command.scm;
 
+import com.microsoft.jenkins.acr.commands.scm.AbstractSCMCommand;
+import com.microsoft.jenkins.acr.commands.scm.GitSCMCommand;
 import lombok.Getter;
 import org.junit.Assert;
 import org.junit.Test;
 
 
-public class GitSCMTest extends AbstractSCMTest {
+public class GitSCMTest extends AbstractSCMTest<GitSCMTest.Request> {
 
     @Test
     public void commonTest() throws Exception {
@@ -57,29 +59,20 @@ public class GitSCMTest extends AbstractSCMTest {
         Assert.assertEquals("https://github.com/Azure/azure-acr-plugin.git#" + branch, url);
     }
 
-    @Test
-    public void verifyLocation() {
-        Assert.assertTrue(GitSCMResolver.verifyLocation(null));
-        Assert.assertTrue(GitSCMResolver.verifyLocation(""));
-        Assert.assertTrue(GitSCMResolver.verifyLocation("https://github.com/Azure/azure-acr-plugin.git"));
-        Assert.assertTrue(GitSCMResolver.verifyLocation("https://github.com/Azure/azure-acr-plugin"));
-        Assert.assertTrue(GitSCMResolver.verifyLocation("https://github.com/Azure/azure-acr-plugin/"));
-        Assert.assertTrue(GitSCMResolver.verifyLocation("http://github.com/Azure/azure-acr-plugin/"));
-        Assert.assertFalse(GitSCMResolver.verifyLocation("git@github.com:Azure/azure-acr-plugin.git"));
-    }
-
     @Override
-    protected String getSCMUrl(AbstractSCMRequest request) throws Exception {
-        return AbstractSCMResolver.getInstance(request).withLogger(data).getSCMUrl();
+    protected AbstractSCMCommand getCommand() throws IllegalAccessException, InstantiationException {
+        return GitSCMCommand.class.newInstance();
     }
 
-    class Request extends AbstractSCMRequest {
+
+    class Request extends AbstractSCMRequest implements GitSCMCommand.IGitSCMData, GitSCMRequest {
         @Getter
         private final String gitRepo;
         @Getter
         private final String gitRefspec;
         @Getter
         private final String gitPath;
+
 
         public Request(String repo, String refspec, String path) {
             this.gitRepo = repo;
@@ -88,8 +81,8 @@ public class GitSCMTest extends AbstractSCMTest {
         }
 
         @Override
-        public String getSourceType() {
-            return "git";
+        public GitSCMRequest getGitSCMRequest() {
+            return this;
         }
     }
 }

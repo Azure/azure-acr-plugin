@@ -3,12 +3,11 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  */
 
-package com.microsoft.jenkins.acr.common.scm;
-
-public interface GitSCMRequest {
-    String getGitRepo();
-
-    String getGitRefspec();
-
-    String getGitPath();
-}
+/**
+ * SCM management package.
+ *
+ * @since 1.0
+ * @author yuwzho
+ * @version 1.0
+ */
+package com.microsoft.jenkins.acr.command.scm;

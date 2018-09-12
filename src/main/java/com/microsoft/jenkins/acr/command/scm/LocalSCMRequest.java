@@ -3,8 +3,8 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  */
 
-package com.microsoft.jenkins.acr.common.scm;
+package com.microsoft.jenkins.acr.command.scm;
 
-public interface RemoteTarballSCMRequest {
-    String getTarball();
+public interface LocalSCMRequest {
+    String getLocalDir();
 }
