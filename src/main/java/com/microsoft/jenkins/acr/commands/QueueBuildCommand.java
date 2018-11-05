@@ -5,7 +5,6 @@
 
 package com.microsoft.jenkins.acr.commands;
 
-import com.microsoft.azure.management.containerregistry.Build;
 import com.microsoft.jenkins.acr.Messages;
 import com.microsoft.jenkins.acr.common.QuickBuildRequest;
 import com.microsoft.jenkins.acr.ACRQuickBuildPlugin;
@@ -27,14 +26,14 @@ public class QueueBuildCommand implements ICommand<QueueBuildCommand.IQueueBuild
                     context.getRegistryName(),
                     Util.toJson(context.getBuildRequest())));
 
-            Build build = AzureContainerRegistry.
+             String runId = AzureContainerRegistry.
                     getInstance().
                     queueBuildRequest(context.getResourceGroupName(),
                             context.getRegistryName(),
                             context.getBuildRequest());
 
-            context.logStatus(Messages.build_finishQueueABuild(build.buildId()));
-            context.setBuildId(build.buildId());
+            context.logStatus(Messages.build_finishQueueABuild(runId));
+            context.setBuildId(runId);
             context.setCommandState(CommandState.Success);
 
             ACRQuickBuildPlugin.sendEvent(Constants.AI, Constants.AI_QUEUE,

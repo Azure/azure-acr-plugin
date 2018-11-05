@@ -9,6 +9,8 @@ import com.microsoft.jenkins.acr.descriptor.BuildArgument;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
+
 /**
  * Azure Container Request object.
  * It should contains all arguments to queue a quick build to ACR.
@@ -64,7 +66,7 @@ public class QuickBuildRequest extends AbstractRequest {
      * The fully qualified image names including the repository and tag.
      */
     @Getter
-    private String[] imageNames;
+    private List<String> imageNames;
 
     /**
      * ============ Optional ===============

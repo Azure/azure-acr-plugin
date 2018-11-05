@@ -9,6 +9,7 @@ import com.microsoft.azure.AzureEnvironment;
 import com.microsoft.azure.credentials.ApplicationTokenCredentials;
 import com.microsoft.azure.management.Azure;
 import lombok.Getter;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
 import javax.naming.AuthenticationException;
@@ -24,11 +25,11 @@ public abstract class BaseAzureHelper {
     @BeforeClass
     public static void setup() throws AuthenticationException {
         ApplicationTokenCredentials credentials = new ApplicationTokenCredentials(
-                "ae12946a-f4de-4609-a5d1-68c36604f3b0",
-                "72f988bf-86f1-41af-91ab-2d7cd011db47",
-                "KcDB6CMlNn+MmtA+ZJv6xXmXQz+x2JRxGQBy6Dh6adw=",
+                "XXXXX",
+                "XXXXXX",
+                "XXXXX",
                 AzureEnvironment.AZURE);
-        Azure azure = Azure.authenticate(credentials).withSubscription("685ba005-af8d-4b04-8f16-a7bf38b2eb5a");
+        azure = Azure.authenticate(credentials).withSubscription("685ba005-af8d-4b04-8f16-a7bf38b2eb5a");
         azure.resourceGroups().define(resourceGroup)
                 .withRegion("eastus")
                 .create();
@@ -40,5 +41,11 @@ public abstract class BaseAzureHelper {
                 .withBasicSku()
                 .create();
         AzureHelper.getInstance().auth(azure);
+    }
+
+    @AfterClass
+    public static void teardown() {
+        azure.containerRegistries().deleteByResourceGroup(resourceGroup, registry);
+        azure.resourceGroups().deleteByName(resourceGroup);
     }
 }

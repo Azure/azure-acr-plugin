@@ -146,7 +146,7 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
                 .gitPath(getGitPath())
                 .localDir(Util.concatPath(workspace.getRemote(), getLocal()))
                 .tarball(getTarball())
-                .imageNames(Util.toStringArray(getImageNames()))
+                .imageNames(Util.toStringList(getImageNames()))
                 .platform(getPlatform())
                 .buildArguments(getBuildArgsArray())
                 .dockerFilePath(getDockerfile())

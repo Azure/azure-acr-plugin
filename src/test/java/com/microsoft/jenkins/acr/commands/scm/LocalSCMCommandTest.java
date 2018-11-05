@@ -7,7 +7,7 @@ package com.microsoft.jenkins.acr.commands.scm;
 
 
 import com.microsoft.azure.storage.StorageException;
-import com.microsoft.jenkins.acr.Utils;
+import com.microsoft.jenkins.acr.util.Utils;
 import com.microsoft.jenkins.acr.common.UploadRequest;
 import com.microsoft.jenkins.acr.common.compression.CompressibleFileImpl;
 import com.microsoft.jenkins.acr.common.scm.LocalSCMRequest;
