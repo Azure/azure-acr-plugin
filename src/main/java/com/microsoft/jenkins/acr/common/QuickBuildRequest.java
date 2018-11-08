@@ -95,7 +95,7 @@ public class QuickBuildRequest extends AbstractRequest {
      * The platform properties against which the build will happen.
      */
     @Getter
-    private String platform;
+    private Platform platform;
 
     /**
      * The Docker file path relative to the source location.

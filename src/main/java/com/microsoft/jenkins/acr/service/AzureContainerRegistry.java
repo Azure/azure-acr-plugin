@@ -5,11 +5,13 @@
 
 package com.microsoft.jenkins.acr.service;
 
-import com.microsoft.azure.management.containerregistry.Registry;
-import com.microsoft.azure.management.containerregistry.RegistryDockerTaskRunRequest;
-import com.microsoft.azure.management.containerregistry.SourceUploadDefinition;
+import com.microsoft.azure.management.containerregistry.Architecture;
 import com.microsoft.azure.management.containerregistry.OS;
 import com.microsoft.azure.management.containerregistry.PlatformProperties;
+import com.microsoft.azure.management.containerregistry.RegistryDockerTaskRunRequest;
+import com.microsoft.azure.management.containerregistry.Registry;
+import com.microsoft.azure.management.containerregistry.SourceUploadDefinition;
+import com.microsoft.azure.management.containerregistry.Variant;
 import com.microsoft.jenkins.acr.common.QuickBuildRequest;
 import com.microsoft.jenkins.acr.common.UploadRequest;
 import rx.Completable;
@@ -37,7 +39,9 @@ public final class AzureContainerRegistry extends AzureService {
                                     String acrName,
                                     QuickBuildRequest request) {
         PlatformProperties platformProperties = new PlatformProperties()
-                .withOs(OS.fromString(request.getPlatform()));
+                .withOs(OS.fromString(request.getPlatform().getOs()))
+                .withArchitecture(Architecture.fromString(request.getPlatform().getArchitecture()))
+                .withVariant(Variant.fromString(request.getPlatform().getVariant()));
         RegistryDockerTaskRunRequest.DefinitionStages.DockerTaskRunRequestStepAttachable attachable = this.getClient()
                 .containerRegistries()
                 .getByResourceGroup(resourceGroupName, acrName)

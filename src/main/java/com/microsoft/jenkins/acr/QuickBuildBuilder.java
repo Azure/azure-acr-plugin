@@ -13,10 +13,10 @@ import java.util.concurrent.Callable;
 
 import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
 import com.microsoft.azure.util.AzureBaseCredentials;
-import com.microsoft.jenkins.acr.common.Platform;
 import com.microsoft.jenkins.acr.descriptor.BuildArgument;
 import com.microsoft.jenkins.acr.descriptor.Image;
 import com.microsoft.jenkins.acr.common.QuickBuildRequest;
+import com.microsoft.jenkins.acr.common.Platform;
 import com.microsoft.jenkins.acr.service.AzureContainerRegistry;
 import com.microsoft.jenkins.acr.service.AzureHelper;
 import com.microsoft.jenkins.acr.service.AzureResourceGroup;
@@ -66,7 +66,15 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
     @Getter
     @Setter
     @DataBoundSetter
-    private String platform = Constants.LINUX;
+    private String os = Platform.OS.Linux.toString();
+    @Getter
+    @Setter
+    @DataBoundSetter
+    private String architecture = Platform.ARCHITECTURE.AMD64.toString();
+    @Getter
+    @Setter
+    @DataBoundSetter
+    private String variant = Platform.VARIANT.V6.toString();
     @Getter
     @Setter
     @DataBoundSetter
@@ -147,7 +155,7 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
                 .localDir(Util.concatPath(workspace.getRemote(), getLocal()))
                 .tarball(getTarball())
                 .imageNames(Util.toStringList(getImageNames()))
-                .platform(getPlatform())
+                .platform(new Platform(getOs(), getArchitecture(), getVariant()))
                 .buildArguments(getBuildArgsArray())
                 .dockerFilePath(getDockerfile())
                 .noCache(isNoCache())
@@ -242,20 +250,6 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
          */
 
         /**
-         * Fill platform with {@link Platform}.
-         *
-         * @param owner Item
-         * @return Platform list
-         */
-        public ListBoxModel doFillPlatformItems(@AncestorInPath final Item owner) {
-            ListBoxModel list = new ListBoxModel();
-            for (Platform p : Platform.values()) {
-                list.add(p.toString());
-            }
-            return list;
-        }
-
-        /**
          * Dynamic fill the resource group name.
          *
          * @param owner              Item
@@ -272,6 +266,48 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
                             return AzureResourceGroup.getInstance().listResourceGroupNames();
                         }
                     });
+        }
+
+        /**
+         * Fill os with {@link Platform.OS}.
+         *
+         * @param owner Item
+         * @return OS list
+         */
+        public ListBoxModel doFillOsItems(@AncestorInPath final Item owner) {
+            ListBoxModel list = new ListBoxModel();
+            for (Platform.OS p : Platform.OS.values()) {
+                list.add(p.toString());
+            }
+            return list;
+        }
+
+        /**
+         * Fill architecture with {@link Platform.ARCHITECTURE}.
+         *
+         * @param owner Item
+         * @return {@link Platform.ARCHITECTURE} list
+         */
+        public ListBoxModel doFillArchitectureItems(@AncestorInPath final Item owner) {
+            ListBoxModel list = new ListBoxModel();
+            for (Platform.ARCHITECTURE p : Platform.ARCHITECTURE.values()) {
+                list.add(p.toString());
+            }
+            return list;
+        }
+
+        /**
+         * Fill variant with {@link Platform.VARIANT}.
+         *
+         * @param owner Item
+         * @return {@link Platform.VARIANT} list
+         */
+        public ListBoxModel doFillVariantItems(@AncestorInPath final Item owner) {
+            ListBoxModel list = new ListBoxModel();
+            for (Platform.VARIANT p : Platform.VARIANT.values()) {
+                list.add(p.toString());
+            }
+            return list;
         }
 
         /**
