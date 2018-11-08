@@ -8,7 +8,7 @@ package com.microsoft.jenkins.acr.service;
 import lombok.Getter;
 import lombok.Setter;
 
-public class AzureContainerRegistry extends BaseAzureHelper {
+public class AzureContainerRegistryTest extends BaseAzureHelper {
     public Tag listRepositoryTag(String repository) {
 //        RegistryCredentials credential = this.getAzure()
 //                .containerRegistries()

@@ -5,6 +5,7 @@
 
 package com.microsoft.jenkins.acr.util;
 
+import com.microsoft.jenkins.acr.common.Platform;
 import com.microsoft.jenkins.acr.common.QuickBuildRequest;
 import com.microsoft.jenkins.acr.descriptor.BuildArgument;
 import com.microsoft.jenkins.acr.descriptor.Image;
@@ -17,25 +18,25 @@ import java.util.List;
 public class UtilTest {
     @Test
     public void toJsonTest() {
-//        QuickBuildRequest request = QuickBuildRequest.builder()
-//                .platform("linux")
-//                .localDir("gitrepo")
-//                .buildArguments(new BuildArgument[]{
-//                        new BuildArgument("key", "secret", false)
-//                })
-//                .imageNames(new String[]{
-//                        "1",
-//                        "2"
-//                })
-//                .noCache(false)
-//                .build();
-//        Assert.assertEquals("{\"localDir\":\"gitrepo\"," +
-//                "\"imageNames\":[\"1\",\"2\"]," +
-//                "\"buildArguments\":[{\"key\":\"key\",\"secrecy\":false}]," +
-//                "\"noCache\":false," +
-//                "\"timeout\":0," +
-//                "\"platform\":\"linux\"," +
-//                "\"canceled\":false}", Util.toJson(request));
+        List<String> imageList = new ArrayList<>();
+        imageList.add("1");
+        imageList.add("2");
+        QuickBuildRequest request = QuickBuildRequest.builder()
+                .platform(new Platform("Linux", "AMD64", "V6"))
+                .localDir("gitrepo")
+                .buildArguments(new BuildArgument[]{
+                        new BuildArgument("key", "secret", false)
+                })
+                .imageNames(imageList)
+                .noCache(false)
+                .build();
+        Assert.assertEquals("{\"localDir\":\"gitrepo\"," +
+                "\"imageNames\":[\"1\",\"2\"]," +
+                "\"buildArguments\":[{\"key\":\"key\",\"secrecy\":false}]," +
+                "\"noCache\":false," +
+                "\"timeout\":0," +
+                "\"platform\":{\"os\":\"Linux\",\"architecture\":\"AMD64\",\"variant\":\"V6\"}," +
+                "\"canceled\":false}", Util.toJson(request));
     }
 
     @Test
