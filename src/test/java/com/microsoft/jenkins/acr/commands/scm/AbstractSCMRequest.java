@@ -27,18 +27,22 @@ public abstract class AbstractSCMRequest implements AbstractSCMCommand.ISCMData 
 
     @Override
     public void logError(String s) {
+        // do nothing
     }
 
     @Override
     public void logStatus(String s) {
+        // do nothing
     }
 
     @Override
     public void logError(Exception e) {
+        // do nothing
     }
 
     @Override
     public void logError(String s, Exception e) {
+        // do nothing
     }
 
     @Override

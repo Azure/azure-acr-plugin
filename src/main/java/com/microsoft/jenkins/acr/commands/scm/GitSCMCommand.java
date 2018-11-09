@@ -12,7 +12,7 @@ import org.apache.commons.lang.StringUtils;
 
 public class GitSCMCommand extends AbstractSCMCommand<GitSCMCommand.IGitSCMData> {
 
-    String getSourceUrl(IGitSCMData data) {
+    protected String getSourceUrl(IGitSCMData data) {
         GitSCMRequest request = data.getGitSCMRequest();
         StringBuilder builder = new StringBuilder(request.getGitRepo());
 

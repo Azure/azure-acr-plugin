@@ -11,7 +11,7 @@ import com.microsoft.jenkins.azurecommons.command.IBaseCommandData;
 import com.microsoft.jenkins.azurecommons.command.ICommand;
 
 public abstract class AbstractSCMCommand<T extends AbstractSCMCommand.ISCMData> implements ICommand<T> {
-    abstract String getSourceUrl(T data) throws Exception;
+    protected abstract String getSourceUrl(T data) throws Exception;
 
     @Override
     public void execute(T data) {

@@ -25,7 +25,7 @@ import java.util.List;
 
 public class LocalSCMCommand  extends AbstractSCMCommand<LocalSCMCommand.ILocalSCMData> {
     @Override
-    String getSourceUrl(ILocalSCMData data) throws Exception {
+    protected String getSourceUrl(ILocalSCMData data) throws Exception {
         String source = data.getLocalSCMRequest().getLocalDir();
         data.logStatus(Messages.scm_local(source));
         UploadRequest request = AzureContainerRegistry.getInstance()

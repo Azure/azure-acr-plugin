@@ -81,7 +81,7 @@ public class QuickTaskContextTest {
         mockAzureService(request);
         QuickTaskContext context = prepareContext(request);
 
-        SCMRequest scmRequest = context.getBuildRequest();
+        SCMRequest scmRequest = context.getDockerTaskRequest();
         Assert.assertNull(scmRequest.getLocalDir());
         Assert.assertNull(scmRequest.getTarball());
         Assert.assertEquals("https://github.com/Azure/azure-acr-plugin", scmRequest.getGitRepo());
@@ -93,12 +93,12 @@ public class QuickTaskContextTest {
         Assert.assertTrue(set.contains(QueueTaskCommand.class));
         Assert.assertTrue(set.contains(GetBuildLogCommand.class));
 
-        Assert.assertNull(context.getBuildRequest().getSourceUrl());
+        Assert.assertNull(context.getDockerTaskRequest().getSourceUrl());
 
         context.executeCommands();
 
         Assert.assertEquals("https://github.com/Azure/azure-acr-plugin.git#master",
-                context.getBuildRequest().getSourceUrl());
+                context.getDockerTaskRequest().getSourceUrl());
         Assert.assertEquals(CommandState.Success, context.getLastCommandState());
     }
 
@@ -116,7 +116,7 @@ public class QuickTaskContextTest {
         QuickTaskContext context = prepareContext(request);
 
         mockAzureService(request);
-        SCMRequest scmRequest = context.getBuildRequest();
+        SCMRequest scmRequest = context.getDockerTaskRequest();
         Assert.assertNull(scmRequest.getGitRepo());
         Assert.assertNull(scmRequest.getGitPath());
         Assert.assertNull(scmRequest.getGitPath());
@@ -129,14 +129,14 @@ public class QuickTaskContextTest {
         Assert.assertTrue(set.contains(QueueTaskCommand.class));
         Assert.assertTrue(set.contains(GetBuildLogCommand.class));
 
-        Assert.assertNull(context.getBuildRequest().getSourceUrl());
+        Assert.assertNull(context.getDockerTaskRequest().getSourceUrl());
 
-        Assert.assertFalse(context.getBuildRequest().isCanceled());
+        Assert.assertFalse(context.getDockerTaskRequest().isCanceled());
 
         context.executeCommands();
         context.cancel();
         Assert.assertEquals(CommandState.Success, context.getLastCommandState());
-        Assert.assertTrue(context.getBuildRequest().isCanceled());
+        Assert.assertTrue(context.getDockerTaskRequest().isCanceled());
     }
 
     @Test
@@ -153,7 +153,7 @@ public class QuickTaskContextTest {
 
         mockAzureService(request);
 
-        SCMRequest scmRequest = context.getBuildRequest();
+        SCMRequest scmRequest = context.getDockerTaskRequest();
         Assert.assertNull(scmRequest.getGitRepo());
         Assert.assertNull(scmRequest.getGitPath());
         Assert.assertNull(scmRequest.getGitPath());
@@ -166,7 +166,7 @@ public class QuickTaskContextTest {
         Assert.assertTrue(set.contains(QueueTaskCommand.class));
         Assert.assertTrue(set.contains(GetBuildLogCommand.class));
 
-        Assert.assertNull(context.getBuildRequest().getSourceUrl());
+        Assert.assertNull(context.getDockerTaskRequest().getSourceUrl());
 
         context.executeCommands();
         Assert.assertTrue(context.getLastCommandState().isError());
@@ -175,7 +175,7 @@ public class QuickTaskContextTest {
 
     private QuickTaskContext prepareContext(DockerTaskRequest request) {
         QuickTaskContext context = QuickTaskContext.builder()
-                .buildRequest(request)
+                .dockerTaskRequest(request)
                 .registryName("name")
                 .resourceGroupName("resourcegroup")
                 .build();

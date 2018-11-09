@@ -13,7 +13,7 @@ import org.junit.Test;
 import org.jvnet.hudson.test.BuildWatcher;
 import org.jvnet.hudson.test.JenkinsRule;
 
-public class QuickTaskIT extends BaseAzureHelper {
+public class QuickTaskBuilderIT extends BaseAzureHelper {
     @Rule
     public JenkinsRule j = new JenkinsRule() {
         {

@@ -9,7 +9,7 @@ import com.microsoft.jenkins.acr.common.scm.RemoteTarballSCMRequest;
 
 public class TarballSCMCommand extends AbstractSCMCommand<TarballSCMCommand.ITarballSCMData> {
     @Override
-    String getSourceUrl(ITarballSCMData data) {
+    protected String getSourceUrl(ITarballSCMData data) {
         return data.getTarballRequest().getTarball();
     }
 
