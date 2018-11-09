@@ -3,7 +3,7 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  */
 
-package com.microsoft.jenkins.acr;
+package com.microsoft.jenkins.acr.util;
 
 import org.apache.commons.lang.StringUtils;
 

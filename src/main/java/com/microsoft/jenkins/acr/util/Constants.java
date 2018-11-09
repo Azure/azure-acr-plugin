@@ -28,8 +28,6 @@ public final class Constants {
     public static final String LOCAL = "local";
     public static final String GIT = "git";
 
-    public static final String LINUX = "Linux";
-
     public static final String GIT_SUFFIX = ".git";
     public static final String GIT_SSH_PREFIX = "git@";
 
@@ -49,6 +47,7 @@ public final class Constants {
             ".hg",
             ".hgignore",
             ".svn");
+    public static final int TIMEOUT = 300;
 
     private Constants() {
     }

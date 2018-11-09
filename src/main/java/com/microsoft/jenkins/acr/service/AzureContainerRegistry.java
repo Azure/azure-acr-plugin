@@ -5,16 +5,15 @@
 
 package com.microsoft.jenkins.acr.service;
 
-import com.microsoft.azure.management.containerregistry.Build;
-import com.microsoft.azure.management.containerregistry.Build.QueuedQuickBuildDefinitionStages.WithCreate;
-import com.microsoft.azure.management.containerregistry.Build.
-        QueuedQuickBuildDefinitionStages.QueuedQuickBuildArgumentDefinitionStages.WithBuildArgumentAttach;
-import com.microsoft.azure.management.containerregistry.OsType;
-import com.microsoft.azure.management.containerregistry.SourceUploadDefinition;
-import com.microsoft.jenkins.acr.common.QuickBuildRequest;
+import com.microsoft.azure.management.containerregistry.Architecture;
+import com.microsoft.azure.management.containerregistry.OS;
+import com.microsoft.azure.management.containerregistry.PlatformProperties;
+import com.microsoft.azure.management.containerregistry.RegistryDockerTaskRunRequest;
 import com.microsoft.azure.management.containerregistry.Registry;
+import com.microsoft.azure.management.containerregistry.SourceUploadDefinition;
+import com.microsoft.azure.management.containerregistry.Variant;
+import com.microsoft.jenkins.acr.common.DockerTaskRequest;
 import com.microsoft.jenkins.acr.common.UploadRequest;
-import com.microsoft.jenkins.acr.descriptor.BuildArgument;
 import rx.Completable;
 
 import java.util.ArrayList;
@@ -29,43 +28,42 @@ public final class AzureContainerRegistry extends AzureService {
     }
 
     /**
-     * Send a quickBuildRequest to ACR build.
+     * Send a DockerTaskRequest to ACR build.
      *
      * @param resourceGroupName resource group of Azure Container Registry.
      * @param acrName           name of Azure Container Registry.
      * @param request           request object.
-     * @return Build object contain build id.
+     * @return String           object contain run id.
      */
-    public Build queueBuildRequest(String resourceGroupName,
-                                   String acrName,
-                                   QuickBuildRequest request) {
-        WithCreate withCreate = this.getClient()
+    public String queueTaskRequest(String resourceGroupName,
+                                    String acrName,
+                                    DockerTaskRequest request) {
+        PlatformProperties platformProperties = new PlatformProperties()
+                .withOs(OS.fromString(request.getPlatform().getOs()))
+                .withArchitecture(Architecture.fromString(request.getPlatform().getArchitecture()))
+                .withVariant(Variant.fromString(request.getPlatform().getVariant()));
+        RegistryDockerTaskRunRequest.DefinitionStages.DockerTaskRunRequestStepAttachable attachable = this.getClient()
                 .containerRegistries()
                 .getByResourceGroup(resourceGroupName, acrName)
-                .queuedBuilds()
-                .queueQuickBuild()
-                .withOSType(OsType.fromString(request.getPlatform()))
-                .withSourceLocation(request.getSourceUrl())
+                .scheduleRun()
+                .withPlatform(platformProperties)
+                .withDockerTaskRunRequest()
+                .defineDockerTaskStep()
                 .withDockerFilePath(request.getDockerFilePath());
-        if (request.getImageNames() == null || request.getImageNames().length == 0) {
-            withCreate.withImagePushDisabled();
+
+        if (request.getImageNames() == null || request.getImageNames().size() == 0) {
+            attachable = attachable.withPushDisabled();
         } else {
-            withCreate.withImagePushEnabled()
+            attachable = attachable.withPushEnabled()
                     .withImageNames(request.getImageNames());
         }
 
-        for (BuildArgument arg : request.getBuildArguments()) {
-            WithBuildArgumentAttach<WithCreate> argumentAttach = withCreate.defineBuildArgument(arg.getKey())
-                    .withValue(arg.getValue());
-            if (arg.isSecrecy()) {
-                argumentAttach.withSecrecyEnabled();
-            } else {
-                argumentAttach.withSecrecyDisabled();
-            }
-            withCreate = argumentAttach.attach();
-        }
-
-        return withCreate.create();
+        attachable = request.isNoCache() ? attachable.withoutCache() : attachable.withCache();
+        return attachable.attach()
+                .withSourceLocation(request.getSourceUrl())
+                .withTimeout(request.getTimeout())
+                .execute()
+                .runId();
     }
 
     /**
@@ -91,16 +89,16 @@ public final class AzureContainerRegistry extends AzureService {
      *
      * @param resourceGroupName resource group of ACR.
      * @param acrName           name of ACR.
-     * @param buildId           build ID.
+     * @param runId             run ID.
      * @return Link of the Azure Storage Blob.
      */
-    public String getLog(String resourceGroupName, String acrName, String buildId) {
+    public String getLog(String resourceGroupName, String acrName, String runId) {
         return this.getClient()
                 .containerRegistries()
                 .getByResourceGroup(resourceGroupName, acrName)
-                .queuedBuilds()
-                .get(buildId)
-                .getLogLink();
+                .manager()
+                .registryTaskRuns()
+                .getLogSasUrl(resourceGroupName, acrName, runId);
     }
 
     /**
@@ -124,15 +122,15 @@ public final class AzureContainerRegistry extends AzureService {
      *
      * @param resourceGroupName resource group of ACR.
      * @param acrName           name of ACR.
-     * @param buildId           build ID.
+     * @param runId             run ID.
      * @return Completable job.
      */
-    public Completable cancelBuildAsync(String resourceGroupName, String acrName, String buildId) {
+    public Completable cancelBuildAsync(String resourceGroupName, String acrName, String runId) {
         return this.getClient()
                 .containerRegistries()
-                .getByResourceGroup(resourceGroupName, acrName)
-                .queuedBuilds()
-                .cancelAsync(buildId);
+                .manager()
+                .registryTaskRuns()
+                .cancelAsync(resourceGroupName, acrName, runId);
     }
 
     public static AzureContainerRegistry getInstance() {

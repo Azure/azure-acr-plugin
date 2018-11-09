@@ -13,11 +13,10 @@ import java.util.concurrent.Callable;
 
 import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
 import com.microsoft.azure.util.AzureBaseCredentials;
-import com.microsoft.jenkins.acr.common.Platform;
-import com.microsoft.jenkins.acr.common.scm.GitSCMResolver;
+import com.microsoft.jenkins.acr.common.DockerTaskRequest;
 import com.microsoft.jenkins.acr.descriptor.BuildArgument;
 import com.microsoft.jenkins.acr.descriptor.Image;
-import com.microsoft.jenkins.acr.common.QuickBuildRequest;
+import com.microsoft.jenkins.acr.common.Platform;
 import com.microsoft.jenkins.acr.service.AzureContainerRegistry;
 import com.microsoft.jenkins.acr.service.AzureHelper;
 import com.microsoft.jenkins.acr.service.AzureResourceGroup;
@@ -51,7 +50,7 @@ import org.kohsuke.stapler.QueryParameter;
  * This builder together with config.jelly in resources,
  * defines the view of this build action.
  */
-public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
+public class QuickTaskBuilder extends Builder implements SimpleBuildStep {
 
     @Getter
     private final String azureCredentialsId;
@@ -67,7 +66,15 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
     @Getter
     @Setter
     @DataBoundSetter
-    private String platform = Constants.LINUX;
+    private String os = Platform.OS.Linux.toString();
+    @Getter
+    @Setter
+    @DataBoundSetter
+    private String architecture = Platform.ARCHITECTURE.AMD64.toString();
+    @Getter
+    @Setter
+    @DataBoundSetter
+    private String variant = Platform.VARIANT.V6.toString();
     @Getter
     @Setter
     @DataBoundSetter
@@ -75,7 +82,7 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
     @Getter
     @Setter
     @DataBoundSetter
-    private int timeout;
+    private int timeout = Constants.TIMEOUT;
     @Getter
     @Setter
     @DataBoundSetter
@@ -119,9 +126,9 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
      * @param registryName       ACR name, which will run the build and the image will be default push to.
      */
     @DataBoundConstructor
-    public QuickBuildBuilder(final String azureCredentialsId,
-                             final String resourceGroupName,
-                             final String registryName) {
+    public QuickTaskBuilder(final String azureCredentialsId,
+                            final String resourceGroupName,
+                            final String registryName) {
         this.azureCredentialsId = azureCredentialsId;
         this.resourceGroupName = resourceGroupName;
         this.registryName = registryName;
@@ -140,26 +147,27 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
                 // at least one of the local and git repo should contain value.
                 StringUtils.trimToEmpty(getLocal())
                         .concat(StringUtils.trimToEmpty(getGitRepo())));
-        QuickBuildRequest buildRequest = QuickBuildRequest.builder()
+        DockerTaskRequest dockerTaskRequest = DockerTaskRequest.builder()
                 .sourceType(getSourceType())
                 .gitRepo(getGitRepo())
                 .gitRefspec(getGitRefspec())
                 .gitPath(getGitPath())
                 .localDir(Util.concatPath(workspace.getRemote(), getLocal()))
                 .tarball(getTarball())
-                .imageNames(Util.toStringArray(getImageNames()))
-                .platform(getPlatform())
+                .imageNames(Util.toStringList(getImageNames()))
+                .platform(new Platform(getOs(), getArchitecture(), getVariant()))
                 .buildArguments(getBuildArgsArray())
                 .dockerFilePath(getDockerfile())
                 .noCache(isNoCache())
                 .timeout(getTimeout())
                 .build();
 
-        QuickBuildContext context = new QuickBuildContext();
+        QuickTaskContext context = QuickTaskContext.builder()
+                .resourceGroupName(getResourceGroupName())
+                .registryName(getRegistryName())
+                .dockerTaskRequest(dockerTaskRequest)
+                .build();
         context.configure(run, workspace, launcher, listener)
-                .withResourceGroupName(getResourceGroupName())
-                .withRegistryName(getRegistryName())
-                .withBuildRequest(buildRequest)
                 .executeCommands();
 
         if (context.getLastCommandState().isError()) {
@@ -207,9 +215,9 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
     }
 
     // @Extension annotation identifies this uses an extension point
-    // @Symbol annotation registers a symbol with pipeline with @acrQuickBuild
+    // @Symbol annotation registers a symbol with pipeline with @acrQuickTask
     @Extension
-    @Symbol("acrQuickBuild")
+    @Symbol("acrQuickTask")
     public static final class DescriptorImpl
             extends BuildStepDescriptor<Builder> {
 
@@ -242,20 +250,6 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
          */
 
         /**
-         * Fill platform with {@link Platform}.
-         *
-         * @param owner Item
-         * @return Platform list
-         */
-        public ListBoxModel doFillPlatformItems(@AncestorInPath final Item owner) {
-            ListBoxModel list = new ListBoxModel();
-            for (Platform p : Platform.values()) {
-                list.add(p.toString());
-            }
-            return list;
-        }
-
-        /**
          * Dynamic fill the resource group name.
          *
          * @param owner              Item
@@ -272,6 +266,48 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
                             return AzureResourceGroup.getInstance().listResourceGroupNames();
                         }
                     });
+        }
+
+        /**
+         * Fill os with {@link Platform.OS}.
+         *
+         * @param owner Item
+         * @return OS list
+         */
+        public ListBoxModel doFillOsItems(@AncestorInPath final Item owner) {
+            ListBoxModel list = new ListBoxModel();
+            for (Platform.OS p : Platform.OS.values()) {
+                list.add(p.toString());
+            }
+            return list;
+        }
+
+        /**
+         * Fill architecture with {@link Platform.ARCHITECTURE}.
+         *
+         * @param owner Item
+         * @return {@link Platform.ARCHITECTURE} list
+         */
+        public ListBoxModel doFillArchitectureItems(@AncestorInPath final Item owner) {
+            ListBoxModel list = new ListBoxModel();
+            for (Platform.ARCHITECTURE p : Platform.ARCHITECTURE.values()) {
+                list.add(p.toString());
+            }
+            return list;
+        }
+
+        /**
+         * Fill variant with {@link Platform.VARIANT}.
+         *
+         * @param owner Item
+         * @return {@link Platform.VARIANT} list
+         */
+        public ListBoxModel doFillVariantItems(@AncestorInPath final Item owner) {
+            ListBoxModel list = new ListBoxModel();
+            for (Platform.VARIANT p : Platform.VARIANT.values()) {
+                list.add(p.toString());
+            }
+            return list;
         }
 
         /**
@@ -306,7 +342,8 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
             if (sourceType == null || !sourceType.equals(Constants.GIT)) {
                 return FormValidation.ok();
             }
-            return GitSCMResolver.verifyLocation(gitRepo)
+
+            return Util.verifyGitUrl(gitRepo)
                     ? FormValidation.ok()
                     : FormValidation.error(Messages.source_help());
         }

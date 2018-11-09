@@ -3,17 +3,15 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  */
 
-package com.microsoft.jenkins.acr.common.scm;
+package com.microsoft.jenkins.acr.commands.scm;
 
+import com.microsoft.jenkins.acr.common.scm.RemoteTarballSCMRequest;
 import lombok.Getter;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class RemoteTarballSCMTest extends AbstractSCMTest {
-    @Override
-    protected String getSCMUrl(AbstractSCMRequest request) throws Exception {
-        return AbstractSCMResolver.getInstance(request).withLogger(data).getSCMUrl();
-    }
+public class RemoteTarballSCMCommandTest extends AbstractSCMTest<RemoteTarballSCMCommandTest.Request> {
+
 
     @Test
     public void commonTest() throws Exception {
@@ -22,7 +20,12 @@ public class RemoteTarballSCMTest extends AbstractSCMTest {
         Assert.assertEquals(source, url);
     }
 
-    class Request extends AbstractSCMRequest {
+    @Override
+    protected AbstractSCMCommand getCommand() throws IllegalAccessException, InstantiationException {
+        return TarballSCMCommand.class.newInstance();
+    }
+
+    class Request extends AbstractSCMRequest implements TarballSCMCommand.ITarballSCMData, RemoteTarballSCMRequest {
         @Getter
         private final String tarball;
 
@@ -31,8 +34,8 @@ public class RemoteTarballSCMTest extends AbstractSCMTest {
         }
 
         @Override
-        public String getSourceType() {
-            return "tarball";
+        public RemoteTarballSCMRequest getTarballRequest() {
+            return this;
         }
     }
 }

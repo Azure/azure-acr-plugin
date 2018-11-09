@@ -5,7 +5,7 @@
 
 package com.microsoft.jenkins.acr.common;
 
-import com.microsoft.jenkins.acr.Utils;
+import com.microsoft.jenkins.acr.util.Utils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;

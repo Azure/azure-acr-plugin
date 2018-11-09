@@ -5,9 +5,9 @@
 
 package com.microsoft.jenkins.acr.common;
 
-import com.microsoft.jenkins.acr.Utils;
 import com.microsoft.jenkins.acr.common.compression.CompressibleFileImpl;
 import com.microsoft.jenkins.acr.common.compression.Compression;
+import com.microsoft.jenkins.acr.util.Utils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

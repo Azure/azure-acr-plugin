@@ -9,13 +9,15 @@ import com.microsoft.jenkins.acr.descriptor.BuildArgument;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
+
 /**
  * Azure Container Request object.
- * It should contains all arguments to queue a quick build to ACR.
- * Each argument should have an entry in the {@link com.microsoft.jenkins.acr.QuickBuildBuilder}
+ * It should contains all arguments to queue a quick task to ACR.
+ * Each argument should have an entry in the {@link com.microsoft.jenkins.acr.QuickTaskContext}
  */
 @Builder
-public class QuickBuildRequest extends AbstractRequest {
+public class DockerTaskRequest extends AbstractRequest {
 
     /**
      * =========== SCM ================
@@ -64,7 +66,7 @@ public class QuickBuildRequest extends AbstractRequest {
      * The fully qualified image names including the repository and tag.
      */
     @Getter
-    private String[] imageNames;
+    private List<String> imageNames;
 
     /**
      * ============ Optional ===============
@@ -93,7 +95,7 @@ public class QuickBuildRequest extends AbstractRequest {
      * The platform properties against which the build will happen.
      */
     @Getter
-    private String platform;
+    private Platform platform;
 
     /**
      * The Docker file path relative to the source location.

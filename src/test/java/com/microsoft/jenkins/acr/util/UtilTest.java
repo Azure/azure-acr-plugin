@@ -5,7 +5,8 @@
 
 package com.microsoft.jenkins.acr.util;
 
-import com.microsoft.jenkins.acr.common.QuickBuildRequest;
+import com.microsoft.jenkins.acr.common.DockerTaskRequest;
+import com.microsoft.jenkins.acr.common.Platform;
 import com.microsoft.jenkins.acr.descriptor.BuildArgument;
 import com.microsoft.jenkins.acr.descriptor.Image;
 import org.junit.Assert;
@@ -17,16 +18,16 @@ import java.util.List;
 public class UtilTest {
     @Test
     public void toJsonTest() {
-        QuickBuildRequest request = QuickBuildRequest.builder()
-                .platform("linux")
+        List<String> imageList = new ArrayList<>();
+        imageList.add("1");
+        imageList.add("2");
+        DockerTaskRequest request = DockerTaskRequest.builder()
+                .platform(new Platform("Linux", "AMD64", "V6"))
                 .localDir("gitrepo")
                 .buildArguments(new BuildArgument[]{
                         new BuildArgument("key", "secret", false)
                 })
-                .imageNames(new String[]{
-                        "1",
-                        "2"
-                })
+                .imageNames(imageList)
                 .noCache(false)
                 .build();
         Assert.assertEquals("{\"localDir\":\"gitrepo\"," +
@@ -34,8 +35,19 @@ public class UtilTest {
                 "\"buildArguments\":[{\"key\":\"key\",\"secrecy\":false}]," +
                 "\"noCache\":false," +
                 "\"timeout\":0," +
-                "\"platform\":\"linux\"," +
+                "\"platform\":{\"os\":\"Linux\",\"architecture\":\"AMD64\",\"variant\":\"V6\"}," +
                 "\"canceled\":false}", Util.toJson(request));
+    }
+
+    @Test
+    public void verifyLocation() {
+        Assert.assertTrue(Util.verifyGitUrl(null));
+        Assert.assertTrue(Util.verifyGitUrl(""));
+        Assert.assertTrue(Util.verifyGitUrl("https://github.com/Azure/azure-acr-plugin.git"));
+        Assert.assertTrue(Util.verifyGitUrl("https://github.com/Azure/azure-acr-plugin"));
+        Assert.assertTrue(Util.verifyGitUrl("https://github.com/Azure/azure-acr-plugin/"));
+        Assert.assertTrue(Util.verifyGitUrl("http://github.com/Azure/azure-acr-plugin/"));
+        Assert.assertFalse(Util.verifyGitUrl("git@github.com:Azure/azure-acr-plugin.git"));
     }
 
     @Test

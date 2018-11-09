@@ -3,21 +3,19 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  */
 
-package com.microsoft.jenkins.acr.common.scm;
+package com.microsoft.jenkins.acr.commands.scm;
 
 
 import com.microsoft.azure.storage.StorageException;
-import com.microsoft.jenkins.acr.Utils;
+import com.microsoft.jenkins.acr.util.Utils;
 import com.microsoft.jenkins.acr.common.UploadRequest;
 import com.microsoft.jenkins.acr.common.compression.CompressibleFileImpl;
+import com.microsoft.jenkins.acr.common.scm.LocalSCMRequest;
 import com.microsoft.jenkins.acr.service.AzureContainerRegistry;
 import com.microsoft.jenkins.acr.service.AzureStorageBlockBlob;
 import com.microsoft.jenkins.acr.util.Util;
 import lombok.Getter;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.powermock.api.mockito.PowerMockito;
@@ -29,17 +27,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.anyString;
-
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
         AzureContainerRegistry.class,
         AzureStorageBlockBlob.class,
-        LocalSCMResolver.class,
-        CompressibleFileImpl.class
+        CompressibleFileImpl.class,
+        LocalSCMCommand.class
 })
-public class LocalSCMTest extends AbstractSCMTest {
-    private String dir = "localSCMTest";
+public class LocalSCMCommandTest extends AbstractSCMTest<LocalSCMCommandTest.Request> {
+    private final String dir = "localSCMTest";
+    private final String acr = "acr";
+    private final String resourceGroup = "resourcegroup";
 
     @Mock
     private AzureContainerRegistry containerRegistry;
@@ -57,20 +55,12 @@ public class LocalSCMTest extends AbstractSCMTest {
         Utils.deleteDir(new File(dir));
     }
 
-    @Override
-    protected String getSCMUrl(AbstractSCMRequest request) throws Exception {
-        return AbstractSCMResolver.getInstance(request)
-                .withLogger(data)
-                .withAcrName("acr")
-                .withResourceGroup("resourcegroup")
-                .getSCMUrl();
-    }
 
     private void mockUploadRequest(String url, String path) {
         PowerMockito.mockStatic(AzureContainerRegistry.class);
         PowerMockito.when(AzureContainerRegistry.getInstance()).thenReturn(containerRegistry);
         UploadRequest uploadRequest = new UploadRequest(url, path);
-        PowerMockito.when(containerRegistry.getUploadUrl(anyString(), anyString())).thenReturn(uploadRequest);
+        PowerMockito.when(containerRegistry.getUploadUrl(resourceGroup, acr)).thenReturn(uploadRequest);
     }
 
     private void mockCompression(String filenameP, String folderP, List<String> ignoreList) throws IOException {
@@ -127,8 +117,12 @@ public class LocalSCMTest extends AbstractSCMTest {
         Assert.assertEquals("src/relative-path-mock.tar.gz", url);
     }
 
+    @Override
+    protected AbstractSCMCommand getCommand() throws IllegalAccessException, InstantiationException {
+        return LocalSCMCommand.class.newInstance();
+    }
 
-    class Request extends AbstractSCMRequest {
+    class Request extends AbstractSCMRequest implements LocalSCMCommand.ILocalSCMData, LocalSCMRequest {
         @Getter
         private final String localDir;
 
@@ -137,8 +131,18 @@ public class LocalSCMTest extends AbstractSCMTest {
         }
 
         @Override
-        public String getSourceType() {
-            return "local";
+        public LocalSCMRequest getLocalSCMRequest() {
+            return this;
+        }
+
+        @Override
+        public String getResourceGroupName() {
+            return resourceGroup;
+        }
+
+        @Override
+        public String getRegistryName() {
+            return acr;
         }
     }
 }

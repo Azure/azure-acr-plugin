@@ -5,10 +5,9 @@
 
 package com.microsoft.jenkins.acr.commands;
 
-import com.microsoft.azure.management.containerregistry.Build;
+import com.microsoft.jenkins.acr.ACRTaskPlugin;
 import com.microsoft.jenkins.acr.Messages;
-import com.microsoft.jenkins.acr.common.QuickBuildRequest;
-import com.microsoft.jenkins.acr.ACRQuickBuildPlugin;
+import com.microsoft.jenkins.acr.common.DockerTaskRequest;
 import com.microsoft.jenkins.acr.service.AzureContainerRegistry;
 import com.microsoft.jenkins.acr.util.Constants;
 import com.microsoft.jenkins.acr.util.Util;
@@ -17,7 +16,7 @@ import com.microsoft.jenkins.azurecommons.command.IBaseCommandData;
 import com.microsoft.jenkins.azurecommons.command.ICommand;
 import com.microsoft.jenkins.azurecommons.telemetry.AppInsightsUtils;
 
-public class QueueBuildCommand implements ICommand<QueueBuildCommand.IQueueBuildData> {
+public class QueueTaskCommand implements ICommand<QueueTaskCommand.IQueueBuildData> {
 
     @Override
     public void execute(final IQueueBuildData context) {
@@ -25,19 +24,19 @@ public class QueueBuildCommand implements ICommand<QueueBuildCommand.IQueueBuild
             context.logStatus(Messages.build_queueABuild(
                     context.getResourceGroupName(),
                     context.getRegistryName(),
-                    Util.toJson(context.getBuildRequest())));
+                    Util.toJson(context.getDockerTaskRequest())));
 
-            Build build = AzureContainerRegistry.
+             String runId = AzureContainerRegistry.
                     getInstance().
-                    queueBuildRequest(context.getResourceGroupName(),
+                    queueTaskRequest(context.getResourceGroupName(),
                             context.getRegistryName(),
-                            context.getBuildRequest());
+                            context.getDockerTaskRequest());
 
-            context.logStatus(Messages.build_finishQueueABuild(build.buildId()));
-            context.setBuildId(build.buildId());
+            context.logStatus(Messages.build_finishQueueABuild(runId));
+            context.setBuildId(runId);
             context.setCommandState(CommandState.Success);
 
-            ACRQuickBuildPlugin.sendEvent(Constants.AI, Constants.AI_QUEUE,
+            ACRTaskPlugin.sendEvent(Constants.AI, Constants.AI_QUEUE,
                     "Run", AppInsightsUtils.hash(context.getJobContext().getRun().getUrl()),
                     "ResourceGroup", AppInsightsUtils.hash(context.getResourceGroupName()),
                     "Registry", AppInsightsUtils.hash(context.getRegistryName()));
@@ -45,7 +44,7 @@ public class QueueBuildCommand implements ICommand<QueueBuildCommand.IQueueBuild
             e.printStackTrace();
             context.logError(Messages.build_failQueueBuild(e.getMessage()));
             context.setCommandState(CommandState.HasError);
-            ACRQuickBuildPlugin.sendEvent(Constants.AI, Constants.AI_QUEUE,
+            ACRTaskPlugin.sendEvent(Constants.AI, Constants.AI_QUEUE,
                     "Message", e.getMessage(),
                     "Run", AppInsightsUtils.hash(context.getJobContext().getRun().getUrl()),
                     "ResourceGroup", AppInsightsUtils.hash(context.getResourceGroupName()),
@@ -58,7 +57,7 @@ public class QueueBuildCommand implements ICommand<QueueBuildCommand.IQueueBuild
 
         String getRegistryName();
 
-        QuickBuildRequest getBuildRequest();
+        DockerTaskRequest getDockerTaskRequest();
 
         void setBuildId(String id);
     }

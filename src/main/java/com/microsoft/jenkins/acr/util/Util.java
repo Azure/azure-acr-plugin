@@ -70,5 +70,21 @@ public final class Util {
 
         return normalizeFilename(Paths.get(root, param).toString());
     }
+
+    /**
+     * Verify whether the location is a legal git url or a local directory.
+     *
+     * @param location github url or local directory.
+     * @return boolean
+     */
+    public static boolean verifyGitUrl(String location) {
+        String source = StringUtils.trimToEmpty(location).toLowerCase();
+        if (source.isEmpty()) {
+            return true;
+        }
+
+        // SSH model for git is not supported
+        return !source.startsWith(Constants.GIT_SSH_PREFIX);
+    }
 }
 
