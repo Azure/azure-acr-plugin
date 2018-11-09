@@ -1,7 +1,7 @@
-# Azure ACR Plugin
+# Azure Container Registry Task Plugin
 
 This plugin allows to queue an 
-[Azure Container Registry Quick Build](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-build-overview#quick-build-inner-loop-extended-to-the-cloud).
+[Azure Container Registry Quick Task](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-tasks-overview).
 
 ## Installation
 
@@ -16,10 +16,10 @@ You can refer [Azure Credential Plugin](https://wiki.jenkins.io/display/JENKINS/
 to find what kind of autherization methods are supported.
 
 ## Creating a freestyle job
-Go to your Jenkins job configure page. Tap "Add build step", add "Queue an ACR Quick Build".
+Go to your Jenkins job configure page. Tap "Add build step", add "Queue an ACR Quick Task".
 You will see the configuration.
 
-![ACR quick build configuration](./img/freestyle-config.png)
+![ACR quick task configuration](./img/freestyle-config.png)
 
 * Select your Azure credential ID which you already saved to your Jenkins server.
 * Select your Resource group which contains your Azure Container Registry.

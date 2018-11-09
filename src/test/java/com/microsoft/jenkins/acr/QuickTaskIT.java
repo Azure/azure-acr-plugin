@@ -4,12 +4,16 @@ import com.cloudbees.plugins.credentials.CredentialsScope;
 import com.cloudbees.plugins.credentials.SystemCredentialsProvider;
 import com.microsoft.azure.util.AzureCredentials;
 import com.microsoft.jenkins.acr.service.BaseAzureHelper;
-import org.jenkinsci.plugins.workflow.cps.*;
-import org.jenkinsci.plugins.workflow.job.*;
-import org.junit.*;
-import org.jvnet.hudson.test.*;
+import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
+import org.jenkinsci.plugins.workflow.job.WorkflowJob;
+import org.jenkinsci.plugins.workflow.job.WorkflowRun;
+import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.Test;
+import org.jvnet.hudson.test.BuildWatcher;
+import org.jvnet.hudson.test.JenkinsRule;
 
-public class QuickBuildIT extends BaseAzureHelper {
+public class QuickTaskIT extends BaseAzureHelper {
     @Rule
     public JenkinsRule j = new JenkinsRule() {
         {
@@ -20,7 +24,7 @@ public class QuickBuildIT extends BaseAzureHelper {
     @ClassRule
     public static BuildWatcher bw = new BuildWatcher();
 
-    private final String script = "acrQuickBuild azureCredentialsId: 'azureTestId',\n" +
+    private final String script = "acrQuickTask azureCredentialsId: 'azureTestId',\n" +
             "                  resourceGroupName: '" + getResourceGroup() + "',\n" +
             "                  registryName: '" + getRegistry() + "',\n" +
             "                  gitRepo: 'https://github.com/yuwzho/hello-docker',\n" +

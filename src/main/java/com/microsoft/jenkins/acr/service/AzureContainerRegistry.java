@@ -12,7 +12,7 @@ import com.microsoft.azure.management.containerregistry.RegistryDockerTaskRunReq
 import com.microsoft.azure.management.containerregistry.Registry;
 import com.microsoft.azure.management.containerregistry.SourceUploadDefinition;
 import com.microsoft.azure.management.containerregistry.Variant;
-import com.microsoft.jenkins.acr.common.QuickBuildRequest;
+import com.microsoft.jenkins.acr.common.DockerTaskRequest;
 import com.microsoft.jenkins.acr.common.UploadRequest;
 import rx.Completable;
 
@@ -28,16 +28,16 @@ public final class AzureContainerRegistry extends AzureService {
     }
 
     /**
-     * Send a quickBuildRequest to ACR build.
+     * Send a DockerTaskRequest to ACR build.
      *
      * @param resourceGroupName resource group of Azure Container Registry.
      * @param acrName           name of Azure Container Registry.
      * @param request           request object.
      * @return String           object contain run id.
      */
-    public String queueBuildRequest(String resourceGroupName,
+    public String queueTaskRequest(String resourceGroupName,
                                     String acrName,
-                                    QuickBuildRequest request) {
+                                    DockerTaskRequest request) {
         PlatformProperties platformProperties = new PlatformProperties()
                 .withOs(OS.fromString(request.getPlatform().getOs()))
                 .withArchitecture(Architecture.fromString(request.getPlatform().getArchitecture()))

@@ -1,6 +1,6 @@
 <?jelly escape-by-default='true'?>
 <div>
-    Queue an Azure Container Registry quick build request for building image.
+    Queue an Azure Container Registry quick task request for building image.
     Source code can be hosted on a Github repo or uploaded from local machine.
     User can choose whether pushing image to Azure Container Registry.
 </div>

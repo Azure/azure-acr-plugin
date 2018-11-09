@@ -6,12 +6,12 @@
 package com.microsoft.jenkins.acr;
 
 import com.microsoft.jenkins.acr.commands.GetBuildLogCommand;
-import com.microsoft.jenkins.acr.commands.QueueBuildCommand;
+import com.microsoft.jenkins.acr.commands.QueueTaskCommand;
 import com.microsoft.jenkins.acr.commands.scm.AbstractSCMCommand;
 import com.microsoft.jenkins.acr.commands.scm.GitSCMCommand;
 import com.microsoft.jenkins.acr.commands.scm.LocalSCMCommand;
 import com.microsoft.jenkins.acr.commands.scm.TarballSCMCommand;
-import com.microsoft.jenkins.acr.common.QuickBuildRequest;
+import com.microsoft.jenkins.acr.common.DockerTaskRequest;
 import com.microsoft.jenkins.acr.common.scm.GitSCMRequest;
 import com.microsoft.jenkins.acr.common.scm.LocalSCMRequest;
 import com.microsoft.jenkins.acr.common.scm.RemoteTarballSCMRequest;
@@ -28,17 +28,17 @@ import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.StepExecution;
 
 /**
- * Context to queue a quick build to ACR.
+ * Context to queue a quick task to ACR.
  * It configure all needed steps{@link ICommand} to perform the goal.
  */
 @Builder
-public class QuickBuildContext extends AbstractQuickBuildContext {
+public class QuickTaskContext extends AbstractQuickTaskContext {
 
     /**
      * DATA TRANSITION DECLARATION.
      */
     @Getter
-    private QuickBuildRequest buildRequest;
+    private DockerTaskRequest dockerTaskRequest;
     @Getter
     private String resourceGroupName;
     @Getter
@@ -53,14 +53,14 @@ public class QuickBuildContext extends AbstractQuickBuildContext {
      * @param aTaskListener a place to send output
      * @return this
      */
-    protected QuickBuildContext configure(Run<?, ?> aRun,
-                                          FilePath aWorkspace,
-                                          Launcher aLauncher,
-                                          TaskListener aTaskListener) {
+    protected QuickTaskContext configure(Run<?, ?> aRun,
+                                         FilePath aWorkspace,
+                                         Launcher aLauncher,
+                                         TaskListener aTaskListener) {
         Class scmCommand;
 
 
-        switch (AbstractSCMCommand.Type.valueOf(buildRequest.getSourceType().toUpperCase())) {
+        switch (AbstractSCMCommand.Type.valueOf(dockerTaskRequest.getSourceType().toUpperCase())) {
             case GIT:
                 scmCommand = GitSCMCommand.class;
                 break;
@@ -71,7 +71,7 @@ public class QuickBuildContext extends AbstractQuickBuildContext {
                 scmCommand = TarballSCMCommand.class;
                 break;
             default:
-                throw new IllegalArgumentException("Unknown source type: " + buildRequest.getSourceType());
+                throw new IllegalArgumentException("Unknown source type: " + dockerTaskRequest.getSourceType());
         }
         super.configure(aRun,
                 aWorkspace,
@@ -79,8 +79,8 @@ public class QuickBuildContext extends AbstractQuickBuildContext {
                 aTaskListener,
                 CommandService.builder()
                         .withStartCommand(scmCommand)
-                        .withTransition(scmCommand, QueueBuildCommand.class)
-                        .withTransition(QueueBuildCommand.class, GetBuildLogCommand.class)
+                        .withTransition(scmCommand, QueueTaskCommand.class)
+                        .withTransition(QueueTaskCommand.class, GetBuildLogCommand.class)
                         .build());
         return this;
     }
@@ -105,8 +105,8 @@ public class QuickBuildContext extends AbstractQuickBuildContext {
      */
 
     @Override
-    public QuickBuildContext withSCMUrl(String url) {
-        this.buildRequest.setSourceUrl(url);
+    public QuickTaskContext withSCMUrl(String url) {
+        this.dockerTaskRequest.setSourceUrl(url);
         return this;
     }
 
@@ -114,30 +114,30 @@ public class QuickBuildContext extends AbstractQuickBuildContext {
      * {@link GetBuildLogCommand.IBuildLogData}.
      */
 
-    public QuickBuildContext withResourceGroupName(String pResourceGroupName) {
+    public QuickTaskContext withResourceGroupName(String pResourceGroupName) {
         this.resourceGroupName = pResourceGroupName;
         return this;
     }
 
-    public QuickBuildContext withBuildRequest(QuickBuildRequest pBuildRequest) {
-        this.buildRequest = pBuildRequest;
+    public QuickTaskContext withDockerTaskRequest(DockerTaskRequest pDockerTaskRequest) {
+        this.dockerTaskRequest = pDockerTaskRequest;
         return this;
     }
 
-    public QuickBuildContext withRegistryName(String pRegistryName) {
+    public QuickTaskContext withRegistryName(String pRegistryName) {
         this.registryName = pRegistryName;
         return this;
     }
 
     @Override
-    public QuickBuildContext cancel() {
-        this.buildRequest.cancel();
+    public QuickTaskContext cancel() {
+        this.dockerTaskRequest.cancel();
         return this;
     }
 
     @Override
     public boolean isCanceled() {
-        return this.buildRequest.isCanceled();
+        return this.dockerTaskRequest.isCanceled();
     }
 
     /**
@@ -146,7 +146,7 @@ public class QuickBuildContext extends AbstractQuickBuildContext {
 
     @Override
     public GitSCMRequest getGitSCMRequest() {
-        return this.buildRequest;
+        return this.dockerTaskRequest;
     }
 
     /**
@@ -155,7 +155,7 @@ public class QuickBuildContext extends AbstractQuickBuildContext {
 
     @Override
     public RemoteTarballSCMRequest getTarballRequest() {
-        return this.buildRequest;
+        return this.dockerTaskRequest;
     }
 
     /**
@@ -164,6 +164,6 @@ public class QuickBuildContext extends AbstractQuickBuildContext {
 
     @Override
     public LocalSCMRequest getLocalSCMRequest() {
-        return this.buildRequest;
+        return this.dockerTaskRequest;
     }
 }

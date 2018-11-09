@@ -13,9 +13,9 @@ import java.util.concurrent.Callable;
 
 import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
 import com.microsoft.azure.util.AzureBaseCredentials;
+import com.microsoft.jenkins.acr.common.DockerTaskRequest;
 import com.microsoft.jenkins.acr.descriptor.BuildArgument;
 import com.microsoft.jenkins.acr.descriptor.Image;
-import com.microsoft.jenkins.acr.common.QuickBuildRequest;
 import com.microsoft.jenkins.acr.common.Platform;
 import com.microsoft.jenkins.acr.service.AzureContainerRegistry;
 import com.microsoft.jenkins.acr.service.AzureHelper;
@@ -50,7 +50,7 @@ import org.kohsuke.stapler.QueryParameter;
  * This builder together with config.jelly in resources,
  * defines the view of this build action.
  */
-public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
+public class QuickTaskBuilder extends Builder implements SimpleBuildStep {
 
     @Getter
     private final String azureCredentialsId;
@@ -126,9 +126,9 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
      * @param registryName       ACR name, which will run the build and the image will be default push to.
      */
     @DataBoundConstructor
-    public QuickBuildBuilder(final String azureCredentialsId,
-                             final String resourceGroupName,
-                             final String registryName) {
+    public QuickTaskBuilder(final String azureCredentialsId,
+                            final String resourceGroupName,
+                            final String registryName) {
         this.azureCredentialsId = azureCredentialsId;
         this.resourceGroupName = resourceGroupName;
         this.registryName = registryName;
@@ -147,7 +147,7 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
                 // at least one of the local and git repo should contain value.
                 StringUtils.trimToEmpty(getLocal())
                         .concat(StringUtils.trimToEmpty(getGitRepo())));
-        QuickBuildRequest buildRequest = QuickBuildRequest.builder()
+        DockerTaskRequest dockerTaskRequest = DockerTaskRequest.builder()
                 .sourceType(getSourceType())
                 .gitRepo(getGitRepo())
                 .gitRefspec(getGitRefspec())
@@ -162,10 +162,10 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
                 .timeout(getTimeout())
                 .build();
 
-        QuickBuildContext context = QuickBuildContext.builder()
+        QuickTaskContext context = QuickTaskContext.builder()
                 .resourceGroupName(getResourceGroupName())
                 .registryName(getRegistryName())
-                .buildRequest(buildRequest)
+                .dockerTaskRequest(dockerTaskRequest)
                 .build();
         context.configure(run, workspace, launcher, listener)
                 .executeCommands();
@@ -215,9 +215,9 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
     }
 
     // @Extension annotation identifies this uses an extension point
-    // @Symbol annotation registers a symbol with pipeline with @acrQuickBuild
+    // @Symbol annotation registers a symbol with pipeline with @acrQuickTask
     @Extension
-    @Symbol("acrQuickBuild")
+    @Symbol("acrQuickTask")
     public static final class DescriptorImpl
             extends BuildStepDescriptor<Builder> {
 

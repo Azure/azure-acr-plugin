@@ -13,11 +13,11 @@ import java.util.List;
 
 /**
  * Azure Container Request object.
- * It should contains all arguments to queue a quick build to ACR.
- * Each argument should have an entry in the {@link com.microsoft.jenkins.acr.QuickBuildBuilder}
+ * It should contains all arguments to queue a quick task to ACR.
+ * Each argument should have an entry in the {@link com.microsoft.jenkins.acr.QuickTaskContext}
  */
 @Builder
-public class QuickBuildRequest extends AbstractRequest {
+public class DockerTaskRequest extends AbstractRequest {
 
     /**
      * =========== SCM ================

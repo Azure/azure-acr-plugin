@@ -8,7 +8,7 @@ package com.microsoft.jenkins.acr.service;
 import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.util.AzureBaseCredentials;
 import com.microsoft.azure.util.AzureCredentialUtil;
-import com.microsoft.jenkins.acr.ACRQuickBuildPlugin;
+import com.microsoft.jenkins.acr.ACRTaskPlugin;
 import com.microsoft.jenkins.acr.Messages;
 import com.microsoft.jenkins.acr.util.Constants;
 import com.microsoft.jenkins.azurecommons.core.AzureClientFactory;
@@ -34,7 +34,7 @@ public final class AzureHelper {
             @Override
             public Azure.Configurable configure(Azure.Configurable configurable) {
                 return configurable
-                        .withInterceptor(new ACRQuickBuildPlugin.AzureTelemetryInterceptor())
+                        .withInterceptor(new ACRTaskPlugin.AzureTelemetryInterceptor())
                         .withUserAgent(AzureClientFactory.getUserAgent(Constants.PLUGIN_NAME,
                                 AzureHelper.class.getPackage().getImplementationVersion()));
             }

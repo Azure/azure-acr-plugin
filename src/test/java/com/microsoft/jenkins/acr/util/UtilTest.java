@@ -5,8 +5,8 @@
 
 package com.microsoft.jenkins.acr.util;
 
+import com.microsoft.jenkins.acr.common.DockerTaskRequest;
 import com.microsoft.jenkins.acr.common.Platform;
-import com.microsoft.jenkins.acr.common.QuickBuildRequest;
 import com.microsoft.jenkins.acr.descriptor.BuildArgument;
 import com.microsoft.jenkins.acr.descriptor.Image;
 import org.junit.Assert;
@@ -21,7 +21,7 @@ public class UtilTest {
         List<String> imageList = new ArrayList<>();
         imageList.add("1");
         imageList.add("2");
-        QuickBuildRequest request = QuickBuildRequest.builder()
+        DockerTaskRequest request = DockerTaskRequest.builder()
                 .platform(new Platform("Linux", "AMD64", "V6"))
                 .localDir("gitrepo")
                 .buildArguments(new BuildArgument[]{

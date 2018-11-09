@@ -9,8 +9,8 @@
         <relativePath/>
     </parent>
     <groupId>io.jenkins.plugins</groupId>
-    <artifactId>azure-container-registry-quick-build</artifactId>
-    <version>0.2.0</version>
+    <artifactId>Azure-Container-Registry-Task-Plugin</artifactId>
+    <version>0.3.0</version>
     <packaging>hpi</packaging>
     <properties>
         <jenkins.version>1.651.3</jenkins.version>
@@ -26,8 +26,8 @@
         <joda-time.version>2.7</joda-time.version>
         <rxjava.version>1.3.8</rxjava.version>
     </properties>
-    <name>Azure Container Registry Quick Build Plugin</name>
-    <description>Queue a quick build to ACR</description>
+    <name>Azure Container Registry Task Plugin</name>
+    <description>Quick a quick task to Azure Container Registry.</description>
     <licenses>
         <license>
             <name>MIT License</name>
@@ -35,7 +35,7 @@
         </license>
     </licenses>
     <!-- Assuming you want to host on @jenkinsci:
-    <url>https://wiki.jenkins.io/display/JENKINS/azure-container-registry-quick-build</url>
+    <url>https://wiki.jenkins.io/display/JENKINS/azure-container-registry-task</url>
     <scm>
         <connection>scm:git:git://github.com/jenkinsci/${project.artifactId}-plugin.git</connection>
         <developerConnection>scm:git:git@github.com:jenkinsci/${project.artifactId}-plugin.git</developerConnection>

@@ -6,14 +6,13 @@
 package com.microsoft.jenkins.acr;
 
 import com.google.common.collect.ImmutableSet;
-import com.microsoft.azure.management.containerregistry.RegistryTaskRun;
 import com.microsoft.jenkins.acr.commands.GetBuildLogCommand;
-import com.microsoft.jenkins.acr.commands.QueueBuildCommand;
+import com.microsoft.jenkins.acr.commands.QueueTaskCommand;
 import com.microsoft.jenkins.acr.commands.scm.GitSCMCommand;
 import com.microsoft.jenkins.acr.commands.scm.LocalSCMCommand;
 import com.microsoft.jenkins.acr.commands.scm.TarballSCMCommand;
 import com.microsoft.jenkins.acr.common.Platform;
-import com.microsoft.jenkins.acr.common.QuickBuildRequest;
+import com.microsoft.jenkins.acr.common.DockerTaskRequest;
 import com.microsoft.jenkins.acr.util.Utils;
 import com.microsoft.jenkins.acr.common.scm.SCMRequest;
 import com.microsoft.jenkins.acr.service.AzureContainerRegistry;
@@ -43,7 +42,7 @@ import java.util.List;
         GetBuildLogCommand.class,
         LocalSCMCommand.class
 })
-public class QuickBuildContextTest {
+public class QuickTaskContextTest {
     private String dir = "context-workspace";
     private static List<String> imageList;
     private static Platform platform;
@@ -70,7 +69,7 @@ public class QuickBuildContextTest {
 
     @Test
     public void configureTest() throws Exception {
-        QuickBuildRequest request = QuickBuildRequest.builder()
+        DockerTaskRequest request = DockerTaskRequest.builder()
                 .gitRepo("https://github.com/Azure/azure-acr-plugin")
                 .gitRefspec("master")
                 .imageNames(imageList)
@@ -80,7 +79,7 @@ public class QuickBuildContextTest {
                 .build();
 
         mockAzureService(request);
-        QuickBuildContext context = prepareContext(request);
+        QuickTaskContext context = prepareContext(request);
 
         SCMRequest scmRequest = context.getBuildRequest();
         Assert.assertNull(scmRequest.getLocalDir());
@@ -91,7 +90,7 @@ public class QuickBuildContextTest {
 
         ImmutableSet set = context.getCommandService().getRegisteredCommands();
         Assert.assertTrue(set.contains(GitSCMCommand.class));
-        Assert.assertTrue(set.contains(QueueBuildCommand.class));
+        Assert.assertTrue(set.contains(QueueTaskCommand.class));
         Assert.assertTrue(set.contains(GetBuildLogCommand.class));
 
         Assert.assertNull(context.getBuildRequest().getSourceUrl());
@@ -106,7 +105,7 @@ public class QuickBuildContextTest {
     @Test
     public void cancelTest() throws Exception {
 
-        QuickBuildRequest request = QuickBuildRequest.builder()
+        DockerTaskRequest request = DockerTaskRequest.builder()
                 .tarball("https://remote-mock-server/mock-tarball.tar.gz")
                 .imageNames(imageList)
                 .platform(platform)
@@ -114,7 +113,7 @@ public class QuickBuildContextTest {
                 .sourceType("tarball")
                 .build();
 
-        QuickBuildContext context = prepareContext(request);
+        QuickTaskContext context = prepareContext(request);
 
         mockAzureService(request);
         SCMRequest scmRequest = context.getBuildRequest();
@@ -127,7 +126,7 @@ public class QuickBuildContextTest {
 
         ImmutableSet set = context.getCommandService().getRegisteredCommands();
         Assert.assertTrue(set.contains(TarballSCMCommand.class));
-        Assert.assertTrue(set.contains(QueueBuildCommand.class));
+        Assert.assertTrue(set.contains(QueueTaskCommand.class));
         Assert.assertTrue(set.contains(GetBuildLogCommand.class));
 
         Assert.assertNull(context.getBuildRequest().getSourceUrl());
@@ -142,7 +141,7 @@ public class QuickBuildContextTest {
 
     @Test
     public void failedTest() throws Exception {
-        QuickBuildRequest request = QuickBuildRequest.builder()
+        DockerTaskRequest request = DockerTaskRequest.builder()
                 .localDir("/home/user/workspace/azure-acr-plugin")
                 .imageNames(imageList)
                 .platform(platform)
@@ -150,7 +149,7 @@ public class QuickBuildContextTest {
                 .sourceType("local")
                 .build();
 
-        QuickBuildContext context = prepareContext(request);
+        QuickTaskContext context = prepareContext(request);
 
         mockAzureService(request);
 
@@ -164,7 +163,7 @@ public class QuickBuildContextTest {
 
         ImmutableSet set = context.getCommandService().getRegisteredCommands();
         Assert.assertTrue(set.contains(LocalSCMCommand.class));
-        Assert.assertTrue(set.contains(QueueBuildCommand.class));
+        Assert.assertTrue(set.contains(QueueTaskCommand.class));
         Assert.assertTrue(set.contains(GetBuildLogCommand.class));
 
         Assert.assertNull(context.getBuildRequest().getSourceUrl());
@@ -174,8 +173,8 @@ public class QuickBuildContextTest {
         Assert.assertEquals(CommandState.HasError, context.getLastCommandState());
     }
 
-    private QuickBuildContext prepareContext(QuickBuildRequest request) {
-        QuickBuildContext context = QuickBuildContext.builder()
+    private QuickTaskContext prepareContext(DockerTaskRequest request) {
+        QuickTaskContext context = QuickTaskContext.builder()
                 .buildRequest(request)
                 .registryName("name")
                 .resourceGroupName("resourcegroup")
@@ -196,10 +195,10 @@ public class QuickBuildContextTest {
         return context;
     }
 
-    private void mockAzureService(QuickBuildRequest request) throws Exception {
+    private void mockAzureService(DockerTaskRequest request) throws Exception {
         PowerMockito.mockStatic(AzureContainerRegistry.class);
         PowerMockito.when(AzureContainerRegistry.getInstance()).thenReturn(registry);
-        PowerMockito.when(registry.queueBuildRequest("resourcegroup", "name", request))
+        PowerMockito.when(registry.queueTaskRequest("resourcegroup", "name", request))
                 .thenReturn("build-id-mock");
         PowerMockito.when(registry.getLog("resourcegroup", "name", "build-id-mock"))
                 .thenReturn("blob-url-mock");
