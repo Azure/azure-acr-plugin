@@ -82,7 +82,7 @@ public class QuickBuildBuilder extends Builder implements SimpleBuildStep {
     @Getter
     @Setter
     @DataBoundSetter
-    private int timeout;
+    private int timeout = Constants.TIMEOUT;
     @Getter
     @Setter
     @DataBoundSetter

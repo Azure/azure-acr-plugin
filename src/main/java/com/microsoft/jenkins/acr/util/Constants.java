@@ -50,6 +50,7 @@ public final class Constants {
             ".hg",
             ".hgignore",
             ".svn");
+    public static final int TIMEOUT = 300;
 
     private Constants() {
     }

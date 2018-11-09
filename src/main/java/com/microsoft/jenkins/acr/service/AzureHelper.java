@@ -42,10 +42,10 @@ public final class AzureHelper {
         return this;
     }
 
-    protected AzureHelper auth(Azure azure) {
-        AzureHelper.client = azure;
-        return this;
-    }
+//    protected AzureHelper auth(Azure azure) {
+//        AzureHelper.client = azure;
+//        return this;
+//    }
 
     public AzureHelper auth(Item owner, String credentialId) {
         TokenCredentialData token = getToken(owner, credentialId);
