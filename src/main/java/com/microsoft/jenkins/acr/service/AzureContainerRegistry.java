@@ -42,24 +42,19 @@ public final class AzureContainerRegistry extends AzureService {
                 .withOs(OS.fromString(request.getPlatform().getOs()))
                 .withArchitecture(Architecture.fromString(request.getPlatform().getArchitecture()))
                 .withVariant(Variant.fromString(request.getPlatform().getVariant()));
-        RegistryDockerTaskRunRequest.DefinitionStages.DockerTaskRunRequestStepAttachable attachable = this.getClient()
+        boolean pushable = request.getImageNames() != null && request.getImageNames().size() > 0;
+        return this.getClient()
                 .containerRegistries()
                 .getByResourceGroup(resourceGroupName, acrName)
                 .scheduleRun()
                 .withPlatform(platformProperties)
                 .withDockerTaskRunRequest()
                 .defineDockerTaskStep()
-                .withDockerFilePath(request.getDockerFilePath());
-
-        if (request.getImageNames() == null || request.getImageNames().size() == 0) {
-            attachable = attachable.withPushDisabled();
-        } else {
-            attachable = attachable.withPushEnabled()
-                    .withImageNames(request.getImageNames());
-        }
-
-        attachable = request.isNoCache() ? attachable.withoutCache() : attachable.withCache();
-        return attachable.attach()
+                .withDockerFilePath(request.getDockerFilePath())
+                .withPushEnabled(pushable)
+                .withImageNames(request.getImageNames())
+                .withCacheEnabled(!request.isNoCache())
+                .attach()
                 .withSourceLocation(request.getSourceUrl())
                 .withTimeout(request.getTimeout())
                 .execute()
