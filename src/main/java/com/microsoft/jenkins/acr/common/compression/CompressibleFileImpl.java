@@ -38,6 +38,7 @@ public class CompressibleFileImpl extends TarArchiveOutputStream
         this.fileList = new ArrayList<>();
         this.ignore = new IgnoreRule[0];
         this.workspaceLength = 0;
+        this.setLongFileMode(TarArchiveOutputStream.LONGFILE_POSIX);
     }
 
     @Override
