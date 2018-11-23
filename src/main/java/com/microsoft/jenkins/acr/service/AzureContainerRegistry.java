@@ -7,18 +7,21 @@ package com.microsoft.jenkins.acr.service;
 
 import com.microsoft.azure.management.containerregistry.Architecture;
 import com.microsoft.azure.management.containerregistry.OS;
+import com.microsoft.azure.management.containerregistry.OverridingArgument;
 import com.microsoft.azure.management.containerregistry.PlatformProperties;
-import com.microsoft.azure.management.containerregistry.RegistryDockerTaskRunRequest;
 import com.microsoft.azure.management.containerregistry.Registry;
 import com.microsoft.azure.management.containerregistry.SourceUploadDefinition;
 import com.microsoft.azure.management.containerregistry.Variant;
 import com.microsoft.jenkins.acr.common.DockerTaskRequest;
 import com.microsoft.jenkins.acr.common.UploadRequest;
+import com.microsoft.jenkins.acr.descriptor.BuildArgument;
 import rx.Completable;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public final class AzureContainerRegistry extends AzureService {
 
@@ -42,24 +45,24 @@ public final class AzureContainerRegistry extends AzureService {
                 .withOs(OS.fromString(request.getPlatform().getOs()))
                 .withArchitecture(Architecture.fromString(request.getPlatform().getArchitecture()))
                 .withVariant(Variant.fromString(request.getPlatform().getVariant()));
-        RegistryDockerTaskRunRequest.DefinitionStages.DockerTaskRunRequestStepAttachable attachable = this.getClient()
+        boolean pushable = request.getImageNames() != null && request.getImageNames().size() > 0;
+        Map<String, OverridingArgument> args = new HashMap();
+        for (BuildArgument arg : request.getBuildArguments()) {
+            args.put(arg.getKey(), new OverridingArgument(arg.getValue(), arg.isSecrecy()));
+        }
+        return this.getClient()
                 .containerRegistries()
                 .getByResourceGroup(resourceGroupName, acrName)
                 .scheduleRun()
                 .withPlatform(platformProperties)
                 .withDockerTaskRunRequest()
                 .defineDockerTaskStep()
-                .withDockerFilePath(request.getDockerFilePath());
-
-        if (request.getImageNames() == null || request.getImageNames().size() == 0) {
-            attachable = attachable.withPushDisabled();
-        } else {
-            attachable = attachable.withPushEnabled()
-                    .withImageNames(request.getImageNames());
-        }
-
-        attachable = request.isNoCache() ? attachable.withoutCache() : attachable.withCache();
-        return attachable.attach()
+                .withDockerFilePath(request.getDockerFilePath())
+                .withPushEnabled(pushable)
+                .withImageNames(request.getImageNames())
+                .withCacheEnabled(!request.isNoCache())
+                .withOverridingArguments(args)
+                .attach()
                 .withSourceLocation(request.getSourceUrl())
                 .withTimeout(request.getTimeout())
                 .execute()

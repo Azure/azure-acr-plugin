@@ -16,7 +16,7 @@
         <jenkins.version>1.651.3</jenkins.version>
         <java.level>7</java.level>
 
-        <azuresdk.version>1.16.1-SNAPSHOT</azuresdk.version>
+        <azuresdk.version>1.17.2-SNAPSHOT</azuresdk.version>
         <azure-credentials-plugin.version>1.6.0</azure-credentials-plugin.version>
         <azure-commons.version>0.2.5</azure-commons.version>
 

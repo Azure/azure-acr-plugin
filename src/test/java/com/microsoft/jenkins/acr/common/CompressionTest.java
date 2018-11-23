@@ -8,6 +8,7 @@ package com.microsoft.jenkins.acr.common;
 import com.microsoft.jenkins.acr.common.compression.CompressibleFileImpl;
 import com.microsoft.jenkins.acr.common.compression.Compression;
 import com.microsoft.jenkins.acr.util.Utils;
+import org.apache.commons.lang.StringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,6 +36,19 @@ public class CompressionTest {
     public void tearDown() {
         File dir = new File(workspace);
         Utils.deleteDir(dir);
+    }
+
+    @Test
+    public void compressionWithLongFilenameTest() throws IOException {
+        File source = prepareSource(getFilename(StringUtils.repeat("a", 100).concat(".txt")));
+        String tarball = getFilename("a.tar.gz");
+        Compression.CompressedFile file = CompressibleFileImpl.compressToFile(tarball)
+                .withIgnoreList(null)
+                .withFile(source.getAbsolutePath())
+                .compress();
+        Assert.assertTrue(new File(tarball).exists());
+        Assert.assertEquals(file.fileList().length, 1);
+        Assert.assertEquals(file.fileList()[0], source.getAbsolutePath());
     }
 
     @Test
