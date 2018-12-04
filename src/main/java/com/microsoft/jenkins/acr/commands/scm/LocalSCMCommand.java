@@ -38,17 +38,18 @@ public class LocalSCMCommand  extends AbstractSCMCommand<LocalSCMCommand.ILocalS
         data.logStatus(
                 Messages.scm_compress_ignore(StringUtils.join(ignoreList, Constants.SHORT_LIST_SPERATE)));
         try {
-            String[] filenames = CompressibleFileImpl.compressToFile(localFileName)
-                    .withIgnoreList(ignoreList.toArray(new String[ignoreList.size()]))
-                    .withDirectory(Util.normalizeFilename(source))
-                    .compress()
-                    .fileList();
+           String[] filenames = CompressibleFileImpl.compressToFile(localFileName)
+                   .withIgnoreList(ignoreList.toArray(new String[ignoreList.size()]))
+                   .withDirectory(Util.normalizeFilename(source))
+                   .compress()
+                   .fileList();
             data.logStatus(
                     Messages.scm_compress_files(StringUtils.join(filenames, Constants.LONG_LIST_SPERATE)));
             data.logStatus(Messages.scm_upload(request.getUrl()));
             AzureStorageBlockBlob blob = new AzureStorageBlockBlob(request.getUrl());
             blob.uploadFile(localFileName);
         } catch (Exception e) {
+            data.logError(e);
             throw e;
         } finally {
             new File(localFileName).delete();
