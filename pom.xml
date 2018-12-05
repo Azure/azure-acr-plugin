@@ -9,7 +9,7 @@
         <relativePath/>
     </parent>
     <groupId>io.jenkins.plugins</groupId>
-    <artifactId>Azure-Container-Registry-Tasks-Plugin</artifactId>
+    <artifactId>azure-container-registry-tasks-plugin</artifactId>
     <version>0.3.0</version>
     <packaging>hpi</packaging>
     <properties>
