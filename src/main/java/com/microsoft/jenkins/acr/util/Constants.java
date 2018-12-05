@@ -23,6 +23,8 @@ public final class Constants {
     public static final int SLEEP_IN_MS = 3000;
     public static final int DEFAULT_RETRY = 10;
 
+    public static final String TEMPFILE = "tarfile";
+
     public static final String CWD = ".";
 
     public static final String LOCAL = "local";
