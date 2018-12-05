@@ -17,6 +17,16 @@
    </f:entry>
    <f:section title="${%source_title}">
       <f:radioBlock name="sourceType"
+                    title="${%source_type_local}"
+                    value="local" inline="true"
+                    checked="${!instance.getSourceType() || instance.getSourceType() == 'local'}">
+         <f:nested>
+            <f:entry field="local">
+               <f:textbox default="${%source_local_default}" />
+            </f:entry>
+         </f:nested>
+      </f:radioBlock>
+      <f:radioBlock name="sourceType"
                     title="${%source_type_git}"
                     value="git" inline="true"
                     checked="${instance.getSourceType() == 'git'}">
@@ -29,16 +39,6 @@
             </f:entry>
             <f:entry title="${%source_git_path}" field="gitPath">
                <f:textbox />
-            </f:entry>
-         </f:nested>
-      </f:radioBlock>
-      <f:radioBlock name="sourceType"
-                    title="${%source_type_local}"
-                    value="local" inline="true"
-                    checked="${!instance.getSourceType() || instance.getSourceType() == 'local'}">
-         <f:nested>
-            <f:entry field="local">
-               <f:textbox default="${%source_local_default}" />
             </f:entry>
          </f:nested>
       </f:radioBlock>
