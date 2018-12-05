@@ -20,7 +20,7 @@ import okhttp3.Response;
 /**
  * Entry of the plugin with BI entries.
  */
-public class ACRTaskPlugin extends Plugin {
+public class ACRTasksPlugin extends Plugin {
     public static void sendEvent(final String item, final String action, final String... properties) {
         final Map<String, String> props = new HashMap<>();
         for (int i = 1; i < properties.length; i += 2) {
@@ -30,7 +30,7 @@ public class ACRTaskPlugin extends Plugin {
     }
 
     public static void sendEvent(final String item, final String action, final Map<String, String> properties) {
-        AppInsightsClientFactory.getInstance(ACRTaskPlugin.class)
+        AppInsightsClientFactory.getInstance(ACRTasksPlugin.class)
                 .sendEvent(item, action, properties, false);
     }
 
@@ -39,7 +39,7 @@ public class ACRTaskPlugin extends Plugin {
         public Response intercept(final Chain chain) throws IOException {
             final Request request = chain.request();
             final Response response = chain.proceed(request);
-            new AzureHttpRecorder(AppInsightsClientFactory.getInstance(ACRTaskPlugin.class))
+            new AzureHttpRecorder(AppInsightsClientFactory.getInstance(ACRTasksPlugin.class))
                     .record(new AzureHttpRecorder.HttpRecordable()
                             .withHttpCode(response.code())
                             .withHttpMessage(response.message())

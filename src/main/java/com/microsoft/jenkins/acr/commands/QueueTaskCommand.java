@@ -5,7 +5,7 @@
 
 package com.microsoft.jenkins.acr.commands;
 
-import com.microsoft.jenkins.acr.ACRTaskPlugin;
+import com.microsoft.jenkins.acr.ACRTasksPlugin;
 import com.microsoft.jenkins.acr.Messages;
 import com.microsoft.jenkins.acr.common.DockerTaskRequest;
 import com.microsoft.jenkins.acr.service.AzureContainerRegistry;
@@ -36,7 +36,7 @@ public class QueueTaskCommand implements ICommand<QueueTaskCommand.IQueueBuildDa
             context.setBuildId(runId);
             context.setCommandState(CommandState.Success);
 
-            ACRTaskPlugin.sendEvent(Constants.AI, Constants.AI_QUEUE,
+            ACRTasksPlugin.sendEvent(Constants.AI, Constants.AI_QUEUE,
                     "Run", AppInsightsUtils.hash(context.getJobContext().getRun().getUrl()),
                     "ResourceGroup", AppInsightsUtils.hash(context.getResourceGroupName()),
                     "Registry", AppInsightsUtils.hash(context.getRegistryName()));
@@ -44,7 +44,7 @@ public class QueueTaskCommand implements ICommand<QueueTaskCommand.IQueueBuildDa
             e.printStackTrace();
             context.logError(Messages.build_failQueueBuild(e.getMessage()));
             context.setCommandState(CommandState.HasError);
-            ACRTaskPlugin.sendEvent(Constants.AI, Constants.AI_QUEUE,
+            ACRTasksPlugin.sendEvent(Constants.AI, Constants.AI_QUEUE,
                     "Message", e.getMessage(),
                     "Run", AppInsightsUtils.hash(context.getJobContext().getRun().getUrl()),
                     "ResourceGroup", AppInsightsUtils.hash(context.getResourceGroupName()),

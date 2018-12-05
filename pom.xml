@@ -9,7 +9,7 @@
         <relativePath/>
     </parent>
     <groupId>io.jenkins.plugins</groupId>
-    <artifactId>Azure-Container-Registry-Task-Plugin</artifactId>
+    <artifactId>azure-container-registry-tasks-plugin</artifactId>
     <version>0.3.0</version>
     <packaging>hpi</packaging>
     <properties>
@@ -26,8 +26,8 @@
         <joda-time.version>2.7</joda-time.version>
         <rxjava.version>1.3.8</rxjava.version>
     </properties>
-    <name>Azure Container Registry Task Plugin</name>
-    <description>Quick a quick task to Azure Container Registry.</description>
+    <name>Azure Container Registry Tasks Plugin</name>
+    <description>Send a quick task to Azure Container Registry.</description>
     <licenses>
         <license>
             <name>MIT License</name>
