@@ -61,10 +61,7 @@ public final class AzureContainerRegistry extends AzureService {
                     Messages.registry_actionName(),
                     Messages.registry_notFound(acrName, resourceGroupName, this.getClient().subscriptionId()));
         }
-        return this.getClient()
-                .containerRegistries()
-                .getByResourceGroup(resourceGroupName, acrName)
-                .scheduleRun()
+        return registry.scheduleRun()
                 .withPlatform(platformProperties)
                 .withDockerTaskRunRequest()
                 .defineDockerTaskStep()
