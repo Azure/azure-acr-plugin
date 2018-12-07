@@ -10,7 +10,7 @@
     </parent>
     <groupId>io.jenkins.plugins</groupId>
     <artifactId>azure-container-registry-tasks-plugin</artifactId>
-    <version>0.3.0</version>
+    <version>0.4.0</version>
     <packaging>hpi</packaging>
     <properties>
         <jenkins.version>1.651.3</jenkins.version>

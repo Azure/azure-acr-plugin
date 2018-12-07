@@ -6,6 +6,7 @@
 package com.microsoft.jenkins.acr.util;
 
 import com.google.gson.Gson;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
@@ -60,7 +61,7 @@ public final class Util {
     }
 
     public static String normalizeFilename(String path) {
-        return path.replaceAll("\\\\", "/");
+        return FilenameUtils.normalize(path).replaceAll("\\\\", "/");
     }
 
     public static String concatPath(String root, String param) {

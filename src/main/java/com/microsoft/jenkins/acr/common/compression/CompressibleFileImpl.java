@@ -139,9 +139,6 @@ public class CompressibleFileImpl extends TarArchiveOutputStream
     }
 
     public static Compression.CompressibleWithIgnore compressToFile(String filename) throws IOException {
-        File dest = new File(filename);
-        dest.deleteOnExit();
-        dest.createNewFile();
         return new CompressibleFileImpl(filename);
     }
 }

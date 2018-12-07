@@ -14,6 +14,10 @@ import com.microsoft.jenkins.acr.service.AzureContainerRegistry;
 import com.microsoft.jenkins.acr.service.AzureStorageBlockBlob;
 import com.microsoft.jenkins.acr.util.Constants;
 import com.microsoft.jenkins.acr.util.Util;
+import hudson.FilePath;
+import jenkins.security.MasterToSlaveCallable;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
@@ -26,47 +30,69 @@ import java.util.List;
 public class LocalSCMCommand  extends AbstractSCMCommand<LocalSCMCommand.ILocalSCMData> {
     @Override
     protected String getSourceUrl(ILocalSCMData data) throws Exception {
-        String source = data.getLocalSCMRequest().getLocalDir();
-        data.logStatus(Messages.scm_local(source));
         UploadRequest request = AzureContainerRegistry.getInstance()
                 .getUploadUrl(data.getResourceGroupName(), data.getRegistryName());
-        String tarFilename = Util.getFileName(request.getRelativePath());
-        String localFileName = Util.concatPath(source, tarFilename);
-        data.logStatus(Messages.scm_compress_filename(localFileName));
-        List<String> ignoreList = parseDockerIgnoreFile(Util.concatPath(source, Constants.DOCKER_IGNORE));
-        ignoreList.add(tarFilename);
-        data.logStatus(
-                Messages.scm_compress_ignore(StringUtils.join(ignoreList, Constants.SHORT_LIST_SPERATE)));
-        try {
-            String[] filenames = CompressibleFileImpl.compressToFile(localFileName)
-                    .withIgnoreList(ignoreList.toArray(new String[ignoreList.size()]))
-                    .withDirectory(Util.normalizeFilename(source))
-                    .compress()
-                    .fileList();
-            data.logStatus(
-                    Messages.scm_compress_files(StringUtils.join(filenames, Constants.LONG_LIST_SPERATE)));
-            data.logStatus(Messages.scm_upload(request.getUrl()));
-            AzureStorageBlockBlob blob = new AzureStorageBlockBlob(request.getUrl());
-            blob.uploadFile(localFileName);
-        } catch (Exception e) {
-            throw e;
-        } finally {
-            new File(localFileName).delete();
-        }
+        LocalSCMCommandOnAgent agent = new LocalSCMCommandOnAgent();
+        agent.setWorkspace(data.getJobContext().getWorkspace());
+        agent.setSource(data.getLocalSCMRequest().getLocalDir());
+        agent.setUrl(request.getUrl());
+        String[] filenames = data.getJobContext().getWorkspace().act(agent);
+        data.logStatus(Messages.scm_compress_files(StringUtils.join(filenames, Constants.LONG_LIST_SPERATE)));
+        data.logStatus(Messages.scm_upload(request.getUrl()));
         return request.getRelativePath();
     }
 
-    private List<String> parseDockerIgnoreFile(String filename) {
-        List<String> list = new ArrayList<>();
-        File file = new File(filename);
-        if (!file.exists()) {
-            return list;
+    public interface ILocalSCMData extends AbstractSCMCommand.ISCMData {
+        LocalSCMRequest getLocalSCMRequest();
+
+        String getResourceGroupName();
+
+        String getRegistryName();
+    }
+
+    protected static final class LocalSCMCommandOnAgent extends MasterToSlaveCallable<String[], Exception> {
+
+        @Setter
+        @Getter
+        private FilePath workspace;
+        @Setter
+        @Getter
+        private String url;
+        @Setter
+        @Getter
+        private String source;
+
+        private LocalSCMCommandOnAgent() {
         }
 
-        try {
-            BufferedLineReader reader = null;
+        @Override
+        public String[] call() throws Exception {
+            FilePath dir = workspace.child(source);
+            FilePath tar = dir.createTempFile(Constants.TEMPFILE, ".tar.gz");
+            List<String> ignoreList = parseDockerIgnoreFile(dir.child(Constants.DOCKER_IGNORE).getRemote());
+            ignoreList.add(tar.getName());
             try {
-                reader = new BufferedLineReader(new InputStreamReader(new FileInputStream(file)));
+               String[] filenames = CompressibleFileImpl.compressToFile(tar.getRemote())
+                       .withIgnoreList(ignoreList.toArray(new String[ignoreList.size()]))
+                       .withDirectory(Util.normalizeFilename(dir.getRemote()))
+                       .compress()
+                       .fileList();
+                AzureStorageBlockBlob blob = new AzureStorageBlockBlob(url);
+                blob.uploadFile(tar.getRemote());
+                return filenames;
+            } finally {
+                tar.delete();
+            }
+        }
+
+        private List<String> parseDockerIgnoreFile(String filename) {
+            List<String> list = new ArrayList<>();
+            File file = new File(filename);
+            if (!file.exists()) {
+                return list;
+            }
+
+            try (BufferedLineReader reader = new BufferedLineReader(new InputStreamReader(new FileInputStream(file)))) {
                 String line = reader.readLine();
                 while (line != null) {
                     line = StringUtils.trimToEmpty(line);
@@ -76,19 +102,9 @@ public class LocalSCMCommand  extends AbstractSCMCommand<LocalSCMCommand.ILocalS
                     line = reader.readLine();
                 }
             } catch (IOException e) {
-            } finally {
-                reader.close();
+                // ignore the dockerignore exception here
             }
-        } catch (IOException e) {
+            return list;
         }
-        return list;
-    }
-
-    public interface ILocalSCMData extends AbstractSCMCommand.ISCMData {
-        LocalSCMRequest getLocalSCMRequest();
-
-        String getResourceGroupName();
-
-        String getRegistryName();
     }
 }

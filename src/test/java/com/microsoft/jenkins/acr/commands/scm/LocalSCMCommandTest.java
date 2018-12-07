@@ -9,11 +9,11 @@ package com.microsoft.jenkins.acr.commands.scm;
 import com.microsoft.azure.storage.StorageException;
 import com.microsoft.jenkins.acr.util.Utils;
 import com.microsoft.jenkins.acr.common.UploadRequest;
-import com.microsoft.jenkins.acr.common.compression.CompressibleFileImpl;
 import com.microsoft.jenkins.acr.common.scm.LocalSCMRequest;
 import com.microsoft.jenkins.acr.service.AzureContainerRegistry;
 import com.microsoft.jenkins.acr.service.AzureStorageBlockBlob;
 import com.microsoft.jenkins.acr.util.Util;
+import hudson.FilePath;
 import lombok.Getter;
 import org.junit.*;
 import org.junit.runner.RunWith;
@@ -31,23 +31,24 @@ import java.util.List;
 @PrepareForTest({
         AzureContainerRegistry.class,
         AzureStorageBlockBlob.class,
-        CompressibleFileImpl.class,
-        LocalSCMCommand.class
+        LocalSCMCommand.LocalSCMCommandOnAgent.class
 })
 public class LocalSCMCommandTest extends AbstractSCMTest<LocalSCMCommandTest.Request> {
     private final String dir = "localSCMTest";
     private final String acr = "acr";
     private final String resourceGroup = "resourcegroup";
+    private final FilePath workspace = new FilePath(new File(dir));
+
+    @Mock
+    private com.microsoft.jenkins.azurecommons.JobContext jobContext;
 
     @Mock
     private AzureContainerRegistry containerRegistry;
 
-    @Mock
-    private CompressibleFileImpl compressibleFile;
-
     @Before
     public void prepareDir() throws IOException, StorageException {
-        new File(dir).mkdir();
+        new File(dir).mkdirs();
+        PowerMockito.when(jobContext.getWorkspace()).thenReturn(workspace);
     }
 
     @After
@@ -61,19 +62,6 @@ public class LocalSCMCommandTest extends AbstractSCMTest<LocalSCMCommandTest.Req
         PowerMockito.when(AzureContainerRegistry.getInstance()).thenReturn(containerRegistry);
         UploadRequest uploadRequest = new UploadRequest(url, path);
         PowerMockito.when(containerRegistry.getUploadUrl(resourceGroup, acr)).thenReturn(uploadRequest);
-    }
-
-    private void mockCompression(String filenameP, String folderP, List<String> ignoreList) throws IOException {
-        String filename = Util.normalizeFilename(filenameP);
-        String folder = Util.normalizeFilename(folderP);
-        PowerMockito.mockStatic(CompressibleFileImpl.class);
-        PowerMockito.when(CompressibleFileImpl.compressToFile(filename)).thenReturn(compressibleFile);
-        String name = new File(filename).getName();
-        ignoreList.add(name);
-        PowerMockito.when(compressibleFile.withIgnoreList(ignoreList.toArray(new String[ignoreList.size()])))
-                .thenReturn(compressibleFile);
-        PowerMockito.when(compressibleFile.withDirectory(folder)).thenReturn(compressibleFile);
-        PowerMockito.when(compressibleFile.compress()).thenReturn(compressibleFile);
     }
 
     private void mockBlob(String filenameP, String url) throws Exception {
@@ -91,7 +79,6 @@ public class LocalSCMCommandTest extends AbstractSCMTest<LocalSCMCommandTest.Req
         String tarballPath = new File(workspace, "relative-path-mock.tar.gz").getAbsolutePath();
 
         mockUploadRequest(blobUrl, relativePath);
-        mockCompression(tarballPath, workspace, new ArrayList<String>());
         mockBlob(tarballPath, blobUrl);
 
         String url = getSCMUrl(new Request(workspace));
@@ -110,7 +97,6 @@ public class LocalSCMCommandTest extends AbstractSCMTest<LocalSCMCommandTest.Req
         List<String> ignoreList = new ArrayList<>();
         ignoreList.add("a*.txt");
         ignoreList.add("!ab.txt");
-        mockCompression(tarballPath, workspace, ignoreList);
         mockBlob(tarballPath, blobUrl);
 
         String url = getSCMUrl(new Request(workspace));
@@ -143,6 +129,11 @@ public class LocalSCMCommandTest extends AbstractSCMTest<LocalSCMCommandTest.Req
         @Override
         public String getRegistryName() {
             return acr;
+        }
+
+        @Override
+        public com.microsoft.jenkins.azurecommons.JobContext getJobContext() {
+            return jobContext;
         }
     }
 }

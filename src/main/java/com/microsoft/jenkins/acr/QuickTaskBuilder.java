@@ -152,7 +152,7 @@ public class QuickTaskBuilder extends Builder implements SimpleBuildStep {
                 .gitRepo(getGitRepo())
                 .gitRefspec(getGitRefspec())
                 .gitPath(getGitPath())
-                .localDir(Util.concatPath(workspace.getRemote(), getLocal()))
+                .localDir(StringUtils.trimToEmpty(getLocal()))
                 .tarball(getTarball())
                 .imageNames(Util.toStringList(getImageNames()))
                 .platform(new Platform(getOs(), getArchitecture(), getVariant()))
