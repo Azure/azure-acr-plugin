@@ -1,4 +1,4 @@
-# Azure Container Registry Task Plugin
+# Azure Container Registry Tasks Plugin
 
 This plugin allows to queue an 
 [Azure Container Registry Quick Task](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-tasks-overview).

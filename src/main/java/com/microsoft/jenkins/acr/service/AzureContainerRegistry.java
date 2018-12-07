@@ -12,9 +12,11 @@ import com.microsoft.azure.management.containerregistry.PlatformProperties;
 import com.microsoft.azure.management.containerregistry.Registry;
 import com.microsoft.azure.management.containerregistry.SourceUploadDefinition;
 import com.microsoft.azure.management.containerregistry.Variant;
+import com.microsoft.jenkins.acr.Messages;
 import com.microsoft.jenkins.acr.common.DockerTaskRequest;
 import com.microsoft.jenkins.acr.common.UploadRequest;
 import com.microsoft.jenkins.acr.descriptor.BuildArgument;
+import com.microsoft.jenkins.acr.exception.ServiceException;
 import rx.Completable;
 
 import java.util.ArrayList;
@@ -40,7 +42,7 @@ public final class AzureContainerRegistry extends AzureService {
      */
     public String queueTaskRequest(String resourceGroupName,
                                     String acrName,
-                                    DockerTaskRequest request) {
+                                    DockerTaskRequest request)  throws ServiceException {
         PlatformProperties platformProperties = new PlatformProperties()
                 .withOs(OS.fromString(request.getPlatform().getOs()))
                 .withArchitecture(Architecture.fromString(request.getPlatform().getArchitecture()))
@@ -49,6 +51,15 @@ public final class AzureContainerRegistry extends AzureService {
         Map<String, OverridingArgument> args = new HashMap();
         for (BuildArgument arg : request.getBuildArguments()) {
             args.put(arg.getKey(), new OverridingArgument(arg.getValue(), arg.isSecrecy()));
+        }
+
+        Registry registry = this.getClient()
+                .containerRegistries()
+                .getByResourceGroup(resourceGroupName, acrName);
+        if (registry == null) {
+            throw new ServiceException("containerregistry",
+                    Messages.registry_actionName(),
+                    Messages.registry_notFound(acrName, resourceGroupName, this.getClient().subscriptionId()));
         }
         return this.getClient()
                 .containerRegistries()
