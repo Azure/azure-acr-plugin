@@ -36,14 +36,9 @@ public class LocalSCMCommand  extends AbstractSCMCommand<LocalSCMCommand.ILocalS
         agent.setWorkspace(data.getJobContext().getWorkspace());
         agent.setSource(data.getLocalSCMRequest().getLocalDir());
         agent.setUrl(request.getUrl());
-        try {
-            String[] filenames = data.getJobContext().getWorkspace().act(agent);
-            data.logStatus(Messages.scm_compress_files(StringUtils.join(filenames, Constants.LONG_LIST_SPERATE)));
-            data.logStatus(Messages.scm_upload(request.getUrl()));
-        } catch (Exception e) {
-            data.logError(e);
-            throw e;
-        }
+        String[] filenames = data.getJobContext().getWorkspace().act(agent);
+        data.logStatus(Messages.scm_compress_files(StringUtils.join(filenames, Constants.LONG_LIST_SPERATE)));
+        data.logStatus(Messages.scm_upload(request.getUrl()));
         return request.getRelativePath();
     }
 
@@ -85,10 +80,8 @@ public class LocalSCMCommand  extends AbstractSCMCommand<LocalSCMCommand.ILocalS
                 AzureStorageBlockBlob blob = new AzureStorageBlockBlob(url);
                 blob.uploadFile(tar.getRemote());
                 return filenames;
-            } catch (Exception e) {
-                throw e;
             } finally {
-                new File(tar.getRemote()).delete();
+                tar.delete();
             }
         }
 
@@ -99,23 +92,17 @@ public class LocalSCMCommand  extends AbstractSCMCommand<LocalSCMCommand.ILocalS
                 return list;
             }
 
-            try {
-                BufferedLineReader reader = null;
-                try {
-                    reader = new BufferedLineReader(new InputStreamReader(new FileInputStream(file)));
-                    String line = reader.readLine();
-                    while (line != null) {
-                        line = StringUtils.trimToEmpty(line);
-                        if (!line.isEmpty() && !line.startsWith(Constants.COMMENT)) {
-                            list.add(line);
-                        }
-                        line = reader.readLine();
+            try (BufferedLineReader reader = new BufferedLineReader(new InputStreamReader(new FileInputStream(file)))) {
+                String line = reader.readLine();
+                while (line != null) {
+                    line = StringUtils.trimToEmpty(line);
+                    if (!line.isEmpty() && !line.startsWith(Constants.COMMENT)) {
+                        list.add(line);
                     }
-                } catch (IOException e) {
-                } finally {
-                    reader.close();
+                    line = reader.readLine();
                 }
             } catch (IOException e) {
+                // ignore the dockerignore exception here
             }
             return list;
         }
