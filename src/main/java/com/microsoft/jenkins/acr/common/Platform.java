@@ -5,7 +5,9 @@
 
 package com.microsoft.jenkins.acr.common;
 
+import com.microsoft.jenkins.acr.Messages;
 import lombok.Getter;
+import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 public class Platform {
@@ -38,6 +40,16 @@ public class Platform {
 
     @DataBoundConstructor
     public Platform(String os, String architecture, String variant) {
+        // valid_condition       isArm        isVariantEmpty
+        //                          1               0
+        //                          0               1
+        // ==> !(isArm ^ isVariantEmpty)
+        // ==> (isArm == isVariantEmpty)
+        boolean isArm = architecture.equalsIgnoreCase(ARCHITECTURE.ARM.toString());
+        boolean isVariantEmpty = StringUtils.trimToNull(variant) == null;
+        if (isArm == isVariantEmpty) {
+            throw new IllegalArgumentException(Messages.platform_arm());
+        }
         this.os = os;
         this.architecture = architecture;
         this.variant = variant;

@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
+import com.microsoft.azure.management.containerregistry.Architecture;
 import com.microsoft.azure.util.AzureBaseCredentials;
 import com.microsoft.jenkins.acr.common.DockerTaskRequest;
 import com.microsoft.jenkins.acr.descriptor.BuildArgument;
@@ -74,7 +75,7 @@ public class QuickTaskBuilder extends Builder implements SimpleBuildStep {
     @Getter
     @Setter
     @DataBoundSetter
-    private String variant = Platform.VARIANT.V6.toString();
+    private String variant;
     @Getter
     @Setter
     @DataBoundSetter
@@ -302,8 +303,14 @@ public class QuickTaskBuilder extends Builder implements SimpleBuildStep {
          * @param owner Item
          * @return {@link Platform.VARIANT} list
          */
-        public ListBoxModel doFillVariantItems(@AncestorInPath final Item owner) {
+        public ListBoxModel doFillVariantItems(@AncestorInPath final Item owner,
+                                               @QueryParameter final String architecture) {
             ListBoxModel list = new ListBoxModel();
+            if (!architecture.equalsIgnoreCase(Architecture.ARM.toString())) {
+                return list;
+            }
+            // Only arm can have different variant
+            // @see https://git.io/fpd4P
             for (Platform.VARIANT p : Platform.VARIANT.values()) {
                 list.add(p.toString());
             }

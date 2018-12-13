@@ -54,7 +54,7 @@ public class QuickTaskContextTest {
     public static void prepareClass() {
         imageList = new ArrayList();
         imageList.add("azure-acr-plugin:latest");
-        platform = new Platform("Linux", "ARM64", "V6");
+        platform = new Platform("Linux", "ARM64", "");
     }
 
     @Before
