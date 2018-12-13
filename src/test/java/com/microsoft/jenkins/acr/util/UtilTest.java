@@ -22,7 +22,7 @@ public class UtilTest {
         imageList.add("1");
         imageList.add("2");
         DockerTaskRequest request = DockerTaskRequest.builder()
-                .platform(new Platform("Linux", "AMD64", "V6"))
+                .platform(new Platform("Linux", "ARM", "V6"))
                 .localDir("gitrepo")
                 .buildArguments(new BuildArgument[]{
                         new BuildArgument("key", "secret", false)
@@ -35,7 +35,7 @@ public class UtilTest {
                 "\"buildArguments\":[{\"key\":\"key\",\"secrecy\":false}]," +
                 "\"noCache\":false," +
                 "\"timeout\":0," +
-                "\"platform\":{\"os\":\"Linux\",\"architecture\":\"AMD64\",\"variant\":\"V6\"}," +
+                "\"platform\":{\"os\":\"Linux\",\"architecture\":\"ARM\",\"variant\":\"V6\"}," +
                 "\"canceled\":false}", Util.toJson(request));
     }
 

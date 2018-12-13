@@ -17,6 +17,7 @@ import com.microsoft.jenkins.acr.common.DockerTaskRequest;
 import com.microsoft.jenkins.acr.common.UploadRequest;
 import com.microsoft.jenkins.acr.descriptor.BuildArgument;
 import com.microsoft.jenkins.acr.exception.ServiceException;
+import org.apache.commons.lang.StringUtils;
 import rx.Completable;
 
 import java.util.ArrayList;
@@ -43,10 +44,15 @@ public final class AzureContainerRegistry extends AzureService {
     public String queueTaskRequest(String resourceGroupName,
                                     String acrName,
                                     DockerTaskRequest request)  throws ServiceException {
+        Variant variant = StringUtils.trimToNull(request.getPlatform().getVariant()) == null
+                ? null
+                : Variant.fromString(request.getPlatform().getVariant());
+
         PlatformProperties platformProperties = new PlatformProperties()
                 .withOs(OS.fromString(request.getPlatform().getOs()))
                 .withArchitecture(Architecture.fromString(request.getPlatform().getArchitecture()))
-                .withVariant(Variant.fromString(request.getPlatform().getVariant()));
+                .withVariant(variant);
+
         boolean pushable = request.getImageNames() != null && request.getImageNames().size() > 0;
         Map<String, OverridingArgument> args = new HashMap();
         for (BuildArgument arg : request.getBuildArguments()) {
