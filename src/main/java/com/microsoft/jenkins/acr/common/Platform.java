@@ -45,7 +45,7 @@ public class Platform {
         //                          0               1
         // ==> !(isArm ^ isVariantEmpty)
         // ==> (isArm == isVariantEmpty)
-        boolean isArm = architecture.toLowerCase().equals(ARCHITECTURE.ARM.toString().toLowerCase());
+        boolean isArm = architecture.equalsIgnoreCase(ARCHITECTURE.ARM.toString());
         boolean isVariantEmpty = StringUtils.trimToNull(variant) == null;
         if (isArm == isVariantEmpty) {
             throw new IllegalArgumentException(Messages.platform_arm());

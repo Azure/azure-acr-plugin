@@ -306,7 +306,7 @@ public class QuickTaskBuilder extends Builder implements SimpleBuildStep {
         public ListBoxModel doFillVariantItems(@AncestorInPath final Item owner,
                                                @QueryParameter final String architecture) {
             ListBoxModel list = new ListBoxModel();
-            if (!architecture.toLowerCase().equals(Architecture.ARM.toString().toLowerCase())) {
+            if (!architecture.equalsIgnoreCase(Architecture.ARM.toString())) {
                 return list;
             }
             // Only arm can have different variant
