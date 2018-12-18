@@ -9,8 +9,8 @@
         <relativePath/>
     </parent>
     <groupId>io.jenkins.plugins</groupId>
-    <artifactId>azure-container-registry-tasks-plugin</artifactId>
-    <version>0.5.1-SNAPSHOT</version>
+    <artifactId>azure-container-registry-tasks</artifactId>
+    <version>0.6.0-SNAPSHOT</version>
     <packaging>hpi</packaging>
     <properties>
         <java.level>7</java.level>
