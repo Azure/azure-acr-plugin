@@ -42,7 +42,7 @@
             <url>https://opensource.org/licenses/MIT</url>
         </license>
     </licenses>
-    <url>https://wiki.jenkins.io/display/JENKINS/azure-container-registry-tasks</url>
+    <url>https://wiki.jenkins.io/display/JENKINS/Azure+Container+Registry+Tasks+Plugin</url>
     <scm>
         <connection>scm:git:git://github.com/jenkinsci/azure-container-registry-tasks-plugin.git</connection>
         <developerConnection>scm:git:git@github.com:jenkinsci/azure-container-registry-tasks-plugin.git</developerConnection>
@@ -203,6 +203,18 @@
         </dependency>
     </dependencies>
     <build>
+        <resources>
+            <resource>
+                <directory>${project.basedir}</directory>
+                <includes>
+                    <include>ThirdPartyNotices</include>
+                    <include>LICENSE</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
