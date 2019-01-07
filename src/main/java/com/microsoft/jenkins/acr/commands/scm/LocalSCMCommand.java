@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -92,7 +93,8 @@ public class LocalSCMCommand  extends AbstractSCMCommand<LocalSCMCommand.ILocalS
                 return list;
             }
 
-            try (BufferedLineReader reader = new BufferedLineReader(new InputStreamReader(new FileInputStream(file)))) {
+            try (BufferedLineReader reader = new BufferedLineReader(new InputStreamReader(new FileInputStream(file),
+                    Charset.defaultCharset()))) {
                 String line = reader.readLine();
                 while (line != null) {
                     line = StringUtils.trimToEmpty(line);

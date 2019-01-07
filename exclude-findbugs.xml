@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Jenkins.getInstance() should never be null, but findbug is showing warning/error on that so filetring it.
+-->
+<FindBugsFilter>
+    <Match>
+        <!-- The issue was fixed, but the error is still there -->
+        <Class name="com.microsoft.jenkins.acr.service.AzureContainerRegistry" />
+        <Field name="instance"/>
+        <Bug pattern="UWF_UNWRITTEN_FIELD" />
+    </Match>
+    <Match>
+        <!-- The issue was fixed, but the error is still there -->
+        <Class name="com.microsoft.jenkins.acr.service.AzureResourceGroup" />
+        <Field name="instance"/>
+        <Bug pattern="UWF_UNWRITTEN_FIELD" />
+    </Match>
+    <Match>
+        <!-- The issue was fixed, but the error is still there -->
+        <Class name="com.microsoft.jenkins.acr.service.AzureStorageAppendBlob" />
+        <Method name="isSuccess"/>
+        <Bug pattern="NP_BOOLEAN_RETURN_NULL" />
+    </Match>
+    <Match>
+        <!-- The issue was fixed, but the error is still there -->
+        <Class name="com.microsoft.jenkins.acr.common.DockerTaskRequest$DockerTaskRequestBuilder" />
+        <Field name="buildArguments"/>
+        <Bug pattern="EI_EXPOSE_REP2" />
+    </Match>
+    <Match>
+        <!-- The issue was fixed, but the error is still there -->
+        <Class name="com.microsoft.jenkins.acr.common.DockerTaskRequest" />
+        <Method name="getBuildArguments"/>
+        <Bug pattern="EI_EXPOSE_REP" />
+    </Match>
+    <Match>
+        <Class name="com.microsoft.jenkins.acr.service.AzureHelper"/>
+        <Field name="client" />
+        <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+    </Match>
+</FindBugsFilter>

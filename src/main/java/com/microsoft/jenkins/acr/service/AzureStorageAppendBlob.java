@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 import java.util.concurrent.Callable;
 
 /**
@@ -118,7 +119,7 @@ public class AzureStorageAppendBlob {
      * @throws ServiceException Failed to get the blob stream.
      */
     private BufferedLineReader createReader() throws ServiceException {
-        return new BufferedLineReader(new InputStreamReader(this.getStream()));
+        return new BufferedLineReader(new InputStreamReader(this.getStream(), Charset.defaultCharset()));
     }
 
     /**

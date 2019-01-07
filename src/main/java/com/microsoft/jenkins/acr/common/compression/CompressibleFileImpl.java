@@ -66,8 +66,11 @@ public class CompressibleFileImpl extends TarArchiveOutputStream
         }
 
         workspaceLength = dir.getAbsolutePath().length() + 1;
-
-        for (File child : dir.listFiles()) {
+        File[] children = dir.listFiles();
+        if (children == null) {
+            return this;
+        }
+        for (File child : children) {
             addFile(child);
         }
         return this;
@@ -106,7 +109,11 @@ public class CompressibleFileImpl extends TarArchiveOutputStream
             bis.close();
         } else if (file.isDirectory()) {
             this.closeArchiveEntry();
-            for (File child : file.listFiles()) {
+            File[] children = file.listFiles();
+            if (children == null) {
+                return;
+            }
+            for (File child : children) {
                 addFile(child);
             }
         }
