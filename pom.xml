@@ -21,7 +21,7 @@
         <azure-credentials-plugin.version>1.6.0</azure-credentials-plugin.version>
         <azure-commons.version>0.2.5</azure-commons.version>
         <azure-annotations.version>1.8.0</azure-annotations.version>
-        <azure-runtime.version>1.6.4</azure-runtime.version>
+        <azure-runtime.version>1.6.5</azure-runtime.version>
 
         <jackson.version>2.9.5</jackson.version>
         <joda-time.version>2.7</joda-time.version>
