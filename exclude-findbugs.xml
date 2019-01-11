@@ -17,12 +17,6 @@
     </Match>
     <Match>
         <!-- The issue was fixed, but the error is still there -->
-        <Class name="com.microsoft.jenkins.acr.service.AzureStorageAppendBlob" />
-        <Method name="isSuccess"/>
-        <Bug pattern="NP_BOOLEAN_RETURN_NULL" />
-    </Match>
-    <Match>
-        <!-- The issue was fixed, but the error is still there -->
         <Class name="com.microsoft.jenkins.acr.common.DockerTaskRequest$DockerTaskRequestBuilder" />
         <Field name="buildArguments"/>
         <Bug pattern="EI_EXPOSE_REP2" />

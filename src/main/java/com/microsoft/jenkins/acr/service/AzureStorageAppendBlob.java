@@ -44,13 +44,14 @@ public class AzureStorageAppendBlob {
     /**
      * Whether the blob is completely uploaded with result.
      *
-     * @return {@code true} or {@code false} or {@code null} indicates not finished
+     * @return {@code true} or {@code false} indicates not finished
+     * @throws ServiceException when the build is not finished.
      */
-    public Boolean isSuccess() {
+    public Boolean isSuccess() throws ServiceException {
 
         String result = this.blob.getMetadata().get(Constants.BLOB_COMPLETE);
         if (result == null) {
-            return null;
+            throw new ServiceException("Storage", Messages.log_actionName(), Messages.log_notFinished());
         }
 
         return result.equals(Constants.BUILD_SUCCEEDED);

@@ -6,3 +6,6 @@
 
 # Version 0.6.1, 2019-01-07
 * Fix the scm and license information
+
+# Version 0.6.2, 2019-01-08
+* Fix security vulnerability
