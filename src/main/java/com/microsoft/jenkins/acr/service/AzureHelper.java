@@ -42,6 +42,13 @@ public final class AzureHelper {
         return this;
     }
 
+    public String getSubscription() {
+        if (AzureHelper.client == null) {
+            return "";
+        }
+        return AzureHelper.client.subscriptionId();
+    }
+
     public AzureHelper auth(Item owner, String credentialId) {
         TokenCredentialData token = getToken(owner, credentialId);
         return auth(token);
