@@ -5,10 +5,7 @@ This plugin allows to queue an
 
 ## Installation
 
-This plugin is in preview release, you can download the 
-[latest release](https://github.com/Azure/azure-acr-plugin/releases) hpi file.
-To install the hpi file, go to your Jenkins home page, click `Manage Jenkins`|`Manage Plugins`|`Advanced`, 
-upload the hpi file and restart your Jenkins server.
+ Go to your Jenkins master, click 'Manage Jenkins' -> 'Manage Plugins' -> 'Available', then search `Azure Container Registry Tasks Plugin` and install the plugin.
 
 ## Credentials
 This plugin requires your Azure Credential to auth your operation.
