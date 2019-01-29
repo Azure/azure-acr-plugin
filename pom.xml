@@ -43,6 +43,13 @@
         </license>
     </licenses>
     <url>https://wiki.jenkins.io/display/JENKINS/Azure+Container+Registry+Tasks+Plugin</url>
+    <developers>
+	    <developer>
+	        <id>azure_devops</id>
+	        <name>Azure DevOps Team</name>
+	        <email>vscjenkins@microsoft.com</email>
+	    </developer>
+    </developers>
     <scm>
         <connection>scm:git:git://github.com/jenkinsci/azure-container-registry-tasks-plugin.git</connection>
         <developerConnection>scm:git:git@github.com:jenkinsci/azure-container-registry-tasks-plugin.git</developerConnection>
