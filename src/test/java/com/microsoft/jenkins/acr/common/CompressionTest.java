@@ -161,7 +161,7 @@ public class CompressionTest {
     }
 
     private String getFilename(String name) {
-        return workspace + "/" + name;
+        return workspace + File.separator + name;
     }
 
     private File prepareSource(String filename, int length) throws IOException {
@@ -178,8 +178,8 @@ public class CompressionTest {
         File file = new File(getFilename(name));
         file.mkdir();
         for (String s : files) {
-            String filename = name + "/" + s;
-            if (s.endsWith("/")) {
+            String filename = name + File.separator + s;
+            if (s.endsWith(File.separator)) {
                 new File(getFilename(filename)).mkdir();
             } else {
                 prepareSource(getFilename(filename));

@@ -187,7 +187,7 @@ public class QuickTaskContextTest {
 
         PrintStream logger = PowerMockito.mock(PrintStream.class);
         PowerMockito.when(listener.getLogger()).thenReturn(logger);
-        PowerMockito.doNothing().when(logger).println(ArgumentMatchers.any());
+        PowerMockito.doNothing().when(logger).println(ArgumentMatchers.<String>any());
         context.configure(run,
                 workspace,
                 launcher,
