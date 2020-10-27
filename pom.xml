@@ -20,7 +20,7 @@
         <azure-credentials-plugin.version>1.6.0</azure-credentials-plugin.version>
         <azure-commons.version>0.2.5</azure-commons.version>
         <azure-annotations.version>1.10.0</azure-annotations.version>
-        <azure-runtime.version>1.7.5</azure-runtime.version>
+        <azure-runtime.version>1.7.10</azure-runtime.version>
 
         <jackson.version>2.10.1</jackson.version>
         <joda-time.version>2.9.9</joda-time.version>
@@ -44,11 +44,11 @@
     </licenses>
     <url>https://wiki.jenkins.io/display/JENKINS/Azure+Container+Registry+Tasks+Plugin</url>
     <developers>
-	    <developer>
-	        <id>azure_devops</id>
-	        <name>Azure DevOps Team</name>
-	        <email>vscjenkins@microsoft.com</email>
-	    </developer>
+        <developer>
+            <id>xuzhang</id>
+            <name>Xu Zhang</name>
+            <email>xuzhang3@microsoft.com</email>
+        </developer>
     </developers>
     <scm>
         <connection>scm:git:git://github.com/jenkinsci/azure-container-registry-tasks-plugin.git</connection>
