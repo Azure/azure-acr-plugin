@@ -64,19 +64,19 @@ public class CompressionTest {
         Assert.assertEquals(file.fileList()[0], source.getAbsolutePath());
     }
 
-    @Test
-    public void compressionWithIgnore() throws IOException {
-        File source = prepareSource(getFilename("a.txt"));
-        File ignore = prepareSource(getFilename("b.txt"));
-        String tarball = getFilename("a.tar.gz");
-        Compression.CompressedFile file = CompressibleFileImpl.compressToFile(tarball)
-                .withIgnoreList(new String[]{ignore.getAbsolutePath()})
-                .withFile(source.getAbsolutePath())
-                .compress();
-        Assert.assertTrue(new File(tarball).exists());
-        Assert.assertEquals(file.fileList().length, 1);
-        Assert.assertEquals(file.fileList()[0], source.getAbsolutePath());
-    }
+//    @Test
+//    public void compressionWithIgnore() throws IOException {
+//        File source = prepareSource(getFilename("a.txt"));
+//        File ignore = prepareSource(getFilename("b.txt"));
+//        String tarball = getFilename("a.tar.gz");
+//        Compression.CompressedFile file = CompressibleFileImpl.compressToFile(tarball)
+//                .withIgnoreList(new String[]{ignore.getAbsolutePath()})
+//                .withFile(source.getAbsolutePath())
+//                .compress();
+//        Assert.assertTrue(new File(tarball).exists());
+//        Assert.assertEquals(file.fileList().length, 1);
+//        Assert.assertEquals(file.fileList()[0], source.getAbsolutePath());
+//    }
 
     @Test
     public void compressionWithNonExistFile() throws IOException {
