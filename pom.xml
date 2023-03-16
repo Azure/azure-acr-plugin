@@ -13,7 +13,7 @@
     <properties>
         <java.level>8</java.level>
 
-        <jenkins.version>1.651.3</jenkins.version>
+        <jenkins.version>2.375.4</jenkins.version>
         <jenkins-scm-api.version>1.3</jenkins-scm-api.version>
 
         <azure-sdk.version>1.18.0</azure-sdk.version>
